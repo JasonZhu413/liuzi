@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.liuzi</groupId>
   <artifactId>liuzi</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>1.0</version>
   <packaging>pom</packaging>
   
   <name>liuzi</name>
@@ -22,7 +22,7 @@
 	<properties>
 		<!-- 主要依赖库的版本定义 -->
 		<java.home>${env.JAVA_HOME}</java.home>
-		<liuzi.version>0.0.1-SNAPSHOT</liuzi.version>
+		<liuzi.version>1.0</liuzi.version>
 		<spring.version>4.0.6.RELEASE</spring.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<slf4j.version>1.6.4</slf4j.version>
@@ -564,14 +564,14 @@
 	<!-- 设定使用Release插件发布的仓库服务器 如有Nexus私服, 取消注释并指向正确的服务器地址. -->
 	<distributionManagement>
 		<repository>
-			<id>maven-releases</id> <!-- 与setting.xml 中的 <server>的id 相同 -->
+			<id>nexus-releases</id> <!-- 与setting.xml 中的 <server>的id 相同 -->
 			<name>Nexus Release Repository</name>
-			<url>http://123.206.93.119:18081/repository/maven-releases/</url>
+			<url>http://123.206.93.119:18081/repository/nexus-releases/</url>
 		</repository>
 		<snapshotRepository>
-			<id>maven-releases</id>
+			<id>nexus-snapshots</id>
 			<name>Nexus Snapshot Repository</name>
-			<url>http://123.206.93.119:18081/repository/maven-releases/</url>
+			<url>http://123.206.93.119:18081/repository/nexus-snapshots/</url>
 		</snapshotRepository>
 	</distributionManagement>
 
