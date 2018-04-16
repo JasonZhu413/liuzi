@@ -28,7 +28,7 @@ public class FastDFSConfig {
 	}
 	
 	public static void init(){
-		logger.error("===== fastdfs初始化，加载配置 " + g_conf_file + " ......========");
+		logger.info("===== fastdfs初始化，加载配置 " + g_conf_file + " ......========");
 		
 		try {
 			ClientGlobal.init(g_conf_file);

@@ -556,7 +556,17 @@
 			    <artifactId>activemq-pool</artifactId>
 			    <version>5.13.0</version>
 			</dependency>
-
+			<dependency>
+			    <groupId>org.csource</groupId>
+			    <artifactId>fastdfs-client-java</artifactId>
+			    <version>1.27</version>
+			</dependency>
+			
+			<dependency>
+		     	<groupId>com.baidu</groupId>
+		     	<artifactId>ueditor</artifactId>
+		     	<version>1.5.1</version>
+		     </dependency>
 		</dependencies>
 
 	</dependencyManagement>
