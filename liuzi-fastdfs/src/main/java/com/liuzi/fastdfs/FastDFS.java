@@ -126,21 +126,24 @@ public class FastDFS extends FastDFSConfig{
 	private static String[] upload_object(MultipartFile attach, String fileName, 
 			long fileSize, String ext) {
 		
-		NameValuePair[] valuePairs = new NameValuePair[4];
-		valuePairs[0] = new NameValuePair("name", fileName);
-		valuePairs[1] = new NameValuePair("size", String.valueOf(fileSize));
-		valuePairs[2] = new NameValuePair("ext", ext);
+		 NameValuePair[] nvp = null;
+		 
+		 /*nvp = new NameValuePair[]{ 
+             new NameValuePair("name", fileName), 
+             new NameValuePair("size", String.valueOf(fileSize)),
+             new NameValuePair("sex", ext) 
+		 }; */
 		
-        String[] uploadResults = null;
-        try {
-            uploadResults = storageClient.upload_file(attach.getBytes(), ext, valuePairs);
-            logger.info("FastDFS上传文件成功......");
-        } catch (Exception e) {
-        	logger.error("FastDFS上传出错，上传文件失败：" + e.getMessage());
-            e.printStackTrace();
-        }
+		 String[] uploadResults = null;
+		 try {
+			 uploadResults = storageClient.upload_file(attach.getBytes(), ext, nvp);
+			 logger.info("FastDFS上传文件成功......");
+		 } catch (Exception e) {
+			 logger.error("FastDFS上传出错，上传文件失败：" + e.getMessage());
+			 e.printStackTrace();
+		 }
         
-        return uploadResults;
+		 return uploadResults;
     }
 	
     public static ResponseEntity<byte[]> download(String group, String path, String newName) {

@@ -17,8 +17,10 @@ public class FastDFSConfig {
 	private final static String DEFAULT_CONF_FILE_NAME = "conf/fdfs.properties";
 	
 	private static String g_conf_file = DEFAULT_CONF_FILE_NAME;
-	
-	public static volatile StorageClient storageClient;
+	protected static TrackerClient tracker;
+	protected static TrackerServer trackerServer;
+	protected static StorageServer storageServer = null;
+	public static StorageClient storageClient;
 	
 	public FastDFSConfig(String confFile){
 		if(!StringUtils.isEmpty(confFile)){
@@ -28,7 +30,7 @@ public class FastDFSConfig {
 	}
 	
 	public static void init(){
-		logger.error("===== fastdfs初始化，加载配置 " + g_conf_file + " ......========");
+		logger.info("===== fastdfs初始化，加载配置 " + g_conf_file + " ......========");
 		
 		try {
 			ClientGlobal.init(g_conf_file);
@@ -39,13 +41,12 @@ public class FastDFSConfig {
 		}
 		
 		try {
-			TrackerClient tracker = new TrackerClient(); 
+			tracker = new TrackerClient(); 
 			logger.info("创建trackerClient实例：new TrackerClient()");
 			
-			TrackerServer trackerServer = tracker.getConnection(); 
+			trackerServer = tracker.getConnection(); 
 			logger.info("建立连接：tracker.getConnection()");
-			
-            StorageServer storageServer = null;
+            
             storageClient = new StorageClient(trackerServer, storageServer); 
             logger.info("创建storageClient实例：new StorageClient(trackerServer, storageServer)");
 		} catch (Exception e) {

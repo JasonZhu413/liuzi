@@ -15,12 +15,26 @@ import org.apache.commons.lang.RandomStringUtils;
  * 
  */
 public class RandomUtil {
+	private final static String DEFAULT_NUM = "0123456789";
+	private final static String DEFAULT_ENG = "abcdefghijklmnopqrstuvwxyz";
+	
 	public static String random(int len){
-	    String str = "0123456789";
+	    return RandomStringUtils.random(len, DEFAULT_NUM);
+	}
+	
+	public static String random(String str,int len){
+	    return RandomStringUtils.random(len, str);
+	}
+	
+	public static String random_eng(int len){
+	    return RandomStringUtils.random(len, DEFAULT_ENG);
+	}
+	
+	public static String random_eng(String str, int len){
 	    return RandomStringUtils.random(len, str);
 	}
 	
 	public static void main(String[] args) {
-		System.out.println(RandomStringUtils.random(5,"0123456789"));
+		System.out.println(random_eng(5));
 	}
 }

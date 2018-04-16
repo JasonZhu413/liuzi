@@ -24,9 +24,9 @@ public class ConfigUtil {
 	
 	private static Logger logger = LoggerFactory.getLogger(ConfigUtil.class);
 	
-	private static PropertiesConfiguration config;
 	private static final String CONFIG_FILE = "conf/application.properties";
 	
+	private static PropertiesConfiguration config;
 	private static String conf_file = CONFIG_FILE;
 	
 	public ConfigUtil(String filePath){
@@ -34,19 +34,6 @@ public class ConfigUtil {
 			conf_file = filePath;
 		}
 		init();
-	}
-	
-	public static void init(){
-		config = new PropertiesConfiguration();
-		config.setEncoding("UTF-8");
-		
-		try{
-			config.load(conf_file);
-			logger.info("初始化" + conf_file + "文件。。。。。。");
-	    } catch (Exception e) {
-	    	logger.error("初始化" + conf_file + "文件失败：" + e.getMessage());
-	    	e.fillInStackTrace();
-	    }
 	}
 	
 	static{
@@ -57,6 +44,23 @@ public class ConfigUtil {
 		    	}
 		    }
 		}
+	}
+	
+	public static void init(){
+		logger.info("===== application初始化，加载配置 " + conf_file + " ......========");
+		
+		config = new PropertiesConfiguration();
+		config.setEncoding("UTF-8");
+		
+		try{
+			config.load(conf_file);
+			logger.info("初始化" + conf_file + "文件。。。。。。");
+	    } catch (Exception e) {
+	    	logger.error("初始化" + conf_file + "文件失败：" + e.getMessage());
+	    	e.fillInStackTrace();
+	    }
+		
+		logger.info("===== application初始化完成 ......========");
 	}
 	
 	public static Integer getIntValue(String key){

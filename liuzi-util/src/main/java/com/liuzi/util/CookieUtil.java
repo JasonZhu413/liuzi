@@ -4,6 +4,8 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.util.StringUtils;
+
 /**
  * @Title:        CookieUtil
  * 
@@ -17,63 +19,47 @@ import javax.servlet.http.HttpServletResponse;
  * 
  */
 public class CookieUtil {
-	public static String getCookie(HttpServletRequest request, String key){
-	    String value = null;
+	
+	public static void set(HttpServletResponse response, String name, String value) {
+		set(response, name, value, -1);
+	}
+
+	public static void set(HttpServletResponse response, String name, String value, int seconds){
+		set(response, name, value, null, -1);
+	}
+
+	public static void set(HttpServletResponse response, String name, String value, String domain, int seconds) {
+	    Cookie cookie = new Cookie(name, value);
+	    cookie.setMaxAge(seconds);
+	    cookie.setPath("/");
+	    
+	    if(!StringUtils.isEmpty(domain)){
+	    	cookie.setDomain(domain);
+	    }
+	    
+	    response.addCookie(cookie);
+	}
+	
+	public static String get(HttpServletRequest request, String key){
+		if(StringUtils.isEmpty(key)) return null;
+		
 	    Cookie cookie = null;
+	    
 	    Cookie[] cookies = request.getCookies();
 	    if (cookies != null){
-	    	int i = 0;
-
-	    	while (i < cookies.length){
-	    		if (cookies[i].getName().equals(key)){
-	    			cookie = cookies[i];
+	    	for(Cookie ck : cookies){
+	    		if (key.equals(ck.getName())){
+	    			cookie = ck;
 	    			break;
 	    		}
-	    		++i;
 	    	}
 	    }
 
-	    if (cookie != null){
-	    	value = cookie.getValue();
-	    }
-	      
-	    if (value == null){
-	    	value = "";
-	    }
-	      
-	    return value;
+	    return cookie == null ? null : cookie.getValue();
 	}
 
-	public static void setCookie(HttpServletResponse response, String name, String value, int seconds){
-	    Cookie cookie = new Cookie(name, value);
-	    cookie.setMaxAge(seconds);
-	    cookie.setPath("/");
-	    //cookie.setDomain(ConfigUtil.getStringValue("cookie.domain"));
-	    response.addCookie(cookie);
-	}
-
-	public static void setCookie(HttpServletResponse response, String name, String value, String domain, int seconds) {
-	    Cookie cookie = new Cookie(name, value);
-	    cookie.setMaxAge(seconds);
-	    cookie.setPath("/");
-	    cookie.setDomain(domain);
-	    response.addCookie(cookie);
-	}
-
-	public static void setCookie(HttpServletResponse response, String name, String value) {
-	    Cookie cookie = new Cookie(name, value);
-	    cookie.setPath("/");
-
-	    response.addCookie(cookie);
-	}
-
-	public static void deleteCookie(HttpServletRequest request, HttpServletResponse response, String cookieName){
-	    Cookie cookie = new Cookie(cookieName, "");
-
-	    cookie.setMaxAge(0);
-
-	    cookie.setPath("/");
-	    response.addCookie(cookie);
+	public static void delete(HttpServletResponse response, String name){
+		set(response, name, "", 0);
 	}
 	
 }
