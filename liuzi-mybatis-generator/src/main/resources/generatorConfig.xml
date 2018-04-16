@@ -6,6 +6,7 @@
         还有重要的就是我们要生成的实体类所对应的的表或者试图 -->
 <generatorConfiguration> 
     <properties resource="mybatis_generator.properties" />
+    
     <context id="DB2Tables" targetRuntime="MyBatis3" defaultModelType="conditional">
         <!-- 注意以下标签的顺序:property*,plugin*,commentGenerator?,jdbcConnection,
                 javaTypeResolver?,javaModelGenerator,sqlMapGenerator?,
@@ -23,37 +24,32 @@
         </commentGenerator>
         <!-- 数据库连接 -->
         <jdbcConnection 
-            driverClass="com.mysql.jdbc.Driver" 
-            connectionURL="jdbc:mysql://47.93.50.84:3306/cto"
-            userId="cto" 
-            password="cto@_123">
+            driverClass="${jdbc_driver}" 
+            connectionURL="${jdbc_url}"
+            userId="${jdbc_username}" 
+            password="${jdbc_password}">
         </jdbcConnection>
         <!-- 指定生成的类型为java类型，避免数据库中number等类型字段 -->
         <javaTypeResolver>
             <property name="forceBigDecimals" value="false"/>
         </javaTypeResolver>
         <!-- 生成model模型，对应的包，存放位置可以指定具体的路径,如/ProjectName/src，也可以使用MAVEN来自动生成 -->
-        <javaModelGenerator targetPackage="com.cto.entity" targetProject="src/main/java">
+        <javaModelGenerator targetPackage="${modelPackage}" targetProject="src/main/java">
             <!-- 在targetPackage的基础上，根据数据库的schema再生成一层package，最终生成的类放在这个package下，默认为false -->
             <property name="enableSubPackages" value="true"/>
             <!-- 设置是否在getter方法中，对String类型字段调用trim()方法 -->
             <property name="trimStrings" value="false"/>
         </javaModelGenerator>
         <!--对应的xml mapper文件  -->
-        <sqlMapGenerator targetPackage="com.cto.mapping" targetProject="src/main/java" >
+        <sqlMapGenerator targetPackage="${sqlMapperPackage}" targetProject="src/main/java" >
             <property name="enableSubPackages" value="true"/>
         </sqlMapGenerator> 
         <!-- 对应的dao接口 -->
-        <javaClientGenerator type="XMLMAPPER" targetPackage="com.cto.dao" targetProject="src/main/java" >
+        <javaClientGenerator type="XMLMAPPER" targetPackage="${daoMapperPackage}" targetProject="src/main/java" >
             <property name="enableSubPackages" value="true"/>
         </javaClientGenerator>
 
-        <!-- 表名对应生成的实体 -->      
-        <table tableName="user_extend" domainObjectName="" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false"  
-      		enableSelectByExample="false" selectByExampleQueryId="false">
-      		<!-- <property name="useActualColumnNames" value="true"/> -->
-            <generatedKey column="id" sqlStatement="MySql" identity="true"/>
-      	</table>
+        <!-- 表名对应生成的实体 --> 
       	<table tableName="user" domainObjectName="" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false"  
       		enableSelectByExample="false" selectByExampleQueryId="false">
       		<!-- <property name="useActualColumnNames" value="true"/> -->

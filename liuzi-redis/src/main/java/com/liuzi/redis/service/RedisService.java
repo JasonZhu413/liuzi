@@ -5,315 +5,396 @@ import java.util.Map;
 import java.util.Set;
 
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 
 public interface RedisService {
 
 	/**
-	 * 是否存在
-	 * @param key
-	 * @return
-	 */
-	public boolean exists(String key);
-	/**
-	 * 删除
-	 * @param key
-	 */
-	public void delete(String key);
-	/**
-	 * 删除
-	 * @param key
-	 */
-	public void delete(String... key);
+     * 指定缓存失效时间
+     * 
+     * @param key
+     *            键
+     * @param time
+     *            时间(秒)
+     * @return
+     */
+    public boolean expire(String key, long time);
 
-	/**
-	 * String
-	 */
-	/**
-	 * 给数据库中名称为key的string赋予值value
-	 * @param key
-	 * @param value
-	 */
-	public void save(String key, String value);
-	/**
-	 * 给数据库中名称为key的string赋予值value,并赋予缓存时间seconds
-	 * @param key
-	 * @param value
-	 * @param seconds
-	 */
-	public void save(String key, String value, Integer seconds);
-	/**
-	 * 返回数据库中名称为key的string的value
-	 * @param key
-	 * @return
-	 */
-	public String get(String key);
-	/**
-	 * 给名称为key的string赋予上一次的value
-	 * @param key
-	 * @param value
-	 * @return
-	 */
-	public String saveLastValue(String key, String value);
-	/**
-	 * 如果不存在名称为key的string，则向库中添加string，名称为key，值为value
-	 * @param key
-	 * @param value
-	 * @return
-	 */
-	public Long saveIfNotExit(String key, String value);
-	/**
-	 * 给数据库中名称为key的string赋予值obj,并赋予缓存时间seconds
-	 * @param key
-	 * @param value
-	 * @param seconds
-	 */
-	public void save(String key, Object obj, Integer seconds);
-	
-	/**
-	 * 给数据库中名称为key的string赋予值obj
-	 * @param key
-	 * @param obj
-	 */
-	public void save(String key, Object obj);
-	/**
-	 * 名称为key的string增1操作
-	 * @param key
-	 * @return
-	 */
-	public Long incr(String key);
-	/**
-	 * 名称为key的string增加integer
-	 * @param key
-	 * @param integer
-	 * @return
-	 */
-	public Long incrBy(String key, int integer);
-	/**
-	 * 名称为key的string减1操作
-	 * @param key
-	 * @return
-	 */
-	public Long decr(String key);
-	/**
-	 * 名称为key的string减少integer
-	 * @param key
-	 * @param val
-	 * @return
-	 */
-	public Long decrBy(String key, long val);
-	/**
-	 * 名称为key的string的值附加value
-	 * @param key
-	 * @param value
-	 * @return
-	 */
-	public Long append(String key, String value);
-	/**
-	 * 返回名称为key的string的value的子串
-	 * @param key
-	 * @param start
-	 * @param end
-	 * @return
-	 */
-	public String substr(String key, int start, int end);
-	
-	/**
-	 * List
-	 */
-	/**
-	 * 返回名称为key的list的长度
-	 * @param key
-	 * @return
-	 */
-	public Long llen(String key);
-	/**
-	 * 返回名称为key的list中index位置的元素
-	 * @param key
-	 * @param index
-	 * @return
-	 */
-	public String lindex(String key, int index);
-	/**
-	 * 给名称为key的list中index位置的元素赋值为value
-	 * @param key
-	 * @param index
-	 * @param value
-	 * @return
-	 */
-	public String lset(String key, int index, String value);
-	/**
-	 * 返回并删除名称为key的list中的首元素
-	 * @param key
-	 * @return
-	 */
-	public String lpop(String key);
-	/**
-	 * 
-	 * @param key
-	 * @return
-	 */
-	public String rpop(String key);
-	/**
-	 * 返回并删除名称为key的list中的尾元素
-	 * @param srckey
-	 * @param dstkey
-	 * @return
-	 */
-	public String rpoplpush(String srckey, String dstkey);
-	/**
-	 * 在名称为key的list尾添加一个值为value的元素
-	 * @param key
-	 * @param value
-	 * @return
-	 */
-	public Long saveArray(String key, String value);
-	/**
-	 * 在名称为key的list尾添加一个值为value的元素,并赋值时间seconds
-	 * @param key
-	 * @param value
-	 * @param seconds
-	 * @return
-	 */
-	public Long saveArray(String key, String value, Integer seconds);
-	/**
-	 * 保存
-	 * @param key
-	 * @param value
-	 * @return
-	 */
-	public Long saveArray(String key, String[] value);
-	/**
-	 * 保存并赋时间
-	 * @param key
-	 * @param value
-	 * @param seconds
-	 * @return
-	 */
-	public Long saveArray(String key, String[] value, Integer seconds);
-	/**
-	 * 保存
-	 * @param key
-	 * @param list
-	 * @return
-	 */
-	public Long saveArray(String key, List<?> list);
-	/**
-	 * 保存并赋时间
-	 * @param key
-	 * @param value
-	 * @param seconds
-	 * @return
-	 */
-	public Long saveArray(String key,List<?> value,Integer seconds);
-	/**
-	 * 返回名称为key的list中start至end之间的元素（下标从0开始，下同）
-	 * @param key
-	 * @param start
-	 * @param end
-	 * @return
-	 */
-	public List<String> getArray(String key, Long start, Long end);
-	/**
-	 * 在名称为key的list头添加一个值为value的 元素
-	 * @param key
-	 * @param value
-	 * @return
-	 */
-	public Long lpush(String key, String value);
-	/**
-	 * 删除count个名称为key的list中值为value的元素。count为0，删除所有值为value的元素，count>0      从头至尾删除count个值为value的元素，count<0从尾到头删除|count|个值为value的元素。
-	 * @param key
-	 * @param count
-	 * @param value
-	 * @return
-	 */
-	public Long lrem(String key, long count, String value);
-	
-	
-	/**
-	 * Hash
-	 */
-	/**
-	 * 是否存在
-	 * @param key
-	 * @param field
-	 * @return
-	 */
-	public Boolean hexists(String key, String field);
-	/**
-	 * 保存
-	 * @param key
-	 * @param map
-	 */
-	public void save(String key, Map<String, String> map);
-	/**
-	 * 向名称为key的hash中添加元素field<—>value
-	 * @param key
-	 * @param field
-	 * @param value
-	 * @return
-	 */
-	public Long hset(String key, String field, String value);
-	/**
-	 * 返回名称为key的hash中field对应的value
-	 * @param key
-	 * @param field
-	 * @return
-	 */
-	public String hget(String key, String field);
-	/**
-	 * 返回名称为key的hash中元素个数
-	 * @param key
-	 * @return
-	 */
-	public Long hlen(String key);
-	/**
-	 * 返回名称为key的hash中所有键
-	 * @param key
-	 * @return
-	 */
-	public Set<String> hkeys(String key);
-	/**
-	 * 返回名称为key的hash中所有键对应的value
-	 * @param key
-	 * @return
-	 */
-	public List<String> hvals(String key);
-	/**
-	 * 返回名称为key的hash中所有的键（field）及其对应的value
-	 * @param key
-	 * @return
-	 */
-	public Map<String, String> hgetall(String key);
-	/**
-	 * 将名称为key的hash中field的value增加integer
-	 */
-	public Long hincrBy(String key, String field, long val);
-	/**
-	 * 删除名称为key的hash中键为field的域
-	 * @param key
-	 * @param field
-	 * @return
-	 */
-	public Long hdel(String key, String field);
-	
-	/**
-	 * JSON
-	 */
-	/**
-	 * 获取json
-	 * @param key
-	 * @return
-	 */
-	public JSONObject getJson(String key);
-	/**
-	 * 返回定长jsonaray
-	 * @param key
-	 * @param start
-	 * @param end
-	 * @return
-	 */
-	public JSONArray getJSONArray(String key, Long start, Long end);
+    /**
+     * 根据key 获取过期时间
+     * 
+     * @param key
+     *            键 不能为null
+     * @return 时间(秒) 返回0代表为永久有效
+     */
+    public long getExpire(String key);
+
+    /**
+     * 判断key是否存在
+     * 
+     * @param key
+     *            键
+     * @return true 存在 false不存在
+     */
+    public boolean hasKey(String key);
+
+    /**
+     * 删除缓存
+     * 
+     * @param key
+     *            可以传一个值 或多个
+     */
+    public void del(String... key) ;
+
+    // ============================String=============================
+    /**
+     * 普通缓存获取
+     * 
+     * @param key
+     *            键
+     * @return 值
+     */
+    public Object get(String key);
+
+    /**
+     * 普通缓存放入
+     * 
+     * @param key
+     *            键
+     * @param value
+     *            值
+     * @return true成功 false失败
+     */
+    public boolean set(String key, Object value) ;
+
+    /**
+     * 普通缓存放入并设置时间
+     * 
+     * @param key
+     *            键
+     * @param value
+     *            值
+     * @param time
+     *            时间(秒) time要大于0 如果time小于等于0 将设置无限期
+     * @return true成功 false 失败
+     */
+    public boolean set(String key, Object value, long time) ;
+
+    /**
+     * 递增
+     * 
+     * @param key
+     *            键
+     * @param by
+     *            要增加几(大于0)
+     * @return
+     */
+    public long incr(String key, long delta) ;
+
+    /**
+     * 递减
+     * 
+     * @param key
+     *            键
+     * @param by
+     *            要减少几(小于0)
+     * @return
+     */
+    public long decr(String key, long delta) ;
+
+    // ================================Map=================================
+    /**
+     * HashGet
+     * 
+     * @param key
+     *            键 不能为null
+     * @param item
+     *            项 不能为null
+     * @return 值
+     */
+    public Object hget(String key, String item) ;
+
+    /**
+     * 获取hashKey对应的所有键值
+     * 
+     * @param key
+     *            键
+     * @return 对应的多个键值
+     */
+    public Map<Object, Object> hmget(String key);
+
+    /**
+     * HashSet
+     * 
+     * @param key
+     *            键
+     * @param map
+     *            对应多个键值
+     * @return true 成功 false 失败
+     */
+	public boolean hmset(String key, Map<String, Object> map);
+
+    /**
+     * HashSet 并设置时间
+     * 
+     * @param key
+     *            键
+     * @param map
+     *            对应多个键值
+     * @param time
+     *            时间(秒)
+     * @return true成功 false失败
+     */
+    public boolean hmset(String key, Map<String, Object> map, long time);
+
+    /**
+     * 向一张hash表中放入数据,如果不存在将创建
+     * 
+     * @param key
+     *            键
+     * @param item
+     *            项
+     * @param value
+     *            值
+     * @return true 成功 false失败
+     */
+    public boolean hset(String key, String item, Object value) ;
+
+    /**
+     * 向一张hash表中放入数据,如果不存在将创建
+     * 
+     * @param key
+     *            键
+     * @param item
+     *            项
+     * @param value
+     *            值
+     * @param time
+     *            时间(秒) 注意:如果已存在的hash表有时间,这里将会替换原有的时间
+     * @return true 成功 false失败
+     */
+    public boolean hset(String key, String item, Object value, long time);
+
+    /**
+     * 删除hash表中的值
+     * 
+     * @param key
+     *            键 不能为null
+     * @param item
+     *            项 可以使多个 不能为null
+     */
+    public void hdel(String key, Object... item);
+
+    /**
+     * 判断hash表中是否有该项的值
+     * 
+     * @param key
+     *            键 不能为null
+     * @param item
+     *            项 不能为null
+     * @return true 存在 false不存在
+     */
+    public boolean hHasKey(String key, String item) ;
+
+    /**
+     * hash递增 如果不存在,就会创建一个 并把新增后的值返回
+     * 
+     * @param key
+     *            键
+     * @param item
+     *            项
+     * @param by
+     *            要增加几(大于0)
+     * @return
+     */
+    public double hincr(String key, String item, double by);
+
+    /**
+     * hash递减
+     * 
+     * @param key
+     *            键
+     * @param item
+     *            项
+     * @param by
+     *            要减少记(小于0)
+     * @return
+     */
+    public double hdecr(String key, String item, double by);
+
+    // ============================set=============================
+    /**
+     * 根据key获取Set中的所有值
+     * 
+     * @param key
+     *            键
+     * @return
+     */
+    public Set<Object> sGet(String key);
+
+    /**
+     * 根据value从一个set中查询,是否存在
+     * 
+     * @param key
+     *            键
+     * @param value
+     *            值
+     * @return true 存在 false不存在
+     */
+    public boolean sHasKey(String key, Object value);
+
+    /**
+     * 将数据放入set缓存
+     * 
+     * @param key
+     *            键
+     * @param values
+     *            值 可以是多个
+     * @return 成功个数
+     */
+    public long sSet(String key, Object... values);
+
+    /**
+     * 将set数据放入缓存
+     * 
+     * @param key
+     *            键
+     * @param time
+     *            时间(秒)
+     * @param values
+     *            值 可以是多个
+     * @return 成功个数
+     */
+    public long sSetAndTime(String key, long time, Object... values);
+
+    /**
+     * 获取set缓存的长度
+     * 
+     * @param key
+     *            键
+     * @return
+     */
+    public long sGetSetSize(String key);
+
+    /**
+     * 移除值为value的
+     * 
+     * @param key
+     *            键
+     * @param values
+     *            值 可以是多个
+     * @return 移除的个数
+     */
+    public long setRemove(String key, Object... values);
+    // ===============================list=================================
+
+    /**
+     * 获取list缓存的内容
+     * 
+     * @param key
+     *            键
+     * @param start
+     *            开始
+     * @param end
+     *            结束 0 到 -1代表所有值
+     * @return
+     */
+    public List<Object> lGet(String key, long start, long end);
+
+    /**
+     * 获取list缓存的长度
+     * 
+     * @param key
+     *            键
+     * @return
+     */
+    public long lGetListSize(String key);
+
+    /**
+     * 通过索引 获取list中的值
+     * 
+     * @param key
+     *            键
+     * @param index
+     *            索引 index>=0时， 0 表头，1 第二个元素，依次类推；index<0时，-1，表尾，-2倒数第二个元素，依次类推
+     * @return
+     */
+    public Object lGetIndex(String key, long index);
+
+    /**
+     * 将list放入缓存
+     * 
+     * @param key
+     *            键
+     * @param value
+     *            值
+     * @param time
+     *            时间(秒)
+     * @return
+     */
+    public boolean lSet(String key, Object value);
+
+    /**
+     * 将list放入缓存
+     * 
+     * @param key
+     *            键
+     * @param value
+     *            值
+     * @param time
+     *            时间(秒)
+     * @return
+     */
+    public boolean lSet(String key, Object value, long time) ;
+
+    /**
+     * 将list放入缓存
+     * 
+     * @param key
+     *            键
+     * @param value
+     *            值
+     * @param time
+     *            时间(秒)
+     * @return
+     */
+    public boolean lSet(String key, List<Object> value);
+
+    /**
+     * 将list放入缓存
+     * 
+     * @param key
+     *            键
+     * @param value
+     *            值
+     * @param time
+     *            时间(秒)
+     * @return
+     */
+    public boolean lSet(String key, List<Object> value, long time) ;
+
+    /**
+     * 根据索引修改list中的某条数据
+     * 
+     * @param key
+     *            键
+     * @param index
+     *            索引
+     * @param value
+     *            值
+     * @return
+     */
+    public boolean lUpdateIndex(String key, long index, Object value) ;
+
+    /**
+     * 移除N个值为value
+     * 
+     * @param key
+     *            键
+     * @param count
+     *            移除多少个
+     * @param value
+     *            值
+     * @return 移除的个数
+     */
+    public long lRemove(String key, long count, Object value);
 }

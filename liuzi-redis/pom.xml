@@ -17,34 +17,12 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>com.liuzi</groupId>
-			<artifactId>liuzi-util</artifactId>
+		    <groupId>redis.clients</groupId>
+		    <artifactId>jedis</artifactId>
 		</dependency>
-		
 		<dependency>
-			<groupId>redis.clients</groupId>
-			<artifactId>jedis</artifactId>
-		</dependency>
-		<!-- spring-redis -->
-		<dependency>
-			<groupId>org.springframework.data</groupId>
-			<artifactId>spring-data-redis</artifactId>
-		</dependency>
-		
-		<dependency>  
-	      <groupId>org.apache.commons</groupId>  
-	      <artifactId>commons-pool2</artifactId>  
-	    </dependency>
-	    
-	    <dependency>
-			<groupId>com.alibaba</groupId>
-			<artifactId>fastjson</artifactId>
-		</dependency>
-		
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
+		    <groupId>org.springframework.data</groupId>
+		    <artifactId>spring-data-redis</artifactId>
 		</dependency>
 	</dependencies>
 </project>

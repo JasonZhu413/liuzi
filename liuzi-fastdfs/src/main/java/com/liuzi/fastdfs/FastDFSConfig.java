@@ -9,6 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
+import com.liuzi.util.LiuziUtil;
+
 
 public class FastDFSConfig {
 	
@@ -22,6 +24,10 @@ public class FastDFSConfig {
 	protected static StorageServer storageServer = null;
 	public static StorageClient storageClient;
 	
+	public FastDFSConfig(){
+		init();
+	}
+	
 	public FastDFSConfig(String confFile){
 		if(!StringUtils.isEmpty(confFile)){
 			g_conf_file = confFile;
@@ -30,6 +36,8 @@ public class FastDFSConfig {
 	}
 	
 	public static void init(){
+		LiuziUtil.tag("Liuzi FastDFS初始化......");
+		
 		logger.info("===== fastdfs初始化，加载配置 " + g_conf_file + " ......========");
 		
 		try {

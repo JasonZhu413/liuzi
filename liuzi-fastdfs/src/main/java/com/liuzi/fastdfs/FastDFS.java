@@ -24,10 +24,6 @@ import com.liuzi.fastdfs.FastDFSConfig;
 
 public class FastDFS extends FastDFSConfig{
 	
-	public FastDFS(String confFile) {
-		super(confFile);
-	}
-
 	private static Logger logger = LoggerFactory.getLogger(FastDFS.class);
 	
 	static{
@@ -52,7 +48,8 @@ public class FastDFS extends FastDFSConfig{
 	 * 		   ext 扩展名
 	 */
 	public static Map<String, Object> upload(HttpServletRequest request){
-		return uploadBatch(request).get(0);
+		List<Map<String, Object>> list = uploadBatch(request);
+		return list == null ? null : list.get(0);
 	}
 	
 	/**
@@ -68,8 +65,6 @@ public class FastDFS extends FastDFSConfig{
 	 * 		   ext 扩展名
 	 */
 	private static List<Map<String, Object>> uploadBatch(HttpServletRequest request){
-		if(!fdfs_is_init()) return null;
-		
 		logger.info("FastDFS上传文件开始...");
 	    MultipartHttpServletRequest multi = (MultipartHttpServletRequest) request;
         
@@ -107,7 +102,7 @@ public class FastDFS extends FastDFSConfig{
             
             returnMap = new HashMap<String, Object>();
             returnMap.put("oldName", fileName);
-            returnMap.put("newName", path.substring(path.lastIndexOf("\\") + 1));
+            returnMap.put("newName", path.substring(path.lastIndexOf("/") + 1));
             returnMap.put("group", group);
             returnMap.put("path", path);
             returnMap.put("url", group + "/" + path);
@@ -147,8 +142,6 @@ public class FastDFS extends FastDFSConfig{
     }
 	
     public static ResponseEntity<byte[]> download(String group, String path, String newName) {
-    	if(!fdfs_is_init()) return null;
-    	
     	byte[] content = null;
         HttpHeaders headers = new HttpHeaders();
         try {
@@ -164,8 +157,6 @@ public class FastDFS extends FastDFSConfig{
     }
 
     public static Map<String, Object> getInfo(String group, String path){ 
-    	if(!fdfs_is_init()) return null;
-    	
     	Map<String, Object> map = null;
         try { 
             FileInfo fi = storageClient.get_file_info(group, path);
@@ -186,8 +177,6 @@ public class FastDFS extends FastDFSConfig{
     } 
 
     public static NameValuePair[] getMeta(String group, String path){ 
-    	if(!fdfs_is_init()) return null;
-    	
     	NameValuePair[] nvps = null;
         try { 
             nvps = storageClient.get_metadata(group, path); 
@@ -200,8 +189,6 @@ public class FastDFS extends FastDFSConfig{
 
 
     public static int delete(String group, String path){ 
-    	if(!fdfs_is_init()) return 0;
-    	
         try { 
         	int errorno = storageClient.delete_file("group1", "M00/00/00/wKgRcFV_08OAK_KCAAAA5fm_sy874.conf"); 
         	logger.error("FastDFS删除文件，errorNo：" + errorno + "（0-成功，其他-失败）");
@@ -214,11 +201,11 @@ public class FastDFS extends FastDFSConfig{
         return 1;
     }
     
-    private static boolean fdfs_is_init(){
+    /*private static boolean fdfs_is_init(){
     	if(storageClient == null){
 			logger.warn("FastDFS调用失败，未初始化FastDFS配置，调用方法：FastDFSConfig.init");
 			return false;
 		}
     	return true;
-    }
+    }*/
 }

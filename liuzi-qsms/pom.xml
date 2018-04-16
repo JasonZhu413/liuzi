@@ -12,6 +12,10 @@
   </properties>
   
   	<dependencies>
+   		<dependency>
+			<groupId>com.liuzi</groupId>
+   		 	<artifactId>liuzi-util</artifactId>
+		</dependency>
   		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>

@@ -12,7 +12,10 @@
   </properties>
   
   <dependencies>
-	
+	<dependency>
+		<groupId>com.liuzi</groupId>
+		<artifactId>liuzi-util</artifactId>
+	</dependency>
   	<dependency>
 		<groupId>org.springframework</groupId>
 		<artifactId>spring-context</artifactId>
@@ -39,6 +42,15 @@
 	<dependency>
 		<groupId>ch.qos.logback</groupId>
 		<artifactId>logback-classic</artifactId>
+	</dependency>
+	<dependency>
+		<groupId>org.springframework</groupId>
+		<artifactId>spring-context-support</artifactId>
+	</dependency>
+	<!-- mail template -->
+	<dependency>
+		<groupId>org.apache.velocity</groupId>
+		<artifactId>velocity</artifactId>
 	</dependency>
   </dependencies>
 </project>

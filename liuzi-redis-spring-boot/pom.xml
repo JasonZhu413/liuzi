@@ -1,0 +1,33 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.liuzi</groupId>
+    <artifactId>liuzi</artifactId>
+    <version>1.0</version>
+  </parent>
+  <artifactId>liuzi-redis-spring-boot</artifactId>
+  <name>liuzi-redis-spring-boot</name>
+  
+	<dependencies>
+		<dependency>
+ 			<groupId>org.springframework.boot</groupId>
+ 			<artifactId>spring-boot-starter-web</artifactId>
+ 			<version>1.5.3.RELEASE</version>
+ 		</dependency>
+		<!-- 添加redis支持-->
+    	<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-redis</artifactId>
+			<version>1.5.3.RELEASE</version>
+     	</dependency>
+		<!-- session管理
+     	<dependency>
+        	<groupId>org.springframework.session</groupId>
+        	<artifactId>spring-session-data-redis</artifactId>
+     	</dependency> -->
+      	<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+		</dependency>
+	</dependencies>
+</project>

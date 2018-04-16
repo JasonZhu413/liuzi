@@ -89,6 +89,11 @@
 	    <groupId>org.csource</groupId>
 	    <artifactId>fastdfs-client-java</artifactId>
 	</dependency>
+	
+	<dependency>
+		<groupId>com.liuzi</groupId>
+		<artifactId>liuzi-util</artifactId>
+	</dependency>
   </dependencies>
   
 </project>

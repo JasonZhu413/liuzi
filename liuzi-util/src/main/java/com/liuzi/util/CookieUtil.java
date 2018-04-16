@@ -1,10 +1,17 @@
 package com.liuzi.util;
 
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.util.StringUtils;
+
+import com.alibaba.fastjson.JSONObject;
 
 /**
  * @Title:        CookieUtil
@@ -20,15 +27,27 @@ import org.springframework.util.StringUtils;
  */
 public class CookieUtil {
 	
-	public static void set(HttpServletResponse response, String name, String value) {
+	public static void set(HttpServletResponse response, String name, Object value) {
 		set(response, name, value, -1);
 	}
-
-	public static void set(HttpServletResponse response, String name, String value, int seconds){
-		set(response, name, value, null, -1);
+	public static void set(HttpServletResponse response, String name, Object value, int seconds){
+		set(response, name, value, null, seconds);
 	}
+	public static void set(HttpServletResponse response, String name, Object obj, String domain, int seconds) {
+		String value = null;
+		try {
+			if(!StringUtils.isEmpty(obj)){
+				if(obj instanceof String){
+					value = obj.toString();
+				}else{
+					value = URLEncoder.encode(JSONObject.toJSONString(obj), "utf-8");
+				}
+				
+			}
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
 
-	public static void set(HttpServletResponse response, String name, String value, String domain, int seconds) {
 	    Cookie cookie = new Cookie(name, value);
 	    cookie.setMaxAge(seconds);
 	    cookie.setPath("/");
@@ -55,7 +74,12 @@ public class CookieUtil {
 	    	}
 	    }
 
-	    return cookie == null ? null : cookie.getValue();
+	    try {
+			return cookie == null ? null : URLDecoder.decode(cookie.getValue(),"utf-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+	    return null;
 	}
 
 	public static void delete(HttpServletResponse response, String name){
