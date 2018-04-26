@@ -1,18 +1,24 @@
 package com.liuzi.util;
 
+<<<<<<< HEAD
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 
+=======
+>>>>>>> 02a066291c6197e2d1436dec20fceaf7ded1f342
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.util.StringUtils;
 
+<<<<<<< HEAD
 import com.alibaba.fastjson.JSONObject;
 
+=======
+>>>>>>> 02a066291c6197e2d1436dec20fceaf7ded1f342
 /**
  * @Title:        CookieUtil
  * 
@@ -27,6 +33,7 @@ import com.alibaba.fastjson.JSONObject;
  */
 public class CookieUtil {
 	
+<<<<<<< HEAD
 	public static void set(HttpServletResponse response, String name, Object value) {
 		set(response, name, value, -1);
 	}
@@ -48,6 +55,17 @@ public class CookieUtil {
 			e.printStackTrace();
 		}
 
+=======
+	public static void set(HttpServletResponse response, String name, String value) {
+		set(response, name, value, -1);
+	}
+
+	public static void set(HttpServletResponse response, String name, String value, int seconds){
+		set(response, name, value, null, -1);
+	}
+
+	public static void set(HttpServletResponse response, String name, String value, String domain, int seconds) {
+>>>>>>> 02a066291c6197e2d1436dec20fceaf7ded1f342
 	    Cookie cookie = new Cookie(name, value);
 	    cookie.setMaxAge(seconds);
 	    cookie.setPath("/");
@@ -74,12 +92,16 @@ public class CookieUtil {
 	    	}
 	    }
 
+<<<<<<< HEAD
 	    try {
 			return cookie == null ? null : URLDecoder.decode(cookie.getValue(),"utf-8");
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
 	    return null;
+=======
+	    return cookie == null ? null : cookie.getValue();
+>>>>>>> 02a066291c6197e2d1436dec20fceaf7ded1f342
 	}
 
 	public static void delete(HttpServletResponse response, String name){

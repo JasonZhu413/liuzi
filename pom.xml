@@ -583,12 +583,15 @@
 		     	<artifactId>ueditor</artifactId>
 		     	<version>1.5.1</version>
 		     </dependency>
+<<<<<<< HEAD
 		     
 		     <dependency>
 				<groupId>org.apache.solr</groupId>
 				<artifactId>solr-solrj</artifactId>
 				<version>5.5.0</version>
 			</dependency>
+=======
+>>>>>>> 02a066291c6197e2d1436dec20fceaf7ded1f342
 		</dependencies>
 
 	</dependencyManagement>

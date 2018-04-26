@@ -9,8 +9,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
+<<<<<<< HEAD
 import com.liuzi.util.LiuziUtil;
 
+=======
+>>>>>>> 02a066291c6197e2d1436dec20fceaf7ded1f342
 
 public class FastDFSConfig {
 	
@@ -19,6 +22,7 @@ public class FastDFSConfig {
 	private final static String DEFAULT_CONF_FILE_NAME = "conf/fdfs.properties";
 	
 	private static String g_conf_file = DEFAULT_CONF_FILE_NAME;
+<<<<<<< HEAD
 	protected static TrackerClient tracker;
 	protected static TrackerServer trackerServer;
 	protected static StorageServer storageServer = null;
@@ -27,6 +31,10 @@ public class FastDFSConfig {
 	public FastDFSConfig(){
 		init();
 	}
+=======
+	
+	public static volatile StorageClient storageClient;
+>>>>>>> 02a066291c6197e2d1436dec20fceaf7ded1f342
 	
 	public FastDFSConfig(String confFile){
 		if(!StringUtils.isEmpty(confFile)){
@@ -36,8 +44,11 @@ public class FastDFSConfig {
 	}
 	
 	public static void init(){
+<<<<<<< HEAD
 		LiuziUtil.tag("Liuzi FastDFS初始化......");
 		
+=======
+>>>>>>> 02a066291c6197e2d1436dec20fceaf7ded1f342
 		logger.info("===== fastdfs初始化，加载配置 " + g_conf_file + " ......========");
 		
 		try {
@@ -49,12 +60,22 @@ public class FastDFSConfig {
 		}
 		
 		try {
+<<<<<<< HEAD
 			tracker = new TrackerClient(); 
 			logger.info("创建trackerClient实例：new TrackerClient()");
 			
 			trackerServer = tracker.getConnection(); 
 			logger.info("建立连接：tracker.getConnection()");
             
+=======
+			TrackerClient tracker = new TrackerClient(); 
+			logger.info("创建trackerClient实例：new TrackerClient()");
+			
+			TrackerServer trackerServer = tracker.getConnection(); 
+			logger.info("建立连接：tracker.getConnection()");
+			
+            StorageServer storageServer = null;
+>>>>>>> 02a066291c6197e2d1436dec20fceaf7ded1f342
             storageClient = new StorageClient(trackerServer, storageServer); 
             logger.info("创建storageClient实例：new StorageClient(trackerServer, storageServer)");
 		} catch (Exception e) {
