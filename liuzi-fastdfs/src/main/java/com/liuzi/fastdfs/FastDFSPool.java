@@ -1,32 +1,30 @@
 package com.liuzi.fastdfs;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.GZIPOutputStream;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.csource.common.NameValuePair;
-import org.csource.fastdfs.ClientGlobal;
-import org.csource.fastdfs.StorageClient;
+
+import com.liuzi.fastdfs.base.ClientGlobal;
+import com.liuzi.fastdfs.base.StorageClient;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-public class FastDFSPool extends FastDFSPoolConfig{
+public class FastDFSPool{
 	
 	private static Logger logger = LoggerFactory.getLogger(FastDFSPool.class);
-	
-	static{
-		if (idleConnectionPool == null || idleConnectionPool.size() == 0){
-		    synchronized(FastDFSPool.class) {
-		      if (idleConnectionPool == null || idleConnectionPool.size() == 0)
-		    	  init();
-		    }
-		}
-	}
 	
 	/**
 	 * 上传
@@ -40,8 +38,8 @@ public class FastDFSPool extends FastDFSPoolConfig{
 	 * 		   size 大小(M)
 	 * 		   ext 扩展名
 	 */
-	public static Map<String, Object> upload(HttpServletRequest request){
-		List<Map<String, Object>> list = uploadBatch(request);
+	public static FastDFSFile upload(HttpServletRequest request){
+		List<FastDFSFile> list = uploadBatch(request);
 		return list == null ? null : list.get(0);
 	}
 	
@@ -57,9 +55,7 @@ public class FastDFSPool extends FastDFSPoolConfig{
 	 * 		   size 大小(M)
 	 * 		   ext 扩展名
 	 */
-	private static List<Map<String, Object>> uploadBatch(HttpServletRequest request){
-		//if(!fdfs_is_init()) return null;
-		
+	private static List<FastDFSFile> uploadBatch(HttpServletRequest request){
 		logger.info("FastDFS上传文件开始...");
 	    MultipartHttpServletRequest multi = (MultipartHttpServletRequest) request;
         
@@ -73,8 +69,8 @@ public class FastDFSPool extends FastDFSPoolConfig{
         
         logger.info("上传文件数：" + list.size());
         
-        List<Map<String, Object>> returnList = new ArrayList<>();
-        Map<String, Object> returnMap; 
+        List<FastDFSFile> returnList = new ArrayList<FastDFSFile>();
+        FastDFSFile fdf;
         int count = 0;
         for(MultipartFile mf : list){
         	count ++;
@@ -91,19 +87,19 @@ public class FastDFSPool extends FastDFSPoolConfig{
             	return null;
             }
             
-            String[] uploadResults = upload_object(mf, fileName, fileSize, ext);
+            String[] uploadResults = upload_object(mf, ext);
             String group = uploadResults[0];//组
             String path = uploadResults[1];//地址
             
-            returnMap = new HashMap<String, Object>();
-            returnMap.put("oldName", fileName);
-            returnMap.put("newName", path.substring(path.lastIndexOf("/") + 1));
-            returnMap.put("group", group);
-            returnMap.put("path", path);
-            returnMap.put("url", group + "/" + path);
-            returnMap.put("size", fileSize);
-            returnMap.put("ext", ext);
-            returnList.add(returnMap);
+            fdf = new FastDFSFile();
+            fdf.setOldName(fileName);
+            fdf.setNewName(path.substring(path.lastIndexOf("/") + 1));
+            fdf.setGroup(group);
+            fdf.setPath(path);
+            fdf.setUrl(group + "/" + path); 
+            fdf.setSize(fileSize / 1024);
+            fdf.setExt(ext);
+            returnList.add(fdf);
             
             logger.info("文件" + count + "：上传成功...\ngroup：" + group + "\npath：" + path + "");
         }
@@ -112,43 +108,276 @@ public class FastDFSPool extends FastDFSPoolConfig{
         
 		return returnList;
 	}
+	
+	/**
+     * 写文件
+     * @param content
+     * @param ext
+     * @return
+     */
+    public static FastDFSFile write(String content, String ext){
+    	if(StringUtils.isEmpty(content)){
+			return null;
+		}
+    	
+    	if(StringUtils.isEmpty(ext)){
+    		ext = "txt";
+    	}
+		
+    	FastDFSFile fdf = new FastDFSFile();
+		
+		byte[] b = null;
+		try {
+			b = content.getBytes("utf-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		fdf.setSize(b.length / 1024);
+        fdf.setExt(ext);
+		
+		String[] data = upload_object(b, ext, null);
+		String group = data[0];
+		String path = data[1];
+		String fileName = path.substring(path.lastIndexOf("/") + 1);
+		fdf.setGroup(group);
+        fdf.setPath(path);
+        fdf.setUrl(group + "/" + path); 
+		fdf.setOldName(fileName);
+        fdf.setNewName(fileName);
+        
+		return fdf;
+    }
     
-    //上传缓存数据到storage服务器
-    private static String[] upload_object(MultipartFile mf, String fileName, long fileSize, String ext){
-    	
-    	NameValuePair[] nvp = null;
-		 
-		 /*nvp = new NameValuePair[]{ 
-            new NameValuePair("name", fileName), 
-            new NameValuePair("size", String.valueOf(fileSize)),
-            new NameValuePair("sex", ext) 
-		 }; */
-    	
-        String[] upPath = null;
-        StorageClient storageClient1 = checkOut(10);
+    /**
+     * 下载文件
+     * @param response
+     * @param url
+     * @return
+     */
+    public static void download(HttpServletResponse response, String url){
+    	if(StringUtils.isEmpty(url)){
+			return;
+		}
+		
+		int first = url.indexOf("/");
+		String groupName = url.substring(0, first);
+		String filePath = url.substring(first + 1);
+		
+		download(response, groupName, filePath);
+    }
+    
+    /**
+     * 下载文件
+     * @param response
+     * @param group
+     * @param path
+     * @return
+     */
+    public static void download(HttpServletResponse response,
+    		String group, String path){
+    	//response.setContentType("application/octet-stream");
+    	OutputStream os = null;
+    	try {
+    		os = response.getOutputStream();
+	    	byte[] b = download_object(group, path);
+			if(b == null){
+				return;
+			}
+		    os.write(b);
+		    os.flush();
+        }catch (Exception e){
+        	logger.error("download fail：" + e.getMessage());
+        	e.printStackTrace();
+        }finally{
+    		try {
+    			if(os != null){
+					os.close();
+        		}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+        }
+    }
+    
+    /**
+     * 下载文件
+     * @param response
+     * @param url
+     * @return
+     */
+    public static void downloadZip(HttpServletResponse response, String url){
+    	if(StringUtils.isEmpty(url)){
+			return;
+		}
+		
+		int first = url.indexOf("/");
+		String groupName = url.substring(0, first);
+		String filePath = url.substring(first + 1);
+		
+		downloadZip(response, groupName, filePath);
+    }
+    
+    /**
+     * 下载文件
+     * @param response
+     * @param group
+     * @param path
+     * @return
+     */
+    public static void downloadZip(HttpServletResponse response,
+    		String group, String path){
+    	//response.setContentType("application/octet-stream");
+    	OutputStream os = null;
+    	GZIPOutputStream out = null;
+    	try {
+    		os = response.getOutputStream();
+    		out = new GZIPOutputStream(os);
+    		
+	    	byte[] b = download_object(group, path);
+	    	
+			if(b == null){
+				return;
+			}
+			out.write(b);
+			out.flush();
+        }catch (Exception e){
+        	logger.error("download fail：" + e.getMessage());
+        	e.printStackTrace();
+        }finally{
+    		try {
+    			if(out != null){
+    				out.close();
+        		}
+    			if(os != null){
+					os.close();
+        		}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+        }
+    }
+    
+    /**
+     * 读文件
+     * @param url
+     * @return
+     */
+    public static String read(String url){
+    	if(StringUtils.isEmpty(url)){
+			return null;
+		}
+		
+		int first = url.indexOf("/");
+		String groupName = url.substring(0, first);
+		String filePath = url.substring(first + 1);
+		
+    	return read(groupName, filePath);
+    }
+    
+    /**
+     * 读文件
+     * @param group
+     * @param path
+     * @return
+     */
+    public static String read(String group, String path){
+    	byte[] b = download_object(group, path);
+		if(b == null){
+			return null;
+		}
+		
+		String content = "";
+		
+		try {
+			content = new String(b, "utf-8");
+		} catch (UnsupportedEncodingException e) {
+			logger.error("file download fail：" + e.getMessage());
+		}
+		
+		return content;
+    }
+    
+    /**
+     * 删除文件
+     * @param url
+     * @return
+     */
+    public static int delete(String url){
+    	if(StringUtils.isEmpty(url)){
+			return -1;
+		}
+		
+		int first = url.indexOf("/");
+		String groupName = url.substring(0, first);
+		String filePath = url.substring(first + 1);
+		
+    	return delete(groupName, filePath);
+    }
+    
+    /**
+     * 删除文件
+     * @param group
+     * @param path
+     * @return
+     */
+    public static int delete(String group, String path){
+    	StorageClient storageClient1 = FastDFSPoolConfig.checkOut(10);
+    	int i = -1;
+    	try {
+    		
+    		i = storageClient1.delete_file(group, path);
+    		FastDFSPoolConfig.checkIn(storageClient1);
+    	} catch (Exception e) {
+    		FastDFSPoolConfig.drop(storageClient1);
+    		e.printStackTrace(); 
+    		logger.error("file delete fail：" + e.getMessage());
+    	}
+    	return i;
+    }
+    
+    private static String[] upload_object(MultipartFile mf, String ext){
+    	String[] str = null;
+		try {
+			str = upload_object(mf.getBytes(), ext, null);
+		} catch (IOException e) {
+			logger.error("upload error：" + e.getMessage());
+			e.printStackTrace();
+		}
+        return str;
+    }
+    
+    private static String[] upload_object(byte[] b, String ext, NameValuePair[] list){
+        String[] data = null;
+        StorageClient storageClient1 = FastDFSPoolConfig.checkOut(10);
         try {
-            upPath = storageClient1.upload_file(mf.getBytes(), ext, nvp);
-            checkIn(storageClient1);
+        	data = storageClient1.upload_file(b, ext, list);
+            
+        	FastDFSPoolConfig.checkIn(storageClient1);
         } catch (Exception e) {
-        	drop(storageClient1);//异常销毁此连接
+        	FastDFSPoolConfig.drop(storageClient1);//异常销毁此连接
             logger.error("upload fail：" + e.getMessage());
             e.printStackTrace();
         }
         
-        return upPath;
+        return data;
     }
     
-    //将文件缓存到字节数组中
-    /*private byte[] getFileBuff(File file){
-        byte[] buff = null;
-        try (FileInputStream inputStream = new FileInputStream(file)){
-            buff = new byte[inputStream.available()];
-            inputStream.read(buff);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+    public static byte[] download_object(String group, String path){
+    	if(StringUtils.isEmpty(group) || StringUtils.isEmpty(path)){
+			return null;
+		}
+    	
+    	byte[] b = null;
+    	StorageClient storageClient1 = FastDFSPoolConfig.checkOut(10);
+    	try{
+        	b = storageClient1.download_file(group, path);
+        	FastDFSPoolConfig.checkIn(storageClient1);
+        } catch (Exception e) {
+        	FastDFSPoolConfig.drop(storageClient1);//异常销毁此连接
+        	e.printStackTrace();
+        	logger.error("file download fail：" + e.getMessage());
         }
-        return buff;
-    }*/
+    	
+		return b;
+    }
 }

@@ -13,19 +13,19 @@
   	<module>liuzi-mybatis</module>
   	<module>liuzi-redis</module>
   	<module>liuzi-activemq</module>
-  	<module>liuzi-mybatis-generator</module>
+  	<!-- <module>liuzi-mybatis-generator</module> -->
   	<module>liuzi-qsms</module>
   	<module>liuzi-fastdfs</module>
   	<module>liuzi-mail</module>
   	<module>liuzi-redis-cluster</module>
   	<module>liuzi-redis-spring-boot</module>
+  	<module>liuzi-memcached</module>
   </modules>
 
 	<properties>
 		<!-- 主要依赖库的版本定义 -->
 		<java.home>${env.JAVA_HOME}</java.home>
 		<liuzi.version>1.0</liuzi.version>
-		<!-- <spring.version>4.0.6.RELEASE</spring.version> -->
 		<spring.version>4.3.8.RELEASE</spring.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<slf4j.version>1.6.4</slf4j.version>
@@ -74,7 +74,12 @@
 				<artifactId>liuzi-mail</artifactId>
 				<version>${liuzi.version}</version>
 			</dependency>
-
+			<dependency>
+				<groupId>com.liuzi</groupId>
+				<artifactId>liuzi-memcached</artifactId>
+				<version>${liuzi.version}</version>
+			</dependency>
+			
 			<!-- spring start -->
 			<dependency>
 				<groupId>org.springframework</groupId>
@@ -583,15 +588,19 @@
 		     	<artifactId>ueditor</artifactId>
 		     	<version>1.5.1</version>
 		     </dependency>
-<<<<<<< HEAD
 		     
 		     <dependency>
 				<groupId>org.apache.solr</groupId>
 				<artifactId>solr-solrj</artifactId>
 				<version>5.5.0</version>
 			</dependency>
-=======
->>>>>>> 02a066291c6197e2d1436dec20fceaf7ded1f342
+			
+			<dependency>
+			    <groupId>com.whalin</groupId>
+			    <artifactId>Memcached-Java-Client</artifactId>
+			    <version>3.0.2</version>
+			</dependency>
+		
 		</dependencies>
 
 	</dependencyManagement>

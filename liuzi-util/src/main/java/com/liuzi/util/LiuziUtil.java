@@ -1,18 +1,21 @@
 package com.liuzi.util;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Random;
+import java.util.function.BiConsumer;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-
-
 
 import org.apache.commons.lang.RandomStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 
@@ -109,5 +112,79 @@ public class LiuziUtil {
 			e.printStackTrace(); 
 		}
 	    return false;
+	}
+	
+	public static List<Long> ids(String ids){
+		List<Long> list = null;
+		if(!StringUtils.isEmpty(ids)){
+	        String[] idList = ids.split(",");
+	        if(idList.length > 0){
+	        	list = new ArrayList<Long>();
+    	        for(String id : idList){
+    	        	list.add(Long.parseLong(id));
+    	        }
+	        }
+	    }
+		return list;
+	}
+	
+	public static Long[] ids2(String ids){
+		Long[] list = null;
+		if(StringUtils.isEmpty(ids)){
+	        return null;
+	    }
+		
+        String[] idList = ids.split(",");
+        int length = idList.length;
+        if(length > 0){
+        	list = new Long[idList.length];
+	        for(int i = 0; i < length; i ++){
+	        	list[i] = Long.parseLong(idList[i]);
+	        }
+        }
+		return list;
+	}
+	
+	/**
+	 * 乱序重排
+	 * @param list<T>
+	 * @return 
+	 */
+	public static <T> List<T> upset(List<T> list){
+        int size = list.size();
+        Random random = new Random();
+        
+        for(int i = 0; i < size; i++) {
+            //获取随机位置
+            int rp = random.nextInt(size);
+            //当前元素与随机元素交换
+            T obj = list.get(i);
+            list.set(i, list.get(rp));
+            list.set(rp, obj);
+        }
+       return list; 
+	}
+	
+	public static <E> void forEach(Iterable<? extends E> elements, 
+			BiConsumer<Integer, ? super E> action) {
+        Objects.requireNonNull(elements);
+        Objects.requireNonNull(action);
+
+        int index = 0;
+        for (E element : elements) {
+            action.accept(index++, element);
+        }
+    }
+	
+	public static String getWebappPath(HttpServletRequest req){
+		return req.getSession().getServletContext().getRealPath("/");
+	}
+	
+	public static final <T> List<T> toList(Object obj, Class<T> c){
+		return JSONArray.parseArray(JSONArray.toJSONString(obj), c);
+	}
+	
+	public static final <T> List<T> toList(List<Object> obj, Class<T> c){
+		return JSONArray.parseArray(JSONArray.toJSONString(obj), c);
 	}
 }

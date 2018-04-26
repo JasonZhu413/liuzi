@@ -2,18 +2,13 @@
 <!DOCTYPE generatorConfiguration
   PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
   "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
-  <!-- 该配置文件说明插件需要如何生成，以及生成对应的包名，路径等信息。
-        还有重要的就是我们要生成的实体类所对应的的表或者试图 -->
+  
 <generatorConfiguration> 
     <properties resource="mybatis_generator.properties" />
     
     <context id="DB2Tables" targetRuntime="MyBatis3" defaultModelType="conditional">
-        <!-- 注意以下标签的顺序:property*,plugin*,commentGenerator?,jdbcConnection,
-                javaTypeResolver?,javaModelGenerator,sqlMapGenerator?,
-                javaClientGenerator?,table+ -->
-        <plugin type="org.mybatis.generator.plugins.ToStringPlugin" />
-        <!-- 这个插件给由MBG生成的Java模型对象增加了equals和hashCode方法 -->
-        <!-- <plugin type="org.mybatis.generator.plugins.EqualsHashCodePlugin"/> -->
+    	<!-- toString -->
+        <!-- <plugin type="org.mybatis.generator.plugins.ToStringPlugin" /> -->
         <commentGenerator>
             <!-- 是否去除自动生成的注释 true：是 ： false:否 -->
             <property name="suppressAllComments" value="true"/>
@@ -21,6 +16,11 @@
             <property name="suppressDate" value="true" />
             <!-- 是否  自动为每一个生成的类创建一个构造方法-->
             <property name="constructorBased" value="false"/>
+            
+            <!-- 是否添加字段注释 true:是 false：否 -->
+            <property name="addRemarkComments" value="true" />
+            <!-- 自定义属性 作者名称 -->
+            <property name="author" value="zsy" />
         </commentGenerator>
         <!-- 数据库连接 -->
         <jdbcConnection 
@@ -50,13 +50,11 @@
         </javaClientGenerator>
 
         <!-- 表名对应生成的实体 --> 
-      	<table tableName="user" domainObjectName="" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false"  
-      		enableSelectByExample="false" selectByExampleQueryId="false">
-      		<!-- <property name="useActualColumnNames" value="true"/> -->
+      	<table tableName="download_log" domainObjectName="DownloadLog" mapperName="DownloadLogDao" 
+      		enableCountByExample="false" enableUpdateByExample="false" 
+      		enableDeleteByExample="false" enableSelectByExample="false" 
+      		selectByExampleQueryId="false">
             <generatedKey column="id" sqlStatement="MySql" identity="true"/>
       	</table>
-        <!-- enableCountByExample="false" enableUpdateByExample="false"
-        enableDeleteByExample="false" enableSelectByExample="false"
-        selectByExampleQueryId="false">  指定是否生成操作数据库对应的方法 -->
     </context>
 </generatorConfiguration>

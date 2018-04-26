@@ -9,8 +9,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.csource.common.NameValuePair;
-import org.csource.fastdfs.ClientGlobal;
-import org.csource.fastdfs.FileInfo;
+import com.liuzi.fastdfs.base.ClientGlobal;
+import com.liuzi.fastdfs.base.FileInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -78,7 +78,7 @@ public class FastDFS extends FastDFSConfig{
         
         logger.info("上传文件数：" + list.size());
         
-        List<Map<String, Object>> returnList = new ArrayList<>();
+        List<Map<String, Object>> returnList = new ArrayList<Map<String, Object>>();
         Map<String, Object> returnMap; 
         int count = 0;
         for(MultipartFile mf : list){
@@ -161,7 +161,7 @@ public class FastDFS extends FastDFSConfig{
         try { 
             FileInfo fi = storageClient.get_file_info(group, path);
             
-            map = new HashMap<>();
+            map = new HashMap<String, Object>();
             map.put("group", group);
             map.put("path", path);
             map.put("name", path.substring(path.lastIndexOf("\\") + 1));

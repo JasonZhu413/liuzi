@@ -9,9 +9,9 @@
   
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <mybatis-generator.version>1.3.2</mybatis-generator.version>
-    <mysql.version>5.1.13</mysql.version>
-    <mybatis.version>3.2.4</mybatis.version>
+    <mybatis-generator.version>1.3.4</mybatis-generator.version>
+    <mysql.version>5.1.39</mysql.version>
+    <mybatis.version>3.4.1</mybatis.version>
  </properties>
 
  <dependencies>
@@ -28,6 +28,8 @@
         <groupId>org.mybatis.generator</groupId>
         <artifactId>mybatis-generator-core</artifactId>
         <version>${mybatis-generator.version}</version>
+        <type>jar</type>  
+        <scope>test</scope>  
     </dependency>
     <dependency>
         <groupId>org.mybatis</groupId>

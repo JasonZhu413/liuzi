@@ -7,11 +7,11 @@ public class BaseEntity implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	
-	private Integer isDelete;
+	protected Integer isDelete = 0;
 	
-	private Date createTime;//
+	protected Date createTime;//
 	
-	private Date updateTime;//
+	protected Date updateTime;//
 
 
 	public Integer getIsDelete() {

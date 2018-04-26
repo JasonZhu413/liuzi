@@ -42,6 +42,19 @@ public class LiuziMailConfig{
 	protected static String senderUserName = "";
 	protected static String senderPassword = "";
 	
+	public LiuziMailConfig(){
+		init();
+	}
+	
+	public LiuziMailConfig(String confFile){
+		init(confFile);
+	}
+	
+	public LiuziMailConfig(String host, int port, String username, 
+			String password, boolean auth, boolean debug, boolean useTemp){
+		init(host, port, username, password, auth, debug, useTemp);
+	}
+	
 	public static void init(String host, int port, String username, 
 			String password, boolean auth, boolean debug, boolean useTemp) {
 		properties = new Properties();
@@ -63,7 +76,7 @@ public class LiuziMailConfig{
 	}
 
 	public static void init() {
-		LiuziUtil.tag("Liuzi Mail初始化......");
+		LiuziUtil.tag("  --------  Liuzi Mail初始化......  --------");
 		
 		logger.info("======== mail初始化，加载配置" + g_conf_file + " ========");
 		
@@ -112,20 +125,18 @@ public class LiuziMailConfig{
 			return;
 		}
 	    
-	    logger.info("======== mail初始化完成 ========");
+	    logger.info("======== mail初始化完成 ========\n");
 	}
 	
 	private static void initVelocityEngine() throws Exception {
-		logger.info("======== mail初始化 模板 配置...... ========");
-		
-		VelocityEngine ve = new VelocityEngine();
-		ve.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
-		ve.setProperty("classpath.resource.loader.class", ClasspathResourceLoader.class.getName());
-		ve.setProperty("input.encoding", "UTF-8");
-		ve.setProperty("output.encoding", "UTF-8");
-		ve.init();
-		velocityEngine = ve;
-		
-		logger.info("======== mail模板 配置加载完成...... ========");
+		logger.info("\n======== mail初始化 模板 配置...... ========");
+		velocityEngine = new VelocityEngine();
+		velocityEngine.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
+		velocityEngine.setProperty("classpath.resource.loader.class", ClasspathResourceLoader.class.getName());
+		velocityEngine.setProperty(RuntimeConstants.FILE_RESOURCE_LOADER_CACHE, false);
+		velocityEngine.setProperty(RuntimeConstants.INPUT_ENCODING, "UTF-8");
+		velocityEngine.setProperty(RuntimeConstants.OUTPUT_ENCODING, "UTF-8");
+		velocityEngine.init();
+		logger.info("======== mail模板 配置加载完成...... ========\n");
 	}
 }

@@ -31,6 +31,10 @@ public class LiuziMail extends LiuziMailConfig{
 		}
 	}
 	
+	public LiuziMail(){
+		super();
+	}
+	
 	/**
 	 * 发送邮件
 	 *
@@ -249,7 +253,6 @@ public class LiuziMail extends LiuziMailConfig{
         StringWriter stringWriter = new StringWriter();
         Template template = velocityEngine.getTemplate(path, "UTF-8");
         template.merge(vc, stringWriter);
-        
         LiuziMail.send(subject, stringWriter.toString(), receiveUser, true);
 	}
 	

@@ -38,6 +38,10 @@ public class Result {
 	
 
   	public Result(){}
+  	
+  	public Result(int result){
+  		this.result = result;
+  	}
 
   	public Result(String msg){
   		this.result = 0;

@@ -4,6 +4,11 @@ import java.io.Serializable;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.jms.Connection;
+import javax.jms.MessageListener;
+import javax.jms.Session;
+import javax.jms.Topic;
+import javax.jms.TopicSubscriber;
 
 import org.apache.activemq.command.ActiveMQQueue;
 import org.apache.activemq.command.ActiveMQTopic;
@@ -11,141 +16,159 @@ import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.MessageCreator;
 import org.springframework.stereotype.Service;
 
-import com.liuzi.activemq.message.MessageMapCreator;
-import com.liuzi.activemq.message.MessageObjectCreator;
+import com.alibaba.fastjson.JSONObject;
 import com.liuzi.activemq.message.MessageTextCreator;
 import com.liuzi.activemq.producer.ProducerService;
+import com.liuzi.util.MD5;
 
 @Service("producerService")
 public class ProducerServiceImpl implements ProducerService{
 	
 	@Resource
-	private JmsTemplate jmsTopicTemplate;
+	private JmsTemplate topicTemplate;
 	
 	@Resource
-	private JmsTemplate jmsQueueTemplate;
+	private JmsTemplate queueTemplate;
 
 	private static ActiveMQQueue queueDestination = new ActiveMQQueue();
 	private static ActiveMQTopic topicDestination = new ActiveMQTopic();
 	
 	/**
-	 * 向默认队列发送String
+	 * 向默认topic发送String
 	 */
     public void sendTopic(String msg) {
-    	String destination =  jmsTopicTemplate.getDefaultDestination().toString();
-    	System.out.println("向队列" + destination + "发送了消息------------" + msg);
-    	MessageCreator mc = new MessageTextCreator(msg);
-    	jmsTopicTemplate.send(mc);
+    	sendTopic_object(msg);
     }
-    
-    /**
-	 * 向默认队列发送String
-	 */
-    public void sendQueue(String msg) {
-    	String destination =  jmsTopicTemplate.getDefaultDestination().toString();
-    	System.out.println("向队列" + destination + "发送了消息------------" + msg);
-    	MessageCreator mc = new MessageTextCreator(msg);
-    	jmsQueueTemplate.send(mc);
-    }
-    
     /** 
-     * 向指定队列发送String
+     * 向指定topic发送String
      */  
     public void sendTopic(String physicalName, String msg) {
-    	topicDestination.setPhysicalName(physicalName);
-    	System.out.println("向队列" + topicDestination.toString() + "发送了消息------------" + msg);  
-    	MessageCreator mc = new MessageTextCreator(msg);
-    	jmsTopicTemplate.send(topicDestination, mc);
+    	sendTopic_object(physicalName, msg);
     } 
-    
-    /** 
-     * 向指定队列发送String
-     */  
-    public void sendQueue(String physicalName, String msg) { 
-    	queueDestination.setPhysicalName(physicalName);
-    	System.out.println("向队列" + queueDestination.toString() + "发送了消息------------" + msg);  
-    	MessageCreator mc = new MessageTextCreator(msg);
-    	jmsQueueTemplate.send(queueDestination, mc);
-    } 
-    
 	/**
-     * 向默认队列发送对象
+     * 向默认topic发送对象
      */
 	public void sendTopic(Serializable serializable) {
-    	String destination =  jmsTopicTemplate.getDefaultDestination().toString();
-        System.out.println("向队列" +destination+ "发送了消息------------" + serializable);
-        MessageCreator mc = new MessageObjectCreator(serializable);
-        jmsTopicTemplate.send(mc);
+		sendTopic_object(serializable);
 	}
-	
+    /** 
+     * 向指定topic发送对象
+     */  
+    public void sendTopic(String physicalName, Serializable serializable) { 
+    	sendTopic_object(physicalName, serializable);
+    } 
+   	/**
+   	 * 向默认topic发送map
+   	 */
+   	public void sendTopic(Map<String,Object> map) {
+   		sendTopic_object(map);
+   	}
+    /** 
+     * 向指定topic发送map
+     */  
+    public void sendTopic(String physicalName, Map<String,Object> map) { 
+    	sendTopic_object(physicalName, map);
+    } 
+    /** 
+     * 向指定topic发送
+     */  
+    private void sendTopic_object(Object object) { 
+    	String destination =  topicTemplate.getDefaultDestination().toString();
+   		System.out.println("向队列" +destination+ "发送了消息------------" + object);
+   		Object obj = JSONObject.toJSON(object);
+    	MessageCreator mc = new MessageTextCreator(obj.toString());
+   		topicTemplate.send(mc);
+    } 
+    /** 
+     * 向指定topic发送
+     */  
+    private void sendTopic_object(String physicalName, Object object) { 
+    	physicalName = MD5.crypt(physicalName);
+    	topicDestination.setPhysicalName(physicalName);
+    	System.out.println("向队列" + topicDestination.toString() + "发送了消息------------" + object);
+    	Object obj = JSONObject.toJSON(object);
+    	MessageCreator mc = new MessageTextCreator(obj.toString());
+    	topicTemplate.send(topicDestination, mc);
+    } 
+    
+    
+    
+    /**
+	 * 向默认queue发送String
+	 */
+    public void sendQueue(String msg) {
+    	sendQueue_object(msg);
+    }
+    /** 
+     * 向指定queue发送String
+     */  
+    public void sendQueue(String physicalName, String msg) {
+    	sendQueue_object(physicalName, msg);
+    } 
 	/**
-     * 向默认队列发送对象
+     * 向默认queue发送对象
      */
 	public void sendQueue(Serializable serializable) {
-    	String destination =  jmsTopicTemplate.getDefaultDestination().toString();
-        System.out.println("向队列" +destination+ "发送了消息------------" + serializable);
-        MessageCreator mc = new MessageObjectCreator(serializable);
-        jmsQueueTemplate.send(mc);
+		sendQueue_object(serializable);
 	}
-    
     /** 
-     * 向指定队列发送对象
+     * 向指定queue发送对象
      */  
-    public void sendTopic(String physicalName, Serializable serializable) {  
-    	topicDestination.setPhysicalName(physicalName);
-    	System.out.println("向队列" + topicDestination.toString() + "发送了消息------------" + serializable);  
-    	MessageObjectCreator mc = new MessageObjectCreator(serializable);
-    	jmsTopicTemplate.send(topicDestination, mc);
+    public void sendQueue(String physicalName, Serializable serializable) {
+    	sendQueue_object(physicalName, serializable);
     } 
-    
-    /** 
-     * 向指定队列发送对象
-     */  
-    public void sendQueue(String physicalName, Serializable serializable) {  
-    	queueDestination.setPhysicalName(physicalName);
-    	System.out.println("向队列" + queueDestination.toString() + "发送了消息------------" + serializable);  
-    	MessageObjectCreator mc = new MessageObjectCreator(serializable);
-    	jmsQueueTemplate.send(queueDestination, mc);
-    } 
-     
-     
 	/**
-	 * 向默认队列发送map
-	 */
-	public void sendTopic(Map<String,Object> map) {
-		String destination =  jmsTopicTemplate.getDefaultDestination().toString();
-		System.out.println("向队列" +destination+ "发送了消息------------" + map);
-		MessageCreator mc = new MessageMapCreator(map);
-		jmsTopicTemplate.send(mc);
-	}
-	
-	/**
-	 * 向默认队列发送map
+	 * 向默认queue发送map
 	 */
 	public void sendQueue(Map<String,Object> map) {
-		String destination =  jmsTopicTemplate.getDefaultDestination().toString();
-		System.out.println("向队列" +destination+ "发送了消息------------" + map);
-		MessageCreator mc = new MessageMapCreator(map);
-		jmsQueueTemplate.send(mc);
+		sendQueue_object(map);
 	}
-	
-	/** 
-     * 向指定队列发送map
-     */  
-    public void sendTopic(String physicalName, Map<String,Object> map) {  
-    	topicDestination.setPhysicalName(physicalName);
-    	System.out.println("向队列" + topicDestination.toString() + "发送了消息------------" + map);
-    	MessageCreator mc = new MessageMapCreator(map);
-    	jmsTopicTemplate.send(topicDestination, mc);
-    } 
-
     /** 
-     * 向指定队列发送map
+     * 向指定queue发送map
      */  
-    public void sendQueue(String physicalName, Map<String,Object> map) {  
-    	queueDestination.setPhysicalName(physicalName);
-    	System.out.println("向队列" + queueDestination.toString() + "发送了消息------------" + map);
-    	MessageCreator mc = new MessageMapCreator(map);
-    	jmsQueueTemplate.send(queueDestination, mc);
+    public void sendQueue(String physicalName, Map<String,Object> map) { 
+    	sendQueue_object(physicalName, map);
     } 
+    /**
+	 * 向默认queue发送
+	 */
+	public void sendQueue_object(Object object) {
+		String destination =  topicTemplate.getDefaultDestination().toString();
+		System.out.println("向队列" +destination+ "发送了消息------------" + object);
+		Object obj = JSONObject.toJSON(object);
+    	MessageCreator mc = new MessageTextCreator(obj.toString());
+		queueTemplate.send(mc);
+	}
+    /** 
+     * 向指定queue发送
+     */  
+    private void sendQueue_object(String physicalName, Object object) { 
+    	physicalName = MD5.crypt(physicalName);
+    	queueDestination.setPhysicalName(physicalName);
+    	System.out.println("向队列" + queueDestination.toString() + "发送了消息------------" + object);
+    	
+    	Object obj = JSONObject.toJSON(object);
+    	MessageCreator mc = new MessageTextCreator(obj.toString());
+    	queueTemplate.send(queueDestination, mc);
+    } 
+    
+    public TopicSubscriber createTopicConsumer(String clientID, Topic topic, String name,
+    		MessageListener listener){
+    	
+    	TopicSubscriber consumer = null;
+    	try{
+    		Connection conn = topicTemplate.getConnectionFactory().createConnection();
+        	conn.setClientID(clientID);
+        	conn.start();
+        	
+        	Session session = conn.createSession(Boolean.FALSE, Session.AUTO_ACKNOWLEDGE);
+        	consumer = session.createDurableSubscriber(topic, name);
+        	consumer.setMessageListener(listener);
+    	}catch (Exception e) {
+			System.out.println("create consumer error");
+		}
+    	
+    	return consumer;
+    } 
+    
 }

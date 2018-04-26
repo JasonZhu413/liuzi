@@ -7,19 +7,29 @@ import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Resource;
 
+import org.springframework.data.redis.connection.RedisConnection;
+import org.springframework.data.redis.core.ClusterOperations;
+import org.springframework.data.redis.core.HashOperations;
+import org.springframework.data.redis.core.HyperLogLogOperations;
+import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.SetOperations;
+import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import com.liuzi.redis.service.RedisCallBack;
 import com.liuzi.redis.service.RedisService;
+import com.liuzi.util.MD5;
 
 @Service("redisService")
 public class RedisServiceImpl implements RedisService{
-    
+	
 	@Resource
-    private RedisTemplate<String, Object> redisTemplate;
+	private RedisTemplate<String, Object> redisTemplate;
     
-    /**
+	/**
      * 指定缓存失效时间
      * 
      * @param key
@@ -32,6 +42,7 @@ public class RedisServiceImpl implements RedisService{
     public boolean expire(String key, long time) {
         try {
             if (time > 0) {
+            	key = MD5.crypt(key);
                 redisTemplate.expire(key, time, TimeUnit.SECONDS);
             }
             return true;
@@ -50,6 +61,7 @@ public class RedisServiceImpl implements RedisService{
      */
 	@Override
     public long getExpire(String key) {
+    	key = MD5.crypt(key);
         return redisTemplate.getExpire(key, TimeUnit.SECONDS);
     }
 
@@ -63,6 +75,7 @@ public class RedisServiceImpl implements RedisService{
 	@Override
     public boolean hasKey(String key) {
         try {
+        	key = MD5.crypt(key);
             return redisTemplate.hasKey(key);
         } catch (Exception e) {
             e.printStackTrace();
@@ -76,18 +89,26 @@ public class RedisServiceImpl implements RedisService{
      * @param key
      *            可以传一个值 或多个
      */
-	@Override
     @SuppressWarnings("unchecked")
+	@Override
     public void del(String... key) {
-        if (key != null && key.length > 0) {
-            if (key.length == 1) {
-                redisTemplate.delete(key[0]);
-            } else {
-                redisTemplate.delete(CollectionUtils.arrayToList(key));
-            }
+    	if (key == null || key.length == 0) {
+    		return;
+    	}
+    	
+    	int lenth = key.length;
+    	String[] keys = new String[lenth];
+    	for(int i = 0, e = lenth; i < e; i ++){
+    		keys[i] = MD5.crypt(key[i]);
+    	}
+    	
+        if (lenth == 1) {
+            redisTemplate.delete(keys[0]);
+        } else {
+            redisTemplate.delete(CollectionUtils.arrayToList(keys));
         }
     }
-
+    
     // ============================String=============================
     /**
      * 普通缓存获取
@@ -96,8 +117,9 @@ public class RedisServiceImpl implements RedisService{
      *            键
      * @return 值
      */
-	@Override
+    @Override
     public Object get(String key) {
+    	key = MD5.crypt(key);
         return key == null ? null : redisTemplate.opsForValue().get(key);
     }
 
@@ -113,6 +135,7 @@ public class RedisServiceImpl implements RedisService{
     @Override
     public boolean set(String key, Object value) {
         try {
+        	key = MD5.crypt(key);
             redisTemplate.opsForValue().set(key, value);
             return true;
         } catch (Exception e) {
@@ -137,6 +160,7 @@ public class RedisServiceImpl implements RedisService{
     public boolean set(String key, Object value, long time) {
         try {
             if (time > 0) {
+            	key = MD5.crypt(key);
                 redisTemplate.opsForValue().set(key, value, time, TimeUnit.SECONDS);
             } else {
                 set(key, value);
@@ -162,6 +186,7 @@ public class RedisServiceImpl implements RedisService{
         if (delta < 0) {
             throw new RuntimeException("递增因子必须大于0");
         }
+        key = MD5.crypt(key);
         return redisTemplate.opsForValue().increment(key, delta);
     }
 
@@ -179,6 +204,7 @@ public class RedisServiceImpl implements RedisService{
         if (delta < 0) {
             throw new RuntimeException("递减因子必须大于0");
         }
+        key = MD5.crypt(key);
         return redisTemplate.opsForValue().increment(key, -delta);
     }
 
@@ -192,9 +218,18 @@ public class RedisServiceImpl implements RedisService{
      *            项 不能为null
      * @return 值
      */
-    @Override
-    public Object hget(String key, String item) {
-        return redisTemplate.opsForHash().get(key, item);
+    @SuppressWarnings("unchecked")
+	@Override
+    public <T> T hget(String key, String item) {
+    	key = MD5.crypt(key);
+        return (T) redisTemplate.opsForHash().get(key, item);
+    }
+    
+	@Override
+	@SuppressWarnings("unchecked")
+    public <T> List<T> hgetList(String key, String item) {
+    	key = MD5.crypt(key);
+        return (List<T>) redisTemplate.opsForHash().get(key, item);
     }
 
     /**
@@ -204,8 +239,9 @@ public class RedisServiceImpl implements RedisService{
      *            键
      * @return 对应的多个键值
      */
-	@Override
+    @Override
     public Map<Object, Object> hmget(String key) {
+    	key = MD5.crypt(key);
         return redisTemplate.opsForHash().entries(key);
     }
 
@@ -221,6 +257,7 @@ public class RedisServiceImpl implements RedisService{
     @Override
 	public boolean hmset(String key, Map<String, Object> map) {
         try {
+        	key = MD5.crypt(key);
             redisTemplate.opsForHash().putAll(key, map);
             return true;
         } catch (Exception e) {
@@ -243,6 +280,7 @@ public class RedisServiceImpl implements RedisService{
     @Override
     public boolean hmset(String key, Map<String, Object> map, long time) {
         try {
+        	key = MD5.crypt(key);
             redisTemplate.opsForHash().putAll(key, map);
             if (time > 0) {
                 expire(key, time);
@@ -268,6 +306,7 @@ public class RedisServiceImpl implements RedisService{
     @Override
     public boolean hset(String key, String item, Object value) {
         try {
+        	key = MD5.crypt(key);
             redisTemplate.opsForHash().put(key, item, value);
             return true;
         } catch (Exception e) {
@@ -292,6 +331,7 @@ public class RedisServiceImpl implements RedisService{
     @Override
     public boolean hset(String key, String item, Object value, long time) {
         try {
+        	key = MD5.crypt(key);
             redisTemplate.opsForHash().put(key, item, value);
             if (time > 0) {
                 expire(key, time);
@@ -313,6 +353,7 @@ public class RedisServiceImpl implements RedisService{
      */
     @Override
     public void hdel(String key, Object... item) {
+    	key = MD5.crypt(key);
         redisTemplate.opsForHash().delete(key, item);
     }
 
@@ -327,6 +368,7 @@ public class RedisServiceImpl implements RedisService{
      */
     @Override
     public boolean hHasKey(String key, String item) {
+    	key = MD5.crypt(key);
         return redisTemplate.opsForHash().hasKey(key, item);
     }
 
@@ -343,6 +385,7 @@ public class RedisServiceImpl implements RedisService{
      */
     @Override
     public double hincr(String key, String item, double by) {
+    	key = MD5.crypt(key);
         return redisTemplate.opsForHash().increment(key, item, by);
     }
 
@@ -359,6 +402,7 @@ public class RedisServiceImpl implements RedisService{
      */
     @Override
     public double hdecr(String key, String item, double by) {
+    	key = MD5.crypt(key);
         return redisTemplate.opsForHash().increment(key, item, -by);
     }
 
@@ -373,6 +417,7 @@ public class RedisServiceImpl implements RedisService{
     @Override
     public Set<Object> sGet(String key) {
         try {
+        	key = MD5.crypt(key);
             return redisTemplate.opsForSet().members(key);
         } catch (Exception e) {
             e.printStackTrace();
@@ -392,6 +437,7 @@ public class RedisServiceImpl implements RedisService{
     @Override
     public boolean sHasKey(String key, Object value) {
         try {
+        	key = MD5.crypt(key);
             return redisTemplate.opsForSet().isMember(key, value);
         } catch (Exception e) {
             e.printStackTrace();
@@ -411,6 +457,7 @@ public class RedisServiceImpl implements RedisService{
     @Override
     public long sSet(String key, Object... values) {
         try {
+        	key = MD5.crypt(key);
             return redisTemplate.opsForSet().add(key, values);
         } catch (Exception e) {
             e.printStackTrace();
@@ -432,6 +479,7 @@ public class RedisServiceImpl implements RedisService{
     @Override
     public long sSetAndTime(String key, long time, Object... values) {
         try {
+        	key = MD5.crypt(key);
             Long count = redisTemplate.opsForSet().add(key, values);
             if (time > 0)
                 expire(key, time);
@@ -452,6 +500,7 @@ public class RedisServiceImpl implements RedisService{
     @Override
     public long sGetSetSize(String key) {
         try {
+        	key = MD5.crypt(key);
             return redisTemplate.opsForSet().size(key);
         } catch (Exception e) {
             e.printStackTrace();
@@ -471,6 +520,7 @@ public class RedisServiceImpl implements RedisService{
     @Override
     public long setRemove(String key, Object... values) {
         try {
+        	key = MD5.crypt(key);
             Long count = redisTemplate.opsForSet().remove(key, values);
             return count;
         } catch (Exception e) {
@@ -494,12 +544,20 @@ public class RedisServiceImpl implements RedisService{
     @Override
     public List<Object> lGet(String key, long start, long end) {
         try {
+        	key = MD5.crypt(key);
             return redisTemplate.opsForList().range(key, start, end);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
+    
+
+    @Override
+	@SuppressWarnings("unchecked")
+	public <T> List<T> lGet(String key) {
+		return (List<T>) lGet(key, 0, -1);
+	}
 
     /**
      * 获取list缓存的长度
@@ -511,6 +569,7 @@ public class RedisServiceImpl implements RedisService{
     @Override
     public long lGetListSize(String key) {
         try {
+        	key = MD5.crypt(key);
             return redisTemplate.opsForList().size(key);
         } catch (Exception e) {
             e.printStackTrace();
@@ -530,6 +589,7 @@ public class RedisServiceImpl implements RedisService{
     @Override
     public Object lGetIndex(String key, long index) {
         try {
+        	key = MD5.crypt(key);
             return redisTemplate.opsForList().index(key, index);
         } catch (Exception e) {
             e.printStackTrace();
@@ -551,6 +611,7 @@ public class RedisServiceImpl implements RedisService{
     @Override
     public boolean lSet(String key, Object value) {
         try {
+        	key = MD5.crypt(key);
             redisTemplate.opsForList().rightPush(key, value);
             return true;
         } catch (Exception e) {
@@ -573,6 +634,7 @@ public class RedisServiceImpl implements RedisService{
     @Override
     public boolean lSet(String key, Object value, long time) {
         try {
+        	key = MD5.crypt(key);
             redisTemplate.opsForList().rightPush(key, value);
             if (time > 0)
                 expire(key, time);
@@ -597,6 +659,7 @@ public class RedisServiceImpl implements RedisService{
     @Override
     public boolean lSet(String key, List<Object> value) {
         try {
+        	key = MD5.crypt(key);
             redisTemplate.opsForList().rightPushAll(key, value);
             return true;
         } catch (Exception e) {
@@ -619,6 +682,7 @@ public class RedisServiceImpl implements RedisService{
     @Override
     public boolean lSet(String key, List<Object> value, long time) {
         try {
+        	key = MD5.crypt(key);
             redisTemplate.opsForList().rightPushAll(key, value);
             if (time > 0)
                 expire(key, time);
@@ -643,6 +707,7 @@ public class RedisServiceImpl implements RedisService{
     @Override
     public boolean lUpdateIndex(String key, long index, Object value) {
         try {
+        	key = MD5.crypt(key);
             redisTemplate.opsForList().set(key, index, value);
             return true;
         } catch (Exception e) {
@@ -665,6 +730,7 @@ public class RedisServiceImpl implements RedisService{
     @Override
     public long lRemove(String key, long count, Object value) {
         try {
+        	key = MD5.crypt(key);
             Long remove = redisTemplate.opsForList().remove(key, count, value);
             return remove;
         } catch (Exception e) {
@@ -672,4 +738,71 @@ public class RedisServiceImpl implements RedisService{
             return 0;
         }
     }
+    
+    
+    @Override
+	public void setNX(String key, RedisCallBack callBack)  {
+		RedisConnection conn = getConnection();
+		String newkey = MD5.crypt(key);
+		
+		if (conn.setNX(newkey.getBytes(), "1".getBytes())) {
+			try {
+				callBack.call(newkey);
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.out.println("call back error" + e.getMessage());
+			}
+			redisTemplate.delete(newkey);
+			return;
+        } else {
+        	setNX(key, callBack);
+        }  
+	}
+    
+
+	@Override
+	public HashOperations<String, String, Object> opsForHash() {
+		return redisTemplate.opsForHash();
+	}
+	
+	@Override
+	public SetOperations<String, Object> opsForSet() {
+		return redisTemplate.opsForSet();
+	}
+	
+	@Override
+	public ValueOperations<String, Object> opsForValue() {
+		return redisTemplate.opsForValue();
+	}
+	
+	@Override
+	public ZSetOperations<String, Object> opsForZSet() {
+		return redisTemplate.opsForZSet();
+	}
+	
+	@Override
+	public HyperLogLogOperations<String, Object> opsForHyperLogLog() {
+		return redisTemplate.opsForHyperLogLog();
+	}
+	
+	@Override
+	public ClusterOperations<String, Object> opsForCluster() {
+		return redisTemplate.opsForCluster();
+	}
+	
+	@Override
+	public ListOperations<String, Object> opsForList() {
+		return redisTemplate.opsForList();
+	}
+	
+	@Override
+    public RedisTemplate<String, Object> getTemplate(){
+    	return redisTemplate;
+    }
+    
+    @Override
+    public RedisConnection getConnection(){
+    	return redisTemplate.getConnectionFactory().getConnection();
+    }
+	
 }

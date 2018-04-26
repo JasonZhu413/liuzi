@@ -77,5 +77,4 @@ public abstract interface BaseDao<T> {
 	 * @return
 	 */
 	public abstract int deleteByListKey(List<Long> ids);
-	
 }

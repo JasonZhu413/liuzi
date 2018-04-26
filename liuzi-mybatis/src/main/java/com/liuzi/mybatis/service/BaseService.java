@@ -1,5 +1,6 @@
 package com.liuzi.mybatis.service;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -44,8 +45,8 @@ public interface BaseService<T> {
 	 * @param sort 排序 例：map.put("字段","asc/desc");
 	 * @return
 	 */
-	public List<T> select(Map<String, Object> map, Map<String, Object> sort);
-
+	public List<T> select(Map<String, Object> map, LinkedHashMap<String, Object> sort);
+	
 	/**
 	 * 条件查询数量
 	 * @param map
@@ -91,15 +92,15 @@ public interface BaseService<T> {
 	 * @return
 	 */
 	public Page<T> select(Map<String, Object> map, Integer pageNo, 
-			Integer pageSize, Map<String, Object> sort);
-
+			Integer pageSize, LinkedHashMap<String, Object> sort);
+	
 	/**
 	 * 新增
 	 * @param record
 	 * @return
 	 */
 	public int insert(T record);
-
+	
 	/**
 	 * 新增
 	 * @param record
@@ -113,7 +114,7 @@ public interface BaseService<T> {
 	 * @return
 	 */
 	public int insertList(List<T> record);
-
+	
 	/**
 	 * 根据主键删除
 	 * @param id
@@ -134,7 +135,7 @@ public interface BaseService<T> {
 	 * @return
 	 */
 	public int updateByPrimaryKey(T record);
-
+	
 	/**
 	 * 更新
 	 * @param record

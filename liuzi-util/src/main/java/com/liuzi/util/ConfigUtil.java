@@ -2,15 +2,9 @@ package com.liuzi.util;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
-<<<<<<< HEAD
 import org.springframework.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-=======
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.util.StringUtils;
->>>>>>> 02a066291c6197e2d1436dec20fceaf7ded1f342
 
 
 
@@ -26,21 +20,9 @@ import org.springframework.util.StringUtils;
  * @version       1.0
  * 
  */
-public class ConfigUtil {
+public class ConfigUtil extends ConfigInit{
 	
 	private static Logger logger = LoggerFactory.getLogger(ConfigUtil.class);
-	
-	private static final String CONFIG_FILE = "conf/application.properties";
-	
-	private static PropertiesConfiguration config;
-	private static String conf_file = CONFIG_FILE;
-	
-	public ConfigUtil(String filePath){
-		if(!StringUtils.isEmpty(filePath)){
-			conf_file = filePath;
-		}
-		init();
-	}
 	
 	static{
 		if (config == null){
@@ -50,23 +32,6 @@ public class ConfigUtil {
 		    	}
 		    }
 		}
-	}
-	
-	public static void init(){
-		logger.info("===== application初始化，加载配置 " + conf_file + " ......========");
-		
-		config = new PropertiesConfiguration();
-		config.setEncoding("UTF-8");
-		
-		try{
-			config.load(conf_file);
-			logger.info("初始化" + conf_file + "文件。。。。。。");
-	    } catch (Exception e) {
-	    	logger.error("初始化" + conf_file + "文件失败：" + e.getMessage());
-	    	e.fillInStackTrace();
-	    }
-		
-		logger.info("===== application初始化完成 ......========");
 	}
 	
 	public static Integer getIntValue(String key){
@@ -163,11 +128,11 @@ public class ConfigUtil {
 		logger.info("保存key：" + key + "，value：" + value + "......");
 		config.setProperty(key, value);
 	    try{
-	    	config.save(CONFIG_FILE);
+	    	config.save(conf_file);
 
 	    	config = new PropertiesConfiguration();
 	    	config.setEncoding("UTF-8");
-	    	config.load(CONFIG_FILE);
+	    	config.load(conf_file);
 	    	logger.info("重新加载配置文件......");
 	    } catch (ConfigurationException e) {
 	    	logger.error("重新加载配置文件出错：" + e.getMessage());

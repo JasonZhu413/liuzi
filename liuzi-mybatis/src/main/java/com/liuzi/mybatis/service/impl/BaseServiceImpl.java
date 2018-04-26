@@ -1,16 +1,16 @@
 package com.liuzi.mybatis.service.impl;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.springframework.util.StringUtils;
 
 import com.liuzi.mybatis.dao.BaseDao;
 import com.liuzi.mybatis.service.BaseService;
 import com.liuzi.util.Page;
 
-public abstract class BaseServiceImpl<T> implements BaseService<T> {
-	
-	//private static Logger logger = LoggerFactory.getLogger(BaseServiceImpl.class);
+public abstract class BaseServiceImpl<T> implements BaseService<T>{
 	
     public abstract BaseDao<T> getBaseDao();
     
@@ -21,15 +21,17 @@ public abstract class BaseServiceImpl<T> implements BaseService<T> {
 	
 	@Override
 	public List<T> select(Map<String, Object> map, String sort, String order){
-		Map<String, Object> sortList = new HashMap<>();
-		sortList.put(sort, order);
+		LinkedHashMap<String, Object> sortList = null;
+		if(!StringUtils.isEmpty(sort)){
+			sortList = new LinkedHashMap<>();
+			sortList.put(sort, order);
+		}
 		return this.select(map, sortList);
 	}
 	
 	@Override
-	public List<T> select(Map<String, Object> map, Map<String, Object> sort){
+	public List<T> select(Map<String, Object> map, LinkedHashMap<String, Object> sort){
 		map.put("sort_list", sort);
-		
 		return getBaseDao().select(map);
 	}
 	
@@ -52,14 +54,17 @@ public abstract class BaseServiceImpl<T> implements BaseService<T> {
 	@Override
 	public Page<T> select(Map<String, Object> map, Integer pageNo, 
 			Integer pageSize, String sort, String order){
-		Map<String, Object> sortList = new HashMap<>();
-		sortList.put(sort, order);
+		LinkedHashMap<String, Object> sortList = null;
+		if(!StringUtils.isEmpty(sort)){
+			sortList = new LinkedHashMap<>();
+			sortList.put(sort, order);
+		}
 		return this.select(map, pageNo, pageSize, sortList);
 	}
 	
 	@Override
 	public Page<T> select(Map<String, Object> map, Integer pageNo, 
-			Integer pageSize, Map<String, Object> sort){
+			Integer pageSize, LinkedHashMap<String, Object> sort){
 		
 		Page<T> page = new Page<>(pageNo, pageSize);
 		
@@ -80,7 +85,7 @@ public abstract class BaseServiceImpl<T> implements BaseService<T> {
 		
 		return page;
 	}
-
+	
 	@Override
 	public int insert(T record) {
 		return getBaseDao().insert(record);

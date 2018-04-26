@@ -23,6 +23,18 @@ public class LiuziQSmsConfig{
 	protected static int app_id;
 	protected static String app_key;
 	
+	public LiuziQSmsConfig(){
+		init();
+	}
+	
+	public LiuziQSmsConfig(String fileName){
+		init(fileName);
+	}
+	
+	public LiuziQSmsConfig(int appId, String appKey){
+		init(appId, appKey);
+	}
+	
 	public static void init(int appId, String appKey) {
 		if(appId == 0 || StringUtils.isEmpty(appKey)){
 			logger.warn("======== qsms初始化失败：appId/appKey不能为空 ========");
@@ -43,7 +55,7 @@ public class LiuziQSmsConfig{
 	}
 
 	public static void init() {
-		LiuziUtil.tag("Liuzi QSms初始化......");
+		LiuziUtil.tag("  --------  Liuzi QSms初始化......  --------");
 		
 		logger.info("======== qsms初始化，加载配置" + g_conf_file + " ========");
 		if(properties == null){
@@ -69,7 +81,7 @@ public class LiuziQSmsConfig{
 			return;
 		}
 		
-		logger.info("======== qsms初始化完成 ========");
+		logger.info("======== qsms初始化完成 ========\n");
 	}
 	
 }

@@ -32,6 +32,10 @@ public class LiuziQSms extends LiuziQSmsConfig{
 		}
 	}
 	
+	public LiuziQSms(){
+		super();
+	}
+	
 	/**
 	 * 短信单发（普通）
 	 * @param phone 电话号码
