@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cto.dao.NewsDao">
+  <resultMap id="BaseResultMap" type="com.cto.model.News">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="intro" jdbcType="VARCHAR" property="intro" />
+    <result column="logo" jdbcType="VARCHAR" property="logo" />
+    <result column="author" jdbcType="VARCHAR" property="author" />
+    <result column="source" jdbcType="BIT" property="source" />
+    <result column="path" jdbcType="VARCHAR" property="path" />
+    <result column="url" jdbcType="VARCHAR" property="url" />
+    <result column="type" jdbcType="BIT" property="type" />
+    <result column="status" jdbcType="BIT" property="status" />
+    <result column="reason" jdbcType="VARCHAR" property="reason" />
+    <result column="release_id" jdbcType="BIGINT" property="releaseId" />
+    <result column="release_type" jdbcType="BIT" property="releaseType" />
+    <result column="is_need_audit" jdbcType="BIT" property="isNeedAudit" />
+    <result column="audit_admin_id" jdbcType="BIGINT" property="auditAdminId" />
+    <result column="browse_num" jdbcType="INTEGER" property="browseNum" />
+    <result column="fabulous_num" jdbcType="INTEGER" property="fabulousNum" />
+    <result column="comment_num" jdbcType="INTEGER" property="commentNum" />
+    <result column="collection_num" jdbcType="INTEGER" property="collectionNum" />
+    <result column="is_delete" jdbcType="BIT" property="isDelete" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, title, intro, logo, author, source, path, url, type, status, reason, release_id, 
+    release_type, is_need_audit, audit_admin_id, browse_num, fabulous_num, comment_num, 
+    collection_num, is_delete, create_time, update_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from news
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from news
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.cto.model.News">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into news (title, intro, logo, 
+      author, source, path, url, 
+      type, status, reason, release_id, 
+      release_type, is_need_audit, audit_admin_id, 
+      browse_num, fabulous_num, comment_num, 
+      collection_num, is_delete, create_time, 
+      update_time)
+    values (#{title,jdbcType=VARCHAR}, #{intro,jdbcType=VARCHAR}, #{logo,jdbcType=VARCHAR}, 
+      #{author,jdbcType=VARCHAR}, #{source,jdbcType=BIT}, #{path,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR}, 
+      #{type,jdbcType=BIT}, #{status,jdbcType=BIT}, #{reason,jdbcType=VARCHAR}, #{releaseId,jdbcType=BIGINT}, 
+      #{releaseType,jdbcType=BIT}, #{isNeedAudit,jdbcType=BIT}, #{auditAdminId,jdbcType=BIGINT}, 
+      #{browseNum,jdbcType=INTEGER}, #{fabulousNum,jdbcType=INTEGER}, #{commentNum,jdbcType=INTEGER}, 
+      #{collectionNum,jdbcType=INTEGER}, #{isDelete,jdbcType=BIT}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.cto.model.News">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into news
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="title != null">
+        title,
+      </if>
+      <if test="intro != null">
+        intro,
+      </if>
+      <if test="logo != null">
+        logo,
+      </if>
+      <if test="author != null">
+        author,
+      </if>
+      <if test="source != null">
+        source,
+      </if>
+      <if test="path != null">
+        path,
+      </if>
+      <if test="url != null">
+        url,
+      </if>
+      <if test="type != null">
+        type,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="reason != null">
+        reason,
+      </if>
+      <if test="releaseId != null">
+        release_id,
+      </if>
+      <if test="releaseType != null">
+        release_type,
+      </if>
+      <if test="isNeedAudit != null">
+        is_need_audit,
+      </if>
+      <if test="auditAdminId != null">
+        audit_admin_id,
+      </if>
+      <if test="browseNum != null">
+        browse_num,
+      </if>
+      <if test="fabulousNum != null">
+        fabulous_num,
+      </if>
+      <if test="commentNum != null">
+        comment_num,
+      </if>
+      <if test="collectionNum != null">
+        collection_num,
+      </if>
+      <if test="isDelete != null">
+        is_delete,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="title != null">
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="intro != null">
+        #{intro,jdbcType=VARCHAR},
+      </if>
+      <if test="logo != null">
+        #{logo,jdbcType=VARCHAR},
+      </if>
+      <if test="author != null">
+        #{author,jdbcType=VARCHAR},
+      </if>
+      <if test="source != null">
+        #{source,jdbcType=BIT},
+      </if>
+      <if test="path != null">
+        #{path,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null">
+        #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=BIT},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=BIT},
+      </if>
+      <if test="reason != null">
+        #{reason,jdbcType=VARCHAR},
+      </if>
+      <if test="releaseId != null">
+        #{releaseId,jdbcType=BIGINT},
+      </if>
+      <if test="releaseType != null">
+        #{releaseType,jdbcType=BIT},
+      </if>
+      <if test="isNeedAudit != null">
+        #{isNeedAudit,jdbcType=BIT},
+      </if>
+      <if test="auditAdminId != null">
+        #{auditAdminId,jdbcType=BIGINT},
+      </if>
+      <if test="browseNum != null">
+        #{browseNum,jdbcType=INTEGER},
+      </if>
+      <if test="fabulousNum != null">
+        #{fabulousNum,jdbcType=INTEGER},
+      </if>
+      <if test="commentNum != null">
+        #{commentNum,jdbcType=INTEGER},
+      </if>
+      <if test="collectionNum != null">
+        #{collectionNum,jdbcType=INTEGER},
+      </if>
+      <if test="isDelete != null">
+        #{isDelete,jdbcType=BIT},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cto.model.News">
+    update news
+    <set>
+      <if test="title != null">
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="intro != null">
+        intro = #{intro,jdbcType=VARCHAR},
+      </if>
+      <if test="logo != null">
+        logo = #{logo,jdbcType=VARCHAR},
+      </if>
+      <if test="author != null">
+        author = #{author,jdbcType=VARCHAR},
+      </if>
+      <if test="source != null">
+        source = #{source,jdbcType=BIT},
+      </if>
+      <if test="path != null">
+        path = #{path,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null">
+        url = #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        type = #{type,jdbcType=BIT},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=BIT},
+      </if>
+      <if test="reason != null">
+        reason = #{reason,jdbcType=VARCHAR},
+      </if>
+      <if test="releaseId != null">
+        release_id = #{releaseId,jdbcType=BIGINT},
+      </if>
+      <if test="releaseType != null">
+        release_type = #{releaseType,jdbcType=BIT},
+      </if>
+      <if test="isNeedAudit != null">
+        is_need_audit = #{isNeedAudit,jdbcType=BIT},
+      </if>
+      <if test="auditAdminId != null">
+        audit_admin_id = #{auditAdminId,jdbcType=BIGINT},
+      </if>
+      <if test="browseNum != null">
+        browse_num = #{browseNum,jdbcType=INTEGER},
+      </if>
+      <if test="fabulousNum != null">
+        fabulous_num = #{fabulousNum,jdbcType=INTEGER},
+      </if>
+      <if test="commentNum != null">
+        comment_num = #{commentNum,jdbcType=INTEGER},
+      </if>
+      <if test="collectionNum != null">
+        collection_num = #{collectionNum,jdbcType=INTEGER},
+      </if>
+      <if test="isDelete != null">
+        is_delete = #{isDelete,jdbcType=BIT},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cto.model.News">
+    update news
+    set title = #{title,jdbcType=VARCHAR},
+      intro = #{intro,jdbcType=VARCHAR},
+      logo = #{logo,jdbcType=VARCHAR},
+      author = #{author,jdbcType=VARCHAR},
+      source = #{source,jdbcType=BIT},
+      path = #{path,jdbcType=VARCHAR},
+      url = #{url,jdbcType=VARCHAR},
+      type = #{type,jdbcType=BIT},
+      status = #{status,jdbcType=BIT},
+      reason = #{reason,jdbcType=VARCHAR},
+      release_id = #{releaseId,jdbcType=BIGINT},
+      release_type = #{releaseType,jdbcType=BIT},
+      is_need_audit = #{isNeedAudit,jdbcType=BIT},
+      audit_admin_id = #{auditAdminId,jdbcType=BIGINT},
+      browse_num = #{browseNum,jdbcType=INTEGER},
+      fabulous_num = #{fabulousNum,jdbcType=INTEGER},
+      comment_num = #{commentNum,jdbcType=INTEGER},
+      collection_num = #{collectionNum,jdbcType=INTEGER},
+      is_delete = #{isDelete,jdbcType=BIT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

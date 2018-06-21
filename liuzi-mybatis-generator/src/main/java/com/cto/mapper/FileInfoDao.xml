@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cto.dao.FileInfoDao">
+  <resultMap id="BaseResultMap" type="com.cto.model.FileInfo">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="type" jdbcType="TINYINT" property="type" />
+    <result column="old_name" jdbcType="VARCHAR" property="oldName" />
+    <result column="new_name" jdbcType="VARCHAR" property="newName" />
+    <result column="ext" jdbcType="VARCHAR" property="ext" />
+    <result column="size" jdbcType="INTEGER" property="size" />
+    <result column="group" jdbcType="VARCHAR" property="group" />
+    <result column="path" jdbcType="VARCHAR" property="path" />
+    <result column="url" jdbcType="VARCHAR" property="url" />
+    <result column="service_code" jdbcType="INTEGER" property="serviceCode" />
+    <result column="service_id" jdbcType="BIGINT" property="serviceId" />
+    <result column="is_delete" jdbcType="BIT" property="isDelete" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, type, old_name, new_name, ext, size, group, path, url, service_code, service_id, 
+    is_delete, create_time, update_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from file_info
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from file_info
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.cto.model.FileInfo">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into file_info (type, old_name, new_name, 
+      ext, size, group, path, 
+      url, service_code, service_id, 
+      is_delete, create_time, update_time
+      )
+    values (#{type,jdbcType=TINYINT}, #{oldName,jdbcType=VARCHAR}, #{newName,jdbcType=VARCHAR}, 
+      #{ext,jdbcType=VARCHAR}, #{size,jdbcType=INTEGER}, #{group,jdbcType=VARCHAR}, #{path,jdbcType=VARCHAR}, 
+      #{url,jdbcType=VARCHAR}, #{serviceCode,jdbcType=INTEGER}, #{serviceId,jdbcType=BIGINT}, 
+      #{isDelete,jdbcType=BIT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.cto.model.FileInfo">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into file_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="type != null">
+        type,
+      </if>
+      <if test="oldName != null">
+        old_name,
+      </if>
+      <if test="newName != null">
+        new_name,
+      </if>
+      <if test="ext != null">
+        ext,
+      </if>
+      <if test="size != null">
+        size,
+      </if>
+      <if test="group != null">
+        group,
+      </if>
+      <if test="path != null">
+        path,
+      </if>
+      <if test="url != null">
+        url,
+      </if>
+      <if test="serviceCode != null">
+        service_code,
+      </if>
+      <if test="serviceId != null">
+        service_id,
+      </if>
+      <if test="isDelete != null">
+        is_delete,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="type != null">
+        #{type,jdbcType=TINYINT},
+      </if>
+      <if test="oldName != null">
+        #{oldName,jdbcType=VARCHAR},
+      </if>
+      <if test="newName != null">
+        #{newName,jdbcType=VARCHAR},
+      </if>
+      <if test="ext != null">
+        #{ext,jdbcType=VARCHAR},
+      </if>
+      <if test="size != null">
+        #{size,jdbcType=INTEGER},
+      </if>
+      <if test="group != null">
+        #{group,jdbcType=VARCHAR},
+      </if>
+      <if test="path != null">
+        #{path,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null">
+        #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="serviceCode != null">
+        #{serviceCode,jdbcType=INTEGER},
+      </if>
+      <if test="serviceId != null">
+        #{serviceId,jdbcType=BIGINT},
+      </if>
+      <if test="isDelete != null">
+        #{isDelete,jdbcType=BIT},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cto.model.FileInfo">
+    update file_info
+    <set>
+      <if test="type != null">
+        type = #{type,jdbcType=TINYINT},
+      </if>
+      <if test="oldName != null">
+        old_name = #{oldName,jdbcType=VARCHAR},
+      </if>
+      <if test="newName != null">
+        new_name = #{newName,jdbcType=VARCHAR},
+      </if>
+      <if test="ext != null">
+        ext = #{ext,jdbcType=VARCHAR},
+      </if>
+      <if test="size != null">
+        size = #{size,jdbcType=INTEGER},
+      </if>
+      <if test="group != null">
+        group = #{group,jdbcType=VARCHAR},
+      </if>
+      <if test="path != null">
+        path = #{path,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null">
+        url = #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="serviceCode != null">
+        service_code = #{serviceCode,jdbcType=INTEGER},
+      </if>
+      <if test="serviceId != null">
+        service_id = #{serviceId,jdbcType=BIGINT},
+      </if>
+      <if test="isDelete != null">
+        is_delete = #{isDelete,jdbcType=BIT},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cto.model.FileInfo">
+    update file_info
+    set type = #{type,jdbcType=TINYINT},
+      old_name = #{oldName,jdbcType=VARCHAR},
+      new_name = #{newName,jdbcType=VARCHAR},
+      ext = #{ext,jdbcType=VARCHAR},
+      size = #{size,jdbcType=INTEGER},
+      group = #{group,jdbcType=VARCHAR},
+      path = #{path,jdbcType=VARCHAR},
+      url = #{url,jdbcType=VARCHAR},
+      service_code = #{serviceCode,jdbcType=INTEGER},
+      service_id = #{serviceId,jdbcType=BIGINT},
+      is_delete = #{isDelete,jdbcType=BIT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

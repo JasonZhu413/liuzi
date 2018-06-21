@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cto.dao.ProductDao">
+  <resultMap id="BaseResultMap" type="com.cto.model.Product">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="intro" jdbcType="VARCHAR" property="intro" />
+    <result column="intro_url" jdbcType="VARCHAR" property="introUrl" />
+    <result column="design_url" jdbcType="VARCHAR" property="designUrl" />
+    <result column="type" jdbcType="TINYINT" property="type" />
+    <result column="status" jdbcType="TINYINT" property="status" />
+    <result column="release_id" jdbcType="BIGINT" property="releaseId" />
+    <result column="release_name" jdbcType="VARCHAR" property="releaseName" />
+    <result column="audit_admin_id" jdbcType="BIGINT" property="auditAdminId" />
+    <result column="fabulous_num" jdbcType="INTEGER" property="fabulousNum" />
+    <result column="consult_num" jdbcType="INTEGER" property="consultNum" />
+    <result column="reason" jdbcType="VARCHAR" property="reason" />
+    <result column="is_delete" jdbcType="BIT" property="isDelete" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, title, intro, intro_url, design_url, type, status, release_id, release_name, 
+    audit_admin_id, fabulous_num, consult_num, reason, is_delete, create_time, update_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from product
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from product
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.cto.model.Product">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into product (title, intro, intro_url, 
+      design_url, type, status, 
+      release_id, release_name, audit_admin_id, 
+      fabulous_num, consult_num, reason, 
+      is_delete, create_time, update_time
+      )
+    values (#{title,jdbcType=VARCHAR}, #{intro,jdbcType=VARCHAR}, #{introUrl,jdbcType=VARCHAR}, 
+      #{designUrl,jdbcType=VARCHAR}, #{type,jdbcType=TINYINT}, #{status,jdbcType=TINYINT}, 
+      #{releaseId,jdbcType=BIGINT}, #{releaseName,jdbcType=VARCHAR}, #{auditAdminId,jdbcType=BIGINT}, 
+      #{fabulousNum,jdbcType=INTEGER}, #{consultNum,jdbcType=INTEGER}, #{reason,jdbcType=VARCHAR}, 
+      #{isDelete,jdbcType=BIT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.cto.model.Product">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into product
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="title != null">
+        title,
+      </if>
+      <if test="intro != null">
+        intro,
+      </if>
+      <if test="introUrl != null">
+        intro_url,
+      </if>
+      <if test="designUrl != null">
+        design_url,
+      </if>
+      <if test="type != null">
+        type,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="releaseId != null">
+        release_id,
+      </if>
+      <if test="releaseName != null">
+        release_name,
+      </if>
+      <if test="auditAdminId != null">
+        audit_admin_id,
+      </if>
+      <if test="fabulousNum != null">
+        fabulous_num,
+      </if>
+      <if test="consultNum != null">
+        consult_num,
+      </if>
+      <if test="reason != null">
+        reason,
+      </if>
+      <if test="isDelete != null">
+        is_delete,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="title != null">
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="intro != null">
+        #{intro,jdbcType=VARCHAR},
+      </if>
+      <if test="introUrl != null">
+        #{introUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="designUrl != null">
+        #{designUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=TINYINT},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=TINYINT},
+      </if>
+      <if test="releaseId != null">
+        #{releaseId,jdbcType=BIGINT},
+      </if>
+      <if test="releaseName != null">
+        #{releaseName,jdbcType=VARCHAR},
+      </if>
+      <if test="auditAdminId != null">
+        #{auditAdminId,jdbcType=BIGINT},
+      </if>
+      <if test="fabulousNum != null">
+        #{fabulousNum,jdbcType=INTEGER},
+      </if>
+      <if test="consultNum != null">
+        #{consultNum,jdbcType=INTEGER},
+      </if>
+      <if test="reason != null">
+        #{reason,jdbcType=VARCHAR},
+      </if>
+      <if test="isDelete != null">
+        #{isDelete,jdbcType=BIT},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cto.model.Product">
+    update product
+    <set>
+      <if test="title != null">
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="intro != null">
+        intro = #{intro,jdbcType=VARCHAR},
+      </if>
+      <if test="introUrl != null">
+        intro_url = #{introUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="designUrl != null">
+        design_url = #{designUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        type = #{type,jdbcType=TINYINT},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=TINYINT},
+      </if>
+      <if test="releaseId != null">
+        release_id = #{releaseId,jdbcType=BIGINT},
+      </if>
+      <if test="releaseName != null">
+        release_name = #{releaseName,jdbcType=VARCHAR},
+      </if>
+      <if test="auditAdminId != null">
+        audit_admin_id = #{auditAdminId,jdbcType=BIGINT},
+      </if>
+      <if test="fabulousNum != null">
+        fabulous_num = #{fabulousNum,jdbcType=INTEGER},
+      </if>
+      <if test="consultNum != null">
+        consult_num = #{consultNum,jdbcType=INTEGER},
+      </if>
+      <if test="reason != null">
+        reason = #{reason,jdbcType=VARCHAR},
+      </if>
+      <if test="isDelete != null">
+        is_delete = #{isDelete,jdbcType=BIT},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cto.model.Product">
+    update product
+    set title = #{title,jdbcType=VARCHAR},
+      intro = #{intro,jdbcType=VARCHAR},
+      intro_url = #{introUrl,jdbcType=VARCHAR},
+      design_url = #{designUrl,jdbcType=VARCHAR},
+      type = #{type,jdbcType=TINYINT},
+      status = #{status,jdbcType=TINYINT},
+      release_id = #{releaseId,jdbcType=BIGINT},
+      release_name = #{releaseName,jdbcType=VARCHAR},
+      audit_admin_id = #{auditAdminId,jdbcType=BIGINT},
+      fabulous_num = #{fabulousNum,jdbcType=INTEGER},
+      consult_num = #{consultNum,jdbcType=INTEGER},
+      reason = #{reason,jdbcType=VARCHAR},
+      is_delete = #{isDelete,jdbcType=BIT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

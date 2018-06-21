@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cto.dao.DownloadDao">
+  <resultMap id="BaseResultMap" type="com.cto.model.Download">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="intro" jdbcType="VARCHAR" property="intro" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
+    <result column="type" jdbcType="TINYINT" property="type" />
+    <result column="sec_type" jdbcType="TINYINT" property="secType" />
+    <result column="resource_type" jdbcType="TINYINT" property="resourceType" />
+    <result column="url" jdbcType="VARCHAR" property="url" />
+    <result column="size" jdbcType="INTEGER" property="size" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="ext" jdbcType="VARCHAR" property="ext" />
+    <result column="score" jdbcType="INTEGER" property="score" />
+    <result column="integral" jdbcType="INTEGER" property="integral" />
+    <result column="download_num" jdbcType="INTEGER" property="downloadNum" />
+    <result column="comment_num" jdbcType="INTEGER" property="commentNum" />
+    <result column="collection_num" jdbcType="INTEGER" property="collectionNum" />
+    <result column="fabulous_num" jdbcType="INTEGER" property="fabulousNum" />
+    <result column="report_num" jdbcType="INTEGER" property="reportNum" />
+    <result column="status" jdbcType="BIT" property="status" />
+    <result column="reason" jdbcType="VARCHAR" property="reason" />
+    <result column="audit_admin_id" jdbcType="BIGINT" property="auditAdminId" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="is_delete" jdbcType="BIT" property="isDelete" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, title, intro, user_id, type, sec_type, resource_type, url, size, name, ext, score, 
+    integral, download_num, comment_num, collection_num, fabulous_num, report_num, status, 
+    reason, audit_admin_id, remark, is_delete, create_time, update_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from download
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from download
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.cto.model.Download">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into download (title, intro, user_id, 
+      type, sec_type, resource_type, 
+      url, size, name, ext, 
+      score, integral, download_num, 
+      comment_num, collection_num, fabulous_num, 
+      report_num, status, reason, 
+      audit_admin_id, remark, is_delete, 
+      create_time, update_time)
+    values (#{title,jdbcType=VARCHAR}, #{intro,jdbcType=VARCHAR}, #{userId,jdbcType=BIGINT}, 
+      #{type,jdbcType=TINYINT}, #{secType,jdbcType=TINYINT}, #{resourceType,jdbcType=TINYINT}, 
+      #{url,jdbcType=VARCHAR}, #{size,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{ext,jdbcType=VARCHAR}, 
+      #{score,jdbcType=INTEGER}, #{integral,jdbcType=INTEGER}, #{downloadNum,jdbcType=INTEGER}, 
+      #{commentNum,jdbcType=INTEGER}, #{collectionNum,jdbcType=INTEGER}, #{fabulousNum,jdbcType=INTEGER}, 
+      #{reportNum,jdbcType=INTEGER}, #{status,jdbcType=BIT}, #{reason,jdbcType=VARCHAR}, 
+      #{auditAdminId,jdbcType=BIGINT}, #{remark,jdbcType=VARCHAR}, #{isDelete,jdbcType=BIT}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.cto.model.Download">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into download
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="title != null">
+        title,
+      </if>
+      <if test="intro != null">
+        intro,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="type != null">
+        type,
+      </if>
+      <if test="secType != null">
+        sec_type,
+      </if>
+      <if test="resourceType != null">
+        resource_type,
+      </if>
+      <if test="url != null">
+        url,
+      </if>
+      <if test="size != null">
+        size,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="ext != null">
+        ext,
+      </if>
+      <if test="score != null">
+        score,
+      </if>
+      <if test="integral != null">
+        integral,
+      </if>
+      <if test="downloadNum != null">
+        download_num,
+      </if>
+      <if test="commentNum != null">
+        comment_num,
+      </if>
+      <if test="collectionNum != null">
+        collection_num,
+      </if>
+      <if test="fabulousNum != null">
+        fabulous_num,
+      </if>
+      <if test="reportNum != null">
+        report_num,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="reason != null">
+        reason,
+      </if>
+      <if test="auditAdminId != null">
+        audit_admin_id,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="isDelete != null">
+        is_delete,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="title != null">
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="intro != null">
+        #{intro,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=TINYINT},
+      </if>
+      <if test="secType != null">
+        #{secType,jdbcType=TINYINT},
+      </if>
+      <if test="resourceType != null">
+        #{resourceType,jdbcType=TINYINT},
+      </if>
+      <if test="url != null">
+        #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="size != null">
+        #{size,jdbcType=INTEGER},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="ext != null">
+        #{ext,jdbcType=VARCHAR},
+      </if>
+      <if test="score != null">
+        #{score,jdbcType=INTEGER},
+      </if>
+      <if test="integral != null">
+        #{integral,jdbcType=INTEGER},
+      </if>
+      <if test="downloadNum != null">
+        #{downloadNum,jdbcType=INTEGER},
+      </if>
+      <if test="commentNum != null">
+        #{commentNum,jdbcType=INTEGER},
+      </if>
+      <if test="collectionNum != null">
+        #{collectionNum,jdbcType=INTEGER},
+      </if>
+      <if test="fabulousNum != null">
+        #{fabulousNum,jdbcType=INTEGER},
+      </if>
+      <if test="reportNum != null">
+        #{reportNum,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=BIT},
+      </if>
+      <if test="reason != null">
+        #{reason,jdbcType=VARCHAR},
+      </if>
+      <if test="auditAdminId != null">
+        #{auditAdminId,jdbcType=BIGINT},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="isDelete != null">
+        #{isDelete,jdbcType=BIT},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cto.model.Download">
+    update download
+    <set>
+      <if test="title != null">
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="intro != null">
+        intro = #{intro,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="type != null">
+        type = #{type,jdbcType=TINYINT},
+      </if>
+      <if test="secType != null">
+        sec_type = #{secType,jdbcType=TINYINT},
+      </if>
+      <if test="resourceType != null">
+        resource_type = #{resourceType,jdbcType=TINYINT},
+      </if>
+      <if test="url != null">
+        url = #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="size != null">
+        size = #{size,jdbcType=INTEGER},
+      </if>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="ext != null">
+        ext = #{ext,jdbcType=VARCHAR},
+      </if>
+      <if test="score != null">
+        score = #{score,jdbcType=INTEGER},
+      </if>
+      <if test="integral != null">
+        integral = #{integral,jdbcType=INTEGER},
+      </if>
+      <if test="downloadNum != null">
+        download_num = #{downloadNum,jdbcType=INTEGER},
+      </if>
+      <if test="commentNum != null">
+        comment_num = #{commentNum,jdbcType=INTEGER},
+      </if>
+      <if test="collectionNum != null">
+        collection_num = #{collectionNum,jdbcType=INTEGER},
+      </if>
+      <if test="fabulousNum != null">
+        fabulous_num = #{fabulousNum,jdbcType=INTEGER},
+      </if>
+      <if test="reportNum != null">
+        report_num = #{reportNum,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=BIT},
+      </if>
+      <if test="reason != null">
+        reason = #{reason,jdbcType=VARCHAR},
+      </if>
+      <if test="auditAdminId != null">
+        audit_admin_id = #{auditAdminId,jdbcType=BIGINT},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="isDelete != null">
+        is_delete = #{isDelete,jdbcType=BIT},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cto.model.Download">
+    update download
+    set title = #{title,jdbcType=VARCHAR},
+      intro = #{intro,jdbcType=VARCHAR},
+      user_id = #{userId,jdbcType=BIGINT},
+      type = #{type,jdbcType=TINYINT},
+      sec_type = #{secType,jdbcType=TINYINT},
+      resource_type = #{resourceType,jdbcType=TINYINT},
+      url = #{url,jdbcType=VARCHAR},
+      size = #{size,jdbcType=INTEGER},
+      name = #{name,jdbcType=VARCHAR},
+      ext = #{ext,jdbcType=VARCHAR},
+      score = #{score,jdbcType=INTEGER},
+      integral = #{integral,jdbcType=INTEGER},
+      download_num = #{downloadNum,jdbcType=INTEGER},
+      comment_num = #{commentNum,jdbcType=INTEGER},
+      collection_num = #{collectionNum,jdbcType=INTEGER},
+      fabulous_num = #{fabulousNum,jdbcType=INTEGER},
+      report_num = #{reportNum,jdbcType=INTEGER},
+      status = #{status,jdbcType=BIT},
+      reason = #{reason,jdbcType=VARCHAR},
+      audit_admin_id = #{auditAdminId,jdbcType=BIGINT},
+      remark = #{remark,jdbcType=VARCHAR},
+      is_delete = #{isDelete,jdbcType=BIT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>
