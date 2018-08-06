@@ -289,6 +289,7 @@ public class FastDFSServiceImpl implements FastDFSService{
         		}
 			} catch (IOException e) {
 				e.printStackTrace();
+				logger.info("fastdfs download error : " + e.getMessage());
 			}
         }
     }

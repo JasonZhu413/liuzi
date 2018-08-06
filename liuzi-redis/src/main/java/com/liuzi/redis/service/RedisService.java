@@ -16,6 +16,7 @@ import org.springframework.data.redis.core.ZSetOperations;
 
 
 
+
 public interface RedisService {
 
 	/**
@@ -410,6 +411,9 @@ public interface RedisService {
      * @return
      */
     public boolean lUpdateIndex(String key, long index, Object value) ;
+    
+    public <T> List<T> page(String key, String order, boolean desc,
+    		Integer pageNo, Integer pageSize);
 
     /**
      * 移除N个值为value
@@ -443,4 +447,5 @@ public interface RedisService {
 	public RedisTemplate<String, Object> getTemplate();
     
     public RedisConnection getConnection();
+    
 }

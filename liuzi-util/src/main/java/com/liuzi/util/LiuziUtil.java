@@ -1,8 +1,11 @@
 package com.liuzi.util;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
 import java.util.function.BiConsumer;
@@ -103,8 +106,13 @@ public class LiuziUtil {
 	}
 	
 	public static boolean getResp(Object obj, HttpServletResponse response){
-		response.setContentType("text/html;charset=UTF-8");
+	    return getResp(obj, response, "json");
+	}
+	
+	public static boolean getResp(Object obj, HttpServletResponse response, String type){
 	    try {
+	    	response.setContentType("text/"+type+";charset=UTF-8");
+	    	
 			response.getWriter().write(JSONObject.toJSONString(obj).toString());
 			response.getWriter().flush();
 		} catch (IOException e) {
@@ -187,4 +195,22 @@ public class LiuziUtil {
 	public static final <T> List<T> toList(List<Object> obj, Class<T> c){
 		return JSONArray.parseArray(JSONArray.toJSONString(obj), c);
 	}
+	
+	public static Map<String, Object> object2Map(Object obj) {
+        Map<String, Object> map = new HashMap<>();
+        if (obj == null) {
+            return map;
+        }
+        Class<?> clazz = obj.getClass();
+        Field[] fields = clazz.getDeclaredFields();
+        try {
+            for (Field field : fields) {
+                field.setAccessible(true);
+                map.put(field.getName(), field.get(obj));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return map;
+    }
 }

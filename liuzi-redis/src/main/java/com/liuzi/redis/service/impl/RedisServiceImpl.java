@@ -8,6 +8,7 @@ import java.util.concurrent.TimeUnit;
 import javax.annotation.Resource;
 
 import org.springframework.data.redis.connection.RedisConnection;
+import org.springframework.data.redis.connection.SortParameters.Order;
 import org.springframework.data.redis.core.ClusterOperations;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.HyperLogLogOperations;
@@ -16,12 +17,16 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.SetOperations;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.data.redis.core.ZSetOperations;
+import org.springframework.data.redis.core.query.SortQueryBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import com.liuzi.redis.service.RedisCallBack;
 import com.liuzi.redis.service.RedisService;
 import com.liuzi.util.MD5;
+
+
+
 
 @Service("redisService")
 public class RedisServiceImpl implements RedisService{
@@ -283,7 +288,7 @@ public class RedisServiceImpl implements RedisService{
         	key = MD5.crypt(key);
             redisTemplate.opsForHash().putAll(key, map);
             if (time > 0) {
-                expire(key, time);
+            	redisTemplate.expire(key, time, TimeUnit.SECONDS);
             }
             return true;
         } catch (Exception e) {
@@ -334,7 +339,7 @@ public class RedisServiceImpl implements RedisService{
         	key = MD5.crypt(key);
             redisTemplate.opsForHash().put(key, item, value);
             if (time > 0) {
-                expire(key, time);
+                redisTemplate.expire(key, time, TimeUnit.SECONDS);
             }
             return true;
         } catch (Exception e) {
@@ -482,7 +487,7 @@ public class RedisServiceImpl implements RedisService{
         	key = MD5.crypt(key);
             Long count = redisTemplate.opsForSet().add(key, values);
             if (time > 0)
-                expire(key, time);
+            	redisTemplate.expire(key, time, TimeUnit.SECONDS);
             return count;
         } catch (Exception e) {
             e.printStackTrace();
@@ -637,7 +642,7 @@ public class RedisServiceImpl implements RedisService{
         	key = MD5.crypt(key);
             redisTemplate.opsForList().rightPush(key, value);
             if (time > 0)
-                expire(key, time);
+            	redisTemplate.expire(key, time, TimeUnit.SECONDS);
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -685,7 +690,7 @@ public class RedisServiceImpl implements RedisService{
         	key = MD5.crypt(key);
             redisTemplate.opsForList().rightPushAll(key, value);
             if (time > 0)
-                expire(key, time);
+            	redisTemplate.expire(key, time, TimeUnit.SECONDS);
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -804,5 +809,29 @@ public class RedisServiceImpl implements RedisService{
     public RedisConnection getConnection(){
     	return redisTemplate.getConnectionFactory().getConnection();
     }
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T> List<T> page(String key, String order, boolean desc, 
+			Integer pageNo, Integer pageSize) {
+		
+		key = MD5.crypt(key);
+		
+		pageNo = pageNo == null || pageNo == 0 ? 1 : pageNo;
+		pageSize = pageSize == null || pageSize == 0 ? 20 : pageSize;
+		int limit = (pageNo - 1) * pageSize;
+		
+		SortQueryBuilder<String> builder = SortQueryBuilder.sort(key);
+		builder.limit(limit, pageSize);
+		builder.alphabetical(true);
+		builder.by(order);
+		if(desc){
+			builder.order(Order.DESC);
+		}
+		
+		builder.get("#");
+		
+		return (List<T>) redisTemplate.sort(builder.build());
+	}
 	
 }

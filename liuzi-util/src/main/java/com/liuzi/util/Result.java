@@ -1,5 +1,7 @@
 package com.liuzi.util;
 
+import java.io.Serializable;
+
 import net.sf.json.JSONObject;
 
 /**
@@ -14,8 +16,10 @@ import net.sf.json.JSONObject;
  * @version       1.0
  * 
  */
-public class Result {
+public class Result implements Serializable{
 	
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * 返回标识 1-成功 0-失败
 	 */
@@ -52,8 +56,13 @@ public class Result {
   		this.result = result;
 	    this.msg = msg;
   	}
-
+  	
   	public Result(Object model){
+  		this.model = model;
+  	}
+  	
+  	public Result(int result, Object model){
+  		this.result = result;
   		this.model = model;
   	}
   	

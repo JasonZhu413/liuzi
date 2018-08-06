@@ -50,7 +50,7 @@
         </javaClientGenerator>
 
         <!-- 表名对应生成的实体 --> 
-      	<table tableName="download_log" domainObjectName="DownloadLog" mapperName="DownloadLogDao" 
+      	<table tableName="comment_table" domainObjectName="CommentTable" mapperName="CommentTableDao" 
       		enableCountByExample="false" enableUpdateByExample="false" 
       		enableDeleteByExample="false" enableSelectByExample="false" 
       		selectByExampleQueryId="false">

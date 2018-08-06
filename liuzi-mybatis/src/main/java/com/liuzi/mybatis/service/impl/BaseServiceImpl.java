@@ -8,7 +8,7 @@ import org.springframework.util.StringUtils;
 
 import com.liuzi.mybatis.dao.BaseDao;
 import com.liuzi.mybatis.service.BaseService;
-import com.liuzi.util.Page;
+import com.liuzi.mybatis.pojo.Page;
 
 public abstract class BaseServiceImpl<T> implements BaseService<T>{
 	

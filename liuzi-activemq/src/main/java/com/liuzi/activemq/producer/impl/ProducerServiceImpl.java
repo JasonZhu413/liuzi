@@ -20,6 +20,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.liuzi.activemq.message.MessageTextCreator;
 import com.liuzi.activemq.producer.ProducerService;
 import com.liuzi.util.MD5;
+import com.liuzi.util.Result;
 
 @Service("producerService")
 public class ProducerServiceImpl implements ProducerService{
@@ -57,6 +58,12 @@ public class ProducerServiceImpl implements ProducerService{
     public void sendTopic(String physicalName, Serializable serializable) { 
     	sendTopic_object(physicalName, serializable);
     } 
+    /** 
+     * 向指定topic发送对象
+     */  
+    public void sendTopic(String physicalName, Result res) { 
+    	sendTopic_object(physicalName, res);
+    } 
    	/**
    	 * 向默认topic发送map
    	 */
@@ -90,8 +97,6 @@ public class ProducerServiceImpl implements ProducerService{
     	MessageCreator mc = new MessageTextCreator(obj.toString());
     	topicTemplate.send(topicDestination, mc);
     } 
-    
-    
     
     /**
 	 * 向默认queue发送String

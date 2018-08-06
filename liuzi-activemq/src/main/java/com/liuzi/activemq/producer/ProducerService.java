@@ -3,6 +3,8 @@ package com.liuzi.activemq.producer;
 import java.io.Serializable;
 import java.util.Map;
 
+import com.liuzi.util.Result;
+
 
 public interface ProducerService {
 	
@@ -39,6 +41,11 @@ public interface ProducerService {
      * 向指定队列发送对象
      */  
     public void sendTopic(String physicalName, Serializable serializable);
+    
+    /** 
+     * 向指定队列发送对象
+     */  
+    public void sendTopic(String physicalName, Result res);
     
     /** 
      * 向指定队列发送对象

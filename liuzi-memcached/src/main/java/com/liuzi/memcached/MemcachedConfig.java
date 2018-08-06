@@ -5,6 +5,9 @@ import java.io.InputStream;
 import java.util.Properties;
 
 import org.apache.commons.beanutils.PropertyUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Bean;
 import org.springframework.util.StringUtils;
 
 import lombok.extern.slf4j.Slf4j;
@@ -23,13 +26,21 @@ import com.whalin.MemCached.SockIOPool;
  */  
 @Slf4j
 public class MemcachedConfig {  
+	private static Logger logger = LoggerFactory.getLogger(MemcachedConfig.class);
+	
 	private final static String POOL_NAME = "memcachedPool";
 	private final static String CONFIG_FILE = "conf/memcached.properties";
 	private static String g_conf_file = CONFIG_FILE;
-	
-	protected static MemCachedClient cachedClient;
-	protected static Properties properties;
+	private static Properties properties;
     
+	public MemCachedClient cachedClient;
+	
+	@Bean
+    public MemCachedClient cachedClient(){
+		logger.info("cachedClient 注入:" + (cachedClient != null));
+		return cachedClient;
+    }
+	
     public MemcachedConfig(){
     	init();
     }  
@@ -41,7 +52,7 @@ public class MemcachedConfig {
     	init();
     } 
 	
-	public static void init(){
+	public void init(){
 		LiuziUtil.tag("  --------  Liuzi Memcached初始化......  --------");
 		
 		log.info("===== memcached初始化，加载配置 " + g_conf_file + " ......========");

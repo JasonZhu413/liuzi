@@ -20,6 +20,9 @@
   	<module>liuzi-redis-cluster</module>
   	<module>liuzi-redis-spring-boot</module>
   	<module>liuzi-memcached</module>
+  	<module>liuzi-easemob</module>
+  	<module>liuzi-rest</module>
+  	<module>liuzi-jPush</module>
   </modules>
 
 	<properties>
@@ -77,6 +80,21 @@
 			<dependency>
 				<groupId>com.liuzi</groupId>
 				<artifactId>liuzi-memcached</artifactId>
+				<version>${liuzi.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.liuzi</groupId>
+				<artifactId>liuzi-easemob</artifactId>
+				<version>${liuzi.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.liuzi</groupId>
+				<artifactId>liuzi-rest</artifactId>
+				<version>${liuzi.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.liuzi</groupId>
+				<artifactId>liuzi-jPush</artifactId>
 				<version>${liuzi.version}</version>
 			</dependency>
 			
@@ -601,6 +619,22 @@
 			    <version>3.0.2</version>
 			</dependency>
 		
+			<!-- excel poi -->
+			<dependency>
+				<groupId>org.apache.poi</groupId>
+				<artifactId>poi</artifactId>
+				<version>3.15</version>
+			</dependency>
+			<dependency>
+			    <groupId>org.apache.poi</groupId>
+			    <artifactId>poi-ooxml-schemas</artifactId>
+			    <version>3.15</version>
+			</dependency>
+			<dependency>
+			    <groupId>org.apache.poi</groupId>
+			    <artifactId>poi-ooxml</artifactId>
+			    <version>3.15</version>
+			</dependency>
 		</dependencies>
 
 	</dependencyManagement>

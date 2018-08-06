@@ -30,11 +30,11 @@ public class RedisConfig {
 	
 	private final static String CONFIG_FILE = "conf/redis.properties";
 	private static String g_conf_file = CONFIG_FILE;
+	private static Properties properties;
 	
-	protected static JedisPoolConfig jedisPoolConfig;
+	public static JedisPoolConfig jedisPoolConfig;
 	public static JedisConnectionFactory jedisConnectionFactory;
-	
-	public static RedisTemplate<String, Object> redisTemplate;
+	public RedisTemplate<String, Object> redisTemplate;
 	
 	@Bean
     public RedisTemplate<String, Object> redisTemplate(){
@@ -42,8 +42,6 @@ public class RedisConfig {
 		return redisTemplate;
     }
 	
-	
-	protected static Properties properties;
     
     public RedisConfig(){
     	init();
@@ -56,7 +54,7 @@ public class RedisConfig {
     	init();
     } 
 	
-	public static void init(){
+	public void init(){
 		LiuziUtil.tag("  --------  Liuzi Redis初始化......  --------");
 		
 		log.info("===== redis初始化，加载配置 " + g_conf_file + " ......========");

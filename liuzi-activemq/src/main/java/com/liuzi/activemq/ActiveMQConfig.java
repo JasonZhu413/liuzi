@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+import javax.jms.DeliveryMode;
+
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.RedeliveryPolicy;
 import org.apache.commons.beanutils.PropertyUtils;
@@ -97,7 +99,7 @@ public class ActiveMQConfig{
 			activeMQConnectionFactory = new ActiveMQConnectionFactory(userName, password, brokerURL);
 			activeMQConnectionFactory.setUseAsyncSend(true);
 			activeMQConnectionFactory.setRedeliveryPolicy(redeliveryPolicy);
-			activeMQConnectionFactory.setClientID(clientID);
+			//activeMQConnectionFactory.setClientID(clientID);
 			
 			//schedulePeriodForDestinationPurge = 3600000，表示每一小时检查一次，默认为 0，此功能关闭
 			//gcInactiveDestinations，true 表示删除回收闲置的队列，默认为 false
@@ -111,14 +113,22 @@ public class ActiveMQConfig{
 				topicJmsTemplate = new JmsTemplate(activeMQConnectionFactory);
 				topicJmsTemplate.setPubSubDomain(true);
 				topicJmsTemplate.setReceiveTimeout(Integer.parseInt(receiveTimeout));
+				//topicJmsTemplate.setTimeToLive(timeToLive);
 				topicJmsTemplate.setExplicitQosEnabled(Boolean.parseBoolean(explicitQosEnabled));
 				topicJmsTemplate.setDeliveryMode(Integer.parseInt(deliveryMode));
 			}
 			
 			String useQueue = properties.getProperty("activemq.use.queue");
 			if(!StringUtils.isEmpty(useQueue) && Boolean.parseBoolean(useQueue)){
+				String receiveTimeout = properties.getProperty("activemq.queue.receiveTimeout");
+				String explicitQosEnabled = properties.getProperty("activemq.queue.explicitQosEnabled");
+				String deliveryMode = properties.getProperty("activemq.queue.deliveryMode");
+				
 				queueJmsTemplate = new JmsTemplate(activeMQConnectionFactory);
 				queueJmsTemplate.setPubSubDomain(false);
+				queueJmsTemplate.setReceiveTimeout(Integer.parseInt(receiveTimeout));
+				queueJmsTemplate.setExplicitQosEnabled(Boolean.parseBoolean(explicitQosEnabled));
+				topicJmsTemplate.setDeliveryMode(Integer.parseInt(deliveryMode));
 			}
 			
 		} catch (NumberFormatException e) {

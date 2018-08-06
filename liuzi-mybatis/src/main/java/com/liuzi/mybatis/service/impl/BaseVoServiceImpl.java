@@ -8,7 +8,7 @@ import org.springframework.util.StringUtils;
 
 import com.liuzi.mybatis.dao.BaseVoDao;
 import com.liuzi.mybatis.service.BaseVoService;
-import com.liuzi.util.Page;
+import com.liuzi.mybatis.pojo.Page;
 
 public abstract class BaseVoServiceImpl<T, Vo> extends BaseServiceImpl<T> 
 	implements BaseVoService<T, Vo>{

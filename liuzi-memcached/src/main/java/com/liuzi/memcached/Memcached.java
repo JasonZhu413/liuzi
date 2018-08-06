@@ -9,9 +9,12 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;  
 import java.util.Date;  
 
+import javax.annotation.Resource;
+
 import lombok.extern.slf4j.Slf4j;
 
 import com.liuzi.util.DateUtil;
+import com.whalin.MemCached.MemCachedClient;
   
 /** 
  *  
@@ -22,17 +25,20 @@ import com.liuzi.util.DateUtil;
  *  
  */  
 @Slf4j
-public class Memcached extends MemcachedConfig{  
+public class Memcached{  
   
-	static{
+	/*static{
 		if (cachedClient == null){
 		    synchronized(Memcached.class) {
 		      if (cachedClient == null)
 		    	  init();
 		    }
 		}
-	}
+	}*/
     
+	@Resource
+	private MemCachedClient cachedClient;
+	
     /** 
      * 向缓存添加新的键值对。如果键已经存在，则之前的值将被替换。 
      *  
@@ -42,7 +48,7 @@ public class Memcached extends MemcachedConfig{
      *            值 
      * @return 
      */  
-    public static boolean set(String key, Object value) {  
+    public boolean set(String key, Object value) {  
         return setExp(key, value, null);  
     }  
   
@@ -57,7 +63,7 @@ public class Memcached extends MemcachedConfig{
      *            过期时间 New Date(1000*10)：十秒后过期 
      * @return 
      */  
-    public static boolean set(String key, Object value, Date expire) {  
+    public boolean set(String key, Object value, Date expire) {  
         return setExp(key, value, expire);  
     }  
     
@@ -72,7 +78,7 @@ public class Memcached extends MemcachedConfig{
      *            过期时间 New Date(1000*10)：十秒后过期 
      * @return 
      */  
-    public static boolean set(String key, Object value, int time) {  
+    public boolean set(String key, Object value, int time) {  
         return setExp(key, value, getExpire(time));  
     }  
   
@@ -87,7 +93,7 @@ public class Memcached extends MemcachedConfig{
      *            过期时间 New Date(1000*10)：十秒后过期 
      * @return 
      */  
-    private static boolean setExp(String key, Object value, Date expire) {  
+    private boolean setExp(String key, Object value, Date expire) {  
         boolean flag = false;  
         try {  
             flag = cachedClient.set(key, value, expire);  
@@ -107,7 +113,7 @@ public class Memcached extends MemcachedConfig{
      *            值 
      * @return 
      */  
-    public static boolean add(String key, Object value) {  
+    public boolean add(String key, Object value) {  
         return addExp(key, value, null);  
     }  
   
@@ -122,7 +128,7 @@ public class Memcached extends MemcachedConfig{
      *            过期时间 New Date(1000*10)：十秒后过期 
      * @return 
      */  
-    public static boolean add(String key, Object value, Date expire) {  
+    public boolean add(String key, Object value, Date expire) {  
         return addExp(key, value, expire);  
     }  
     
@@ -137,7 +143,7 @@ public class Memcached extends MemcachedConfig{
      *            过期时间 s
      * @return 
      */  
-    public static boolean add(String key, Object value, int time) {  
+    public boolean add(String key, Object value, int time) {  
         return addExp(key, value, getExpire(time));  
     }  
     
@@ -153,7 +159,7 @@ public class Memcached extends MemcachedConfig{
      *            过期时间 New Date(1000*10)：十秒后过期 
      * @return 
      */  
-    private static boolean addExp(String key, Object value, Date expire) {  
+    private boolean addExp(String key, Object value, Date expire) {  
         boolean flag = false;  
         try {  
             flag = cachedClient.add(key, value, expire);  
@@ -173,7 +179,7 @@ public class Memcached extends MemcachedConfig{
      *            值 
      * @return 
      */  
-    public static boolean replace(String key, Object value) {  
+    public boolean replace(String key, Object value) {  
         return replaceExp(key, value, null);  
     }  
   
@@ -188,7 +194,7 @@ public class Memcached extends MemcachedConfig{
      *            过期时间 New Date(1000*10)：十秒后过期 
      * @return 
      */  
-    public static boolean replace(String key, Object value, Date expire) {  
+    public boolean replace(String key, Object value, Date expire) {  
         return replaceExp(key, value, expire);  
     }  
     
@@ -203,7 +209,7 @@ public class Memcached extends MemcachedConfig{
      *            过期时间 s
      * @return 
      */  
-    public static boolean replace(String key, Object value, int time) {  
+    public boolean replace(String key, Object value, int time) {  
         return replaceExp(key, value, getExpire(time));  
     }  
   
@@ -218,7 +224,7 @@ public class Memcached extends MemcachedConfig{
      *            过期时间 New Date(1000*10)：十秒后过期 
      * @return 
      */  
-    private static boolean replaceExp(String key, Object value, Date expire) {  
+    private boolean replaceExp(String key, Object value, Date expire) {  
         boolean flag = false;  
         try {  
             flag = cachedClient.replace(key, value, expire);  
@@ -235,7 +241,7 @@ public class Memcached extends MemcachedConfig{
      *            键 
      * @return 
      */  
-    public static Object get(String key) {  
+    public Object get(String key) {  
         Object obj = null;  
         try {  
             obj = cachedClient.get(key);  
@@ -252,7 +258,7 @@ public class Memcached extends MemcachedConfig{
      *            键 
      * @return 
      */  
-    public static boolean delete(String key) {  
+    public boolean delete(String key) {  
         return deleteExp(key, null);  
     }  
   
@@ -265,7 +271,7 @@ public class Memcached extends MemcachedConfig{
      *            过期时间 New Date(1000*10)：十秒后过期 
      * @return 
      */  
-    public static boolean delete(String key, Date expire) {  
+    public boolean delete(String key, Date expire) {  
         return deleteExp(key, expire);  
     }  
   
@@ -279,7 +285,7 @@ public class Memcached extends MemcachedConfig{
      * @return 
      */  
     @SuppressWarnings("deprecation")
-	private static boolean deleteExp(String key, Date expire) {  
+	private boolean deleteExp(String key, Date expire) {  
         boolean flag = false;  
         try {  
             flag = cachedClient.delete(key, expire);  
@@ -294,7 +300,7 @@ public class Memcached extends MemcachedConfig{
      *  
      * @return 
      */  
-    public static boolean flashAll() {  
+    public boolean flashAll() {  
         boolean flag = false;  
         try {  
             flag = cachedClient.flushAll();  
@@ -310,7 +316,7 @@ public class Memcached extends MemcachedConfig{
      * @param e 
      * @return 
      */  
-    private static String exceptionWrite(Exception e) {  
+    private String exceptionWrite(Exception e) {  
         StringWriter sw = new StringWriter();  
         PrintWriter pw = new PrintWriter(sw);  
         e.printStackTrace(pw);  
@@ -318,7 +324,7 @@ public class Memcached extends MemcachedConfig{
         return sw.toString();  
     }  
     
-    private static Date getExpire(int time){
+    private Date getExpire(int time){
     	return new Date(1000 * time);
     }
   

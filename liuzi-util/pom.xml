@@ -21,6 +21,10 @@
 		<groupId>org.springframework</groupId>
 		<artifactId>spring-web</artifactId>
 	</dependency>
+	<dependency>
+		<groupId>org.springframework</groupId>
+		<artifactId>spring-webmvc</artifactId>
+	</dependency>
   	<dependency>
 		<groupId>net.sf.json-lib</groupId>
 		<artifactId>json-lib</artifactId>
@@ -58,15 +62,25 @@
 		<groupId>net.sf.log4jdbc</groupId>
 		<artifactId>log4jdbc3</artifactId>
 	</dependency>
-    <!-- <dependency>  
-		<groupId>com.google.zxing</groupId>  
-		<artifactId>core</artifactId>  
-	</dependency>  
 	
-	<dependency>  
-		<groupId>com.google.zxing</groupId>  
-		<artifactId>javase</artifactId>  
-	</dependency> -->
+	<!-- excel poi -->
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi</artifactId>
+		</dependency>
+		<dependency>
+		    <groupId>org.apache.poi</groupId>
+		    <artifactId>poi-ooxml-schemas</artifactId>
+		</dependency>
+		<dependency>
+		    <groupId>org.apache.poi</groupId>
+		    <artifactId>poi-ooxml</artifactId>
+		</dependency>
+		
+		<dependency>
+	        <groupId>org.projectlombok</groupId>
+	        <artifactId>lombok</artifactId>
+	    </dependency>
   </dependencies>
   
   	<!-- 插件配置 
