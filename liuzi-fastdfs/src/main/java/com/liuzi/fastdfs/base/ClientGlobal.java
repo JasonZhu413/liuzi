@@ -62,6 +62,7 @@ public class ClientGlobal {
   
   public static int g_file_upload_max_size = DEFAULT_FILE_UPLOAD_MAX_SIZE;
   public static int g_connection_pool_size = DEFAULT_CONNECTION_POOL_SIZE;
+  public static String fileServer = null;
   public static TrackerGroup g_tracker_group;
 
   private ClientGlobal() {
@@ -121,6 +122,8 @@ public class ClientGlobal {
     g_file_upload_max_size = iniReader.getIntValue("file.upload.max.size", DEFAULT_FILE_UPLOAD_MAX_SIZE);//新增
     
     g_connection_pool_size = iniReader.getIntValue("connect.pool.size", DEFAULT_CONNECTION_POOL_SIZE);//新增
+    
+    fileServer = iniReader.getStrValue("file_server");//新增
   }
 
   /**

@@ -107,6 +107,7 @@ public class FastDFSServiceImpl implements FastDFSService{
             fdf.setGroup(group);
             fdf.setPath(path);
             fdf.setUrl(group + "/" + path); 
+            fdf.setFullUrl(ClientGlobal.fileServer + group + "/" + path);
             fdf.setSize(fileSize / 1024);
             fdf.setExt(ext);
             returnList.add(fdf);
@@ -153,6 +154,7 @@ public class FastDFSServiceImpl implements FastDFSService{
 		fdf.setGroup(group);
         fdf.setPath(path);
         fdf.setUrl(group + "/" + path); 
+        fdf.setFullUrl(ClientGlobal.fileServer + group + "/" + path);
 		fdf.setOldName(fileName);
         fdf.setNewName(fileName);
         
@@ -175,7 +177,7 @@ public class FastDFSServiceImpl implements FastDFSService{
 		String groupName = url.substring(0, first);
 		String filePath = url.substring(first + 1);
 		
-		download(response, groupName, filePath, specFileName);
+		this.download(response, groupName, filePath, specFileName);
     }
     
     /**
@@ -231,7 +233,7 @@ public class FastDFSServiceImpl implements FastDFSService{
 		String groupName = url.substring(0, first);
 		String filePath = url.substring(first + 1);
 		
-		downloadZip(response, groupName, filePath, specFileName);
+		this.downloadZip(response, groupName, filePath, specFileName);
     }
 	
     /**

@@ -26,9 +26,15 @@ public class FastDFSFile implements Serializable{
 	private String path;
 	
 	/**
-	 * 总地址
+	 * 地址
 	 */
 	private String url;
+	
+	/**
+	 * 地址
+	 */
+	private String fullUrl;
+	
 	/**
 	 * 文件大小（k）
 	 */
@@ -80,6 +86,12 @@ public class FastDFSFile implements Serializable{
 	}
 	public void setExt(String ext) {
 		this.ext = ext;
+	}
+	public String getFullUrl() {
+		return fullUrl;
+	}
+	public void setFullUrl(String fullUrl) {
+		this.fullUrl = fullUrl;
 	}
 	
 	
