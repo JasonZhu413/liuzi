@@ -126,7 +126,10 @@ public interface RedisService {
     
     
     public <T> List<T> hgetList(String key, String item) ;
-
+    
+    public Map<Object, Object> hgetAll(String key);
+    
+    
     /**
      * 获取hashKey对应的所有键值
      * 
@@ -414,6 +417,10 @@ public interface RedisService {
     
     public <T> List<T> page(String key, String order, boolean desc,
     		Integer pageNo, Integer pageSize);
+    
+    public long getKey(String tableName);
+    
+    public long getKey(String tableName, long delta);
 
     /**
      * 移除N个值为value

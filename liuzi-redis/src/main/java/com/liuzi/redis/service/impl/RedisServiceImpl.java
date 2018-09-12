@@ -1,18 +1,22 @@
 package com.liuzi.redis.service.impl;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Resource;
 
+import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.connection.SortParameters.Order;
 import org.springframework.data.redis.core.ClusterOperations;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.HyperLogLogOperations;
 import org.springframework.data.redis.core.ListOperations;
+import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.SetOperations;
 import org.springframework.data.redis.core.ValueOperations;
@@ -21,8 +25,12 @@ import org.springframework.data.redis.core.query.SortQueryBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import redis.clients.jedis.Jedis;
+
 import com.liuzi.redis.service.RedisCallBack;
+import com.liuzi.redis.service.RedisLock;
 import com.liuzi.redis.service.RedisService;
+import com.liuzi.util.DateUtil;
 import com.liuzi.util.MD5;
 
 
@@ -30,6 +38,8 @@ import com.liuzi.util.MD5;
 
 @Service("redisService")
 public class RedisServiceImpl implements RedisService{
+	
+	//private static Logger logger = LoggerFactory.getLogger(RedisServiceImpl.class);
 	
 	@Resource
 	private RedisTemplate<String, Object> redisTemplate;
@@ -237,6 +247,12 @@ public class RedisServiceImpl implements RedisService{
         return (List<T>) redisTemplate.opsForHash().get(key, item);
     }
 
+	@Override
+    public Map<Object, Object> hgetAll(String key) {
+    	key = MD5.crypt(key);
+    	return redisTemplate.opsForHash().entries(key);
+    }
+	
     /**
      * 获取hashKey对应的所有键值
      * 
@@ -750,7 +766,8 @@ public class RedisServiceImpl implements RedisService{
 		RedisConnection conn = getConnection();
 		String newkey = MD5.crypt(key);
 		
-		if (conn.setNX(newkey.getBytes(), "1".getBytes())) {
+		String value = UUID.randomUUID().toString();
+		if (conn.setNX(newkey.getBytes(), value.getBytes())) {
 			try {
 				callBack.call(newkey);
 			} catch (Exception e) {
@@ -761,9 +778,62 @@ public class RedisServiceImpl implements RedisService{
 			return;
         } else {
         	setNX(key, callBack);
-        }  
+        } 
 	}
     
+	public void setNX(String key, long seconds, RedisCallBack callBack)  {
+		try(RedisLock lock = lock(key, seconds)) {
+			if (lock != null) {
+				callBack.call(key);
+			}
+		}catch (Exception e) {
+			
+		}
+	}
+    
+    public RedisLock lock(final String key, final long seconds){
+        return lock(key, seconds, 0, 0);
+    }
+    
+    public RedisLock lock(final String key, final long seconds, int maxRetryTimes){
+        return lock(key, seconds, maxRetryTimes, 0);
+    }
+    
+    public RedisLock lock(String key, final long seconds, int maxRetryTimes, long retryIntervalTimeMillis){
+        return lock_object(MD5.crypt(key), seconds, maxRetryTimes, retryIntervalTimeMillis);
+    }
+    
+    private RedisLock lock_object(final String key, final long seconds, int maxRetryTimes, long retryIntervalTimeMillis){
+        final String value = UUID.randomUUID().toString();
+ 
+        int maxTimes = maxRetryTimes + 1;
+        for(int i = 0; i < maxTimes; i++) {
+            String status = redisTemplate.execute(new RedisCallback<String>() {
+                @Override
+                public String doInRedis(RedisConnection connection) throws DataAccessException {
+                    Jedis jedis = (Jedis) connection.getNativeConnection();
+                    return jedis.set(key, value, "nx", "ex", seconds);
+                }
+            });
+            
+            if ("OK".equals(status)) {
+                return new RedisLockImpl(redisTemplate, key, value);
+            }
+ 
+            if(retryIntervalTimeMillis > 0) {
+                try {
+                    Thread.sleep(retryIntervalTimeMillis);
+                } catch (InterruptedException e) {
+                    break;
+                }
+            }
+            if(Thread.currentThread().isInterrupted()){
+                break;
+            }
+        }
+ 
+        return null;
+    }
 
 	@Override
 	public HashOperations<String, String, Object> opsForHash() {
@@ -834,4 +904,26 @@ public class RedisServiceImpl implements RedisService{
 		return (List<T>) redisTemplate.sort(builder.build());
 	}
 	
+	
+	@Override
+	public long getKey(String key) {
+		return this.getKey(key, 1);
+	}
+	
+	@Override
+	public long getKey(String key, long delta) {
+		delta = delta == 0 ? 1 : delta;
+		
+		String time = DateUtil.date2Str(new Date(), "yyMMddHHmmss");
+		String date = DateUtil.date2Str(new Date(), "yyMMdd");
+		
+		key = "PRIMARY_KEY:" + date + ":" + key;
+		//key = MD5.crypt(key);
+		
+		long incre = redisTemplate.opsForValue().increment(key, delta);
+		redisTemplate.expire(key, 24 * 60 * 60, TimeUnit.SECONDS);
+		
+		return Long.parseLong(time + incre);
+		
+	}
 }

@@ -173,6 +173,12 @@ public class LiuziUtil {
        return list; 
 	}
 	
+	/**
+	 * 索引循环 str为 T，index为索引
+	 * LiuziUtil.forEach(list, (index, str) -> { });
+	 * @param elements
+	 * @param action
+	 */
 	public static <E> void forEach(Iterable<? extends E> elements, 
 			BiConsumer<Integer, ? super E> action) {
         Objects.requireNonNull(elements);
