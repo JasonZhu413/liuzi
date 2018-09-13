@@ -387,7 +387,7 @@ public interface RedisService {
      *            时间(秒)
      * @return
      */
-    public boolean lSet(String key, List<Object> value);
+    public <T> boolean lSet(String key, List<T> value);
 
     /**
      * 将list放入缓存

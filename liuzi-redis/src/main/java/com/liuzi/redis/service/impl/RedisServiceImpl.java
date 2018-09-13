@@ -678,7 +678,7 @@ public class RedisServiceImpl implements RedisService{
      * @return
      */
     @Override
-    public boolean lSet(String key, List<Object> value) {
+    public <T> boolean lSet(String key, List<T> value) {
         try {
         	key = MD5.crypt(key);
             redisTemplate.opsForList().rightPushAll(key, value);
