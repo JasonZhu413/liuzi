@@ -1,0 +1,12 @@
+com\liuzi\mybatis\service\impl\BaseServiceImpl.class
+com\liuzi\mybatis\dao\BaseVoDao.class
+com\liuzi\mybatis\service\impl\BaseVoServiceImpl.class
+com\liuzi\mybatis\SuperClassGenricType.class
+com\liuzi\mybatis\service\BaseVoService.class
+com\liuzi\mybatis\controller\BaseController.class
+com\liuzi\mybatis\pojo\Page.class
+com\liuzi\mybatis\pojo\BaseEntity.class
+com\liuzi\mybatis\controller\ControllerPath.class
+com\liuzi\mybatis\controller\BaseControllerImpl.class
+com\liuzi\mybatis\dao\BaseDao.class
+com\liuzi\mybatis\service\BaseService.class

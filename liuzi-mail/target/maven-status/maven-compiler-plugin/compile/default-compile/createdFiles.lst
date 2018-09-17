@@ -1,0 +1,4 @@
+com\liuzi\mail\impl\MailServiceImpl.class
+com\liuzi\mail\Mail.class
+com\liuzi\mail\MailConfig.class
+com\liuzi\mail\MailService.class
