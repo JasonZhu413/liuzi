@@ -17,6 +17,7 @@
   	<!-- <module>liuzi-mybatis-generator</module> -->
   	<module>liuzi-qsms</module>
   	<module>liuzi-fastdfs</module>
+  	<module>liuzi-qmail</module>
   	<module>liuzi-mail</module>
   	<module>liuzi-redis-cluster</module>
   	<module>liuzi-redis-spring-boot</module>
@@ -75,9 +76,14 @@
 			</dependency>
 			<dependency>
 				<groupId>com.liuzi</groupId>
-				<artifactId>liuzi-mail</artifactId>
+				<artifactId>liuzi-qmail</artifactId>
 				<version>${liuzi.version}</version>
 			</dependency>
+			<!-- <dependency>
+				<groupId>com.liuzi</groupId>
+				<artifactId>liuzi-mail</artifactId>
+				<version>${liuzi.version}</version>
+			</dependency> -->
 			<dependency>
 				<groupId>com.liuzi</groupId>
 				<artifactId>liuzi-memcached</artifactId>
