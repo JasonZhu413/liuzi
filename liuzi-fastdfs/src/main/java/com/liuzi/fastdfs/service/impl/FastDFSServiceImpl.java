@@ -364,17 +364,19 @@ public class FastDFSServiceImpl implements FastDFSService{
      */
 	@Override
     public int delete(String group, String path){
-    	StorageClient storageClient1 = FastDFSPoolConfig.checkOut(10);
+    	StorageClient storageClient = FastDFSPoolConfig.checkOut(10);
     	int i = -1;
     	try {
     		
-    		i = storageClient1.delete_file(group, path);
-    		FastDFSPoolConfig.checkIn(storageClient1);
+    		i = storageClient.delete_file(group, path);
+    		//FastDFSPoolConfig.checkIn(storageClient);
     	} catch (Exception e) {
-    		FastDFSPoolConfig.drop(storageClient1);
+    		//FastDFSPoolConfig.drop(storageClient);
     		e.printStackTrace(); 
     		logger.error("file delete fail：" + e.getMessage());
-    	}
+    	} finally{
+        	FastDFSPoolConfig.drop(storageClient);
+        }
     	return i;
     }
     
@@ -391,15 +393,17 @@ public class FastDFSServiceImpl implements FastDFSService{
     
     private String[] upload_object(byte[] b, String ext, NameValuePair[] list){
         String[] data = null;
-        StorageClient storageClient1 = FastDFSPoolConfig.checkOut(10);
+        StorageClient storageClient = FastDFSPoolConfig.checkOut(10);
         try {
-        	data = storageClient1.upload_file(b, ext, list);
+        	data = storageClient.upload_file(b, ext, list);
             
-        	FastDFSPoolConfig.checkIn(storageClient1);
+        	//FastDFSPoolConfig.checkIn(storageClient);
         } catch (Exception e) {
-        	FastDFSPoolConfig.drop(storageClient1);//异常销毁此连接
+        	//FastDFSPoolConfig.drop(storageClient);//异常销毁此连接
             logger.error("upload fail：" + e.getMessage());
             e.printStackTrace();
+        } finally{
+        	FastDFSPoolConfig.drop(storageClient);
         }
         
         return data;
@@ -411,14 +415,16 @@ public class FastDFSServiceImpl implements FastDFSService{
 		}
     	
     	byte[] b = null;
-    	StorageClient storageClient1 = FastDFSPoolConfig.checkOut(10);
+    	StorageClient storageClient = FastDFSPoolConfig.checkOut(10);
     	try{
-        	b = storageClient1.download_file(group, path);
-        	FastDFSPoolConfig.checkIn(storageClient1);
+        	b = storageClient.download_file(group, path);
+        	//FastDFSPoolConfig.checkIn(storageClient);
         } catch (Exception e) {
-        	FastDFSPoolConfig.drop(storageClient1);//异常销毁此连接
+        	//FastDFSPoolConfig.drop(storageClient);//异常销毁此连接
         	e.printStackTrace();
         	logger.error("file download fail：" + e.getMessage());
+        } finally{
+        	FastDFSPoolConfig.drop(storageClient);
         }
     	return b;
     }

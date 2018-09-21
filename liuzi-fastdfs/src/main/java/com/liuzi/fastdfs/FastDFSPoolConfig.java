@@ -28,10 +28,6 @@ public class FastDFSPoolConfig {
     
     private static ConcurrentHashMap<StorageClient, Object> busyConnectionPool = null;//被使用的连接
     private static ArrayBlockingQueue<StorageClient> idleConnectionPool;//空闲的连接
-    private static TrackerServer trackerServer;
-    private static TrackerClient trackerClient;
-    private static StorageServer storageServer;
-    private static StorageClient storageClient;
     
     public FastDFSPoolConfig(){
         init();
@@ -47,6 +43,12 @@ public class FastDFSPoolConfig {
     	LiuziUtil.tag("  --------  Liuzi FastDFS Pool初始化......  --------");
     	
     	logger.info("===== fastdfs初始化连接池...... ========");
+    	
+    	TrackerServer trackerServer = null;
+    	StorageServer storageServer = null;
+    	
+    	TrackerClient trackerClient;
+        StorageClient storageClient;
     	
         try {
         	ClientGlobal.init(g_conf_file);
@@ -68,9 +70,18 @@ public class FastDFSPoolConfig {
         	logger.error("初始化连接池失败：" + e.getMessage());
             e.printStackTrace();
         } finally {
+            if(storageServer != null){
+                try {
+                	storageServer.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    logger.error("storageServer close 失败：" + e.getMessage());
+                }
+            }
             if(trackerServer != null){
                 try {
                     trackerServer.close();
+                    
                 } catch (IOException e) {
                     e.printStackTrace();
                     logger.error("trackerServer close 失败：" + e.getMessage());
@@ -83,43 +94,75 @@ public class FastDFSPoolConfig {
     
     //取出连接
     public static StorageClient checkOut(int waitTime){
-    	StorageClient storageClient1 = null;
+    	TrackerServer trackerServer = null;
+    	StorageServer storageServer = null;
+    	
+    	//TrackerClient trackerClient;
+        StorageClient storageClient;
+    	
         try {
-        	storageClient1 = idleConnectionPool.poll(waitTime, TimeUnit.SECONDS);
-        	//storageClient1 = idleConnectionPool.take();
+        	storageClient = idleConnectionPool.poll(waitTime, TimeUnit.SECONDS);
         	logger.info("获取连接，当前剩余空闲连接：" + idleConnectionPool.size());
-            if(storageClient1 != null){
-            	trackerClient = new TrackerClient();
+            if(storageClient != null){
+            	/*trackerClient = new TrackerClient();
         		trackerServer = trackerClient.getConnection();
-        		storageClient1 = new StorageClient(trackerServer, storageServer);
+        		storageClient = new StorageClient(trackerServer, storageServer);*/
         		
-            	busyConnectionPool.put(storageClient1, obj);
+            	busyConnectionPool.put(storageClient, obj);
             	logger.info("busyConnPool增加，当前使用连接：" + busyConnectionPool.size());
-            	return storageClient1;
+            	return storageClient;
             }
-            /*trackerServer = trackerClient.getConnection();
-            storageClient1 = new StorageClient(trackerServer, storageServer);
-            idleConnectionPool.add(storageClient1);*/
         } catch (Exception e) {
-        	storageClient1 = null;
+        	storageClient = null;
             logger.error("busyConnectionPool checkOut fail：" + e.getMessage());
             e.printStackTrace();
+        } finally {
+			if(storageServer != null){
+                try {
+                	storageServer.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    logger.error("storageServer close 失败：" + e.getMessage());
+                }
+            }
+            if(trackerServer != null){
+                try {
+                    trackerServer.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    logger.error("checkIn trackerServer close 失败：" + e.getMessage());
+                }
+            }
         }
-        return storageClient1;
+        return storageClient;
     }
     
     //回收连接
-    public static void checkIn(StorageClient storageClient1) {
-    	Object obj = busyConnectionPool.remove(storageClient1);
+    public static void checkIn(StorageClient storageClient) {
+    	Object obj = busyConnectionPool.remove(storageClient);
     	logger.info("busyConnPool移除，剩余连接：" + busyConnectionPool.size());
         if(obj != null){
-        	/*TrackerServer trackerServer = null;
+        	TrackerServer trackerServer = null;
+        	TrackerClient trackerClient = null;
+        	StorageServer storageServer = null;
+        	
         	try {
-        		TrackerClient trackerClient = new TrackerClient();
+        		trackerClient = new TrackerClient();
         		trackerServer = trackerClient.getConnection();
+        		storageClient = new StorageClient(trackerServer, storageServer);
+            	idleConnectionPool.add(storageClient);
+            	logger.info("idleConnPool回收，剩余连接" + idleConnectionPool.size());
 			} catch (IOException e) {
 				e.printStackTrace();
 			} finally {
+				if(storageServer != null){
+	                try {
+	                	storageServer.close();
+	                } catch (IOException e) {
+	                    e.printStackTrace();
+	                    logger.error("storageServer close 失败：" + e.getMessage());
+	                }
+	            }
 	            if(trackerServer != null){
 	                try {
 	                    trackerServer.close();
@@ -128,28 +171,37 @@ public class FastDFSPoolConfig {
 	                    logger.error("checkIn trackerServer close 失败：" + e.getMessage());
 	                }
 	            }
-	        }*/
-        	storageClient1 = new StorageClient(trackerServer, storageServer);
-        	idleConnectionPool.add(storageClient1);
-        	logger.info("idleConnPool回收，剩余连接" + idleConnectionPool.size());
+	        }
         }
     }
     
     //如果连接无效则抛弃，新建连接来补充到池里
-    public static void drop(StorageClient storageClient1){
-        if(FastDFSPoolConfig.busyConnectionPool.remove(storageClient1) != null){
+    public static void drop(StorageClient storageClient){
+    	Object obj = busyConnectionPool.remove(storageClient);
+        if(obj != null){
+        	StorageServer storageServer = null;
             TrackerServer trackerServer = null;
-            TrackerClient trackerClient = new TrackerClient();
+            TrackerClient trackerClient;
+            
             try {
+            	trackerClient = new TrackerClient();
                 trackerServer = trackerClient.getConnection();
-                StorageClient newStorageClient = new StorageClient(trackerServer, null);
-                idleConnectionPool.add(newStorageClient);
+                storageClient = new StorageClient(trackerServer, storageServer);
+                idleConnectionPool.add(storageClient);
                 
                 logger.info("------------------------- conn：" + idleConnectionPool.size());
             } catch (IOException e) {
                 e.printStackTrace();
                 logger.error("busyConnectionPool drop fail：" + e.getMessage());
             }finally{
+            	if(storageServer != null){
+                    try {
+                    	storageServer.close();
+                    } catch (IOException e) {
+                    	logger.error("storageServer close fail：" + e.getMessage());
+                        e.printStackTrace();
+                    }
+                }
                 if(trackerServer != null){
                     try {
                         trackerServer.close();
