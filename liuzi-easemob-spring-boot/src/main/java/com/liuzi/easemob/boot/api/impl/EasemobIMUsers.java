@@ -13,7 +13,7 @@ import io.swagger.client.model.RegisterUsers;
 import io.swagger.client.model.UserNames;
 
 
-public class EasemobIMUsers  implements IMUserAPI {
+public class EasemobIMUsers extends EasemobConfig implements IMUserAPI {
 
 	private UsersApi users_api = new UsersApi();
 	private ResponseHandler responseHandler = new ResponseHandler();
@@ -22,7 +22,7 @@ public class EasemobIMUsers  implements IMUserAPI {
 		return responseHandler.handle(new EasemobAPI() {
 			@Override
 			public Object invokeEasemobAPI() throws ApiException {
-				return users_api.orgNameAppNameUsersPost(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME, (RegisterUsers) payload,EasemobConfig.getAccessToken());
+				return users_api.orgNameAppNameUsersPost( ORG_NAME, APP_NAME, (RegisterUsers) payload, getAccessToken());
 			}
 		});
 	}
@@ -32,7 +32,7 @@ public class EasemobIMUsers  implements IMUserAPI {
 		return responseHandler.handle(new EasemobAPI() {
 			@Override
 			public Object invokeEasemobAPI() throws ApiException {
-				return users_api.orgNameAppNameUsersPost(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME, (RegisterUsers) payload,EasemobConfig.getAccessToken());
+				return users_api.orgNameAppNameUsersPost( ORG_NAME, APP_NAME, (RegisterUsers) payload, getAccessToken());
 			}
 		});
 	}
@@ -42,7 +42,7 @@ public class EasemobIMUsers  implements IMUserAPI {
 		return responseHandler.handle(new EasemobAPI() {
 			@Override
 			public Object invokeEasemobAPI() throws ApiException {
-				return users_api.orgNameAppNameUsersUsernameGet(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,EasemobConfig.getAccessToken(),userName);
+				return users_api.orgNameAppNameUsersUsernameGet( ORG_NAME, APP_NAME, getAccessToken(),userName);
 		}
 		});
 	}
@@ -52,7 +52,7 @@ public class EasemobIMUsers  implements IMUserAPI {
 		return responseHandler.handle(new EasemobAPI() {
 			@Override
 			public Object invokeEasemobAPI() throws ApiException {
-				return users_api.orgNameAppNameUsersGet(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,EasemobConfig.getAccessToken(),limit+"",cursor);
+				return users_api.orgNameAppNameUsersGet( ORG_NAME, APP_NAME, getAccessToken(),limit+"",cursor);
 			}
 		});
 	}
@@ -62,7 +62,7 @@ public class EasemobIMUsers  implements IMUserAPI {
 		return responseHandler.handle(new EasemobAPI() {
 			@Override
 			public Object invokeEasemobAPI() throws ApiException {
-				return users_api.orgNameAppNameUsersUsernameDelete(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,EasemobConfig.getAccessToken(),userName);
+				return users_api.orgNameAppNameUsersUsernameDelete( ORG_NAME, APP_NAME, getAccessToken(),userName);
 			}
 		});
 	}
@@ -72,7 +72,7 @@ public class EasemobIMUsers  implements IMUserAPI {
 		return responseHandler.handle(new EasemobAPI() {
 			@Override
 			public Object invokeEasemobAPI() throws ApiException {
-				return users_api.orgNameAppNameUsersDelete(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,EasemobConfig.getAccessToken(),limit+"",cursor);
+				return users_api.orgNameAppNameUsersDelete( ORG_NAME, APP_NAME, getAccessToken(),limit+"",cursor);
 			}
 		});
 	}
@@ -82,7 +82,7 @@ public class EasemobIMUsers  implements IMUserAPI {
 		return responseHandler.handle(new EasemobAPI() {
 			@Override
 			public Object invokeEasemobAPI() throws ApiException {
-				return users_api.orgNameAppNameUsersUsernamePasswordPut(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,userName, (NewPassword) payload,EasemobConfig.getAccessToken());
+				return users_api.orgNameAppNameUsersUsernamePasswordPut( ORG_NAME, APP_NAME,userName, (NewPassword) payload, getAccessToken());
 			}
 		});
 	}
@@ -92,7 +92,7 @@ public class EasemobIMUsers  implements IMUserAPI {
 		return responseHandler.handle(new EasemobAPI() {
 			@Override
 			public Object invokeEasemobAPI() throws ApiException {
-				return users_api.orgNameAppNameUsersUsernamePut(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,userName, (Nickname) payload,EasemobConfig.getAccessToken());
+				return users_api.orgNameAppNameUsersUsernamePut( ORG_NAME, APP_NAME,userName, (Nickname) payload, getAccessToken());
 			}
 		});
 	}
@@ -102,7 +102,7 @@ public class EasemobIMUsers  implements IMUserAPI {
 		return responseHandler.handle(new EasemobAPI() {
 			@Override
 			public Object invokeEasemobAPI() throws ApiException {
-				return users_api.orgNameAppNameUsersOwnerUsernameContactsUsersFriendUsernamePost(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,EasemobConfig.getAccessToken(),userName,friendName);
+				return users_api.orgNameAppNameUsersOwnerUsernameContactsUsersFriendUsernamePost( ORG_NAME, APP_NAME, getAccessToken(),userName,friendName);
 			}
 		});
 	}
@@ -112,7 +112,7 @@ public class EasemobIMUsers  implements IMUserAPI {
 		return responseHandler.handle(new EasemobAPI() {
 			@Override
 			public Object invokeEasemobAPI() throws ApiException {
-				return users_api.orgNameAppNameUsersOwnerUsernameContactsUsersFriendUsernameDelete(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,EasemobConfig.getAccessToken(),userName,friendName);
+				return users_api.orgNameAppNameUsersOwnerUsernameContactsUsersFriendUsernameDelete( ORG_NAME, APP_NAME, getAccessToken(),userName,friendName);
 			}
 		});
 	}
@@ -122,7 +122,7 @@ public class EasemobIMUsers  implements IMUserAPI {
 		return responseHandler.handle(new EasemobAPI() {
 			@Override
 			public Object invokeEasemobAPI() throws ApiException {
-				return users_api.orgNameAppNameUsersOwnerUsernameContactsUsersGet(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,EasemobConfig.getAccessToken(),userName);
+				return users_api.orgNameAppNameUsersOwnerUsernameContactsUsersGet( ORG_NAME, APP_NAME, getAccessToken(),userName);
 			}
 		});
 	}
@@ -132,7 +132,7 @@ public class EasemobIMUsers  implements IMUserAPI {
 		return responseHandler.handle(new EasemobAPI() {
 			@Override
 			public Object invokeEasemobAPI() throws ApiException {
-				return users_api.orgNameAppNameUsersOwnerUsernameBlocksUsersGet(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,EasemobConfig.getAccessToken(),userName);
+				return users_api.orgNameAppNameUsersOwnerUsernameBlocksUsersGet( ORG_NAME, APP_NAME, getAccessToken(),userName);
 			}
 		});
 	}
@@ -142,7 +142,7 @@ public class EasemobIMUsers  implements IMUserAPI {
 		return responseHandler.handle(new EasemobAPI() {
 			@Override
 			public Object invokeEasemobAPI() throws ApiException {
-				return users_api.orgNameAppNameUsersOwnerUsernameBlocksUsersPost(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,EasemobConfig.getAccessToken(),userName, (UserNames) payload);
+				return users_api.orgNameAppNameUsersOwnerUsernameBlocksUsersPost( ORG_NAME, APP_NAME, getAccessToken(),userName, (UserNames) payload);
 			}
 		});
 	}
@@ -152,7 +152,7 @@ public class EasemobIMUsers  implements IMUserAPI {
 		return responseHandler.handle(new EasemobAPI() {
 			@Override
 			public Object invokeEasemobAPI() throws ApiException {
-				return users_api.orgNameAppNameUsersOwnerUsernameBlocksUsersBlockedUsernameDelete(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,EasemobConfig.getAccessToken(),userName,blackListName);
+				return users_api.orgNameAppNameUsersOwnerUsernameBlocksUsersBlockedUsernameDelete( ORG_NAME, APP_NAME, getAccessToken(),userName,blackListName);
 			}
 		});
 	}
@@ -162,7 +162,7 @@ public class EasemobIMUsers  implements IMUserAPI {
 		return responseHandler.handle(new EasemobAPI() {
 			@Override
 			public Object invokeEasemobAPI() throws ApiException {
-				return users_api.orgNameAppNameUsersUsernameStatusGet(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,EasemobConfig.getAccessToken(),userName);
+				return users_api.orgNameAppNameUsersUsernameStatusGet( ORG_NAME, APP_NAME, getAccessToken(),userName);
 			}
 		});
 	}
@@ -172,7 +172,7 @@ public class EasemobIMUsers  implements IMUserAPI {
 		return responseHandler.handle(new EasemobAPI() {
 			@Override
 			public Object invokeEasemobAPI() throws ApiException {
-				return users_api.orgNameAppNameUsersOwnerUsernameOfflineMsgCountGet(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,EasemobConfig.getAccessToken(),userName);
+				return users_api.orgNameAppNameUsersOwnerUsernameOfflineMsgCountGet( ORG_NAME, APP_NAME, getAccessToken(),userName);
 			}
 		});
 	}
@@ -182,7 +182,7 @@ public class EasemobIMUsers  implements IMUserAPI {
 		return responseHandler.handle(new EasemobAPI() {
 			@Override
 			public Object invokeEasemobAPI() throws ApiException {
-				return users_api.orgNameAppNameUsersUsernameOfflineMsgStatusMsgIdGet(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,EasemobConfig.getAccessToken(),userName,msgId);
+				return users_api.orgNameAppNameUsersUsernameOfflineMsgStatusMsgIdGet( ORG_NAME, APP_NAME, getAccessToken(),userName,msgId);
 			}
 		});
 	}
@@ -192,7 +192,7 @@ public class EasemobIMUsers  implements IMUserAPI {
 		return responseHandler.handle(new EasemobAPI() {
 			@Override
 			public Object invokeEasemobAPI() throws ApiException {
-				return users_api.orgNameAppNameUsersUsernameDeactivatePost(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,EasemobConfig.getAccessToken(),userName);
+				return users_api.orgNameAppNameUsersUsernameDeactivatePost( ORG_NAME, APP_NAME, getAccessToken(),userName);
 			}
 		});
 	}
@@ -202,7 +202,7 @@ public class EasemobIMUsers  implements IMUserAPI {
 		return responseHandler.handle(new EasemobAPI() {
 			@Override
 			public Object invokeEasemobAPI() throws ApiException {
-				return users_api.orgNameAppNameUsersUsernameActivatePost(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,EasemobConfig.getAccessToken(),userName);
+				return users_api.orgNameAppNameUsersUsernameActivatePost( ORG_NAME, APP_NAME, getAccessToken(),userName);
 			}
 		});
 	}
@@ -212,7 +212,7 @@ public class EasemobIMUsers  implements IMUserAPI {
 		return responseHandler.handle(new EasemobAPI() {
 			@Override
 			public Object invokeEasemobAPI() throws ApiException {
-				return users_api.orgNameAppNameUsersUsernameDisconnectGet(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,EasemobConfig.getAccessToken(),userName);
+				return users_api.orgNameAppNameUsersUsernameDisconnectGet( ORG_NAME, APP_NAME, getAccessToken(),userName);
 			}
 		});
 	}
@@ -222,7 +222,7 @@ public class EasemobIMUsers  implements IMUserAPI {
 		return responseHandler.handle(new EasemobAPI() {
 			@Override
 			public Object invokeEasemobAPI() throws ApiException {
-				return users_api.orgNameAppNameUsersUsernameJoinedChatgroupsGet(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,EasemobConfig.getAccessToken(),userName);
+				return users_api.orgNameAppNameUsersUsernameJoinedChatgroupsGet( ORG_NAME, APP_NAME, getAccessToken(),userName);
 			}
 		});
 	}
@@ -232,7 +232,7 @@ public class EasemobIMUsers  implements IMUserAPI {
 		return responseHandler.handle(new EasemobAPI() {
 			@Override
 			public Object invokeEasemobAPI() throws ApiException {
-				return users_api.orgNameAppNameUsersUsernameJoinedChatroomsGet(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,EasemobConfig.getAccessToken(),userName);
+				return users_api.orgNameAppNameUsersUsernameJoinedChatroomsGet( ORG_NAME, APP_NAME, getAccessToken(),userName);
 			}
 		});
 	}

@@ -5,10 +5,10 @@ import com.liuzi.easemob.boot.EasemobConfig;
 
 
 
-public class EasemobAuthToken implements AuthTokenAPI{
+public class EasemobAuthToken extends EasemobConfig implements AuthTokenAPI{
 
 	@Override
 	public Object getAuthToken(){
-		return EasemobConfig.getAccessToken();
+		return  getAccessToken();
 	}
 }

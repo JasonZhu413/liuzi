@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by easemob on 2017/3/16.
  */
-public class ResponseHandler {
+public class ResponseHandler extends EasemobConfig{
     private static final Logger logger = LoggerFactory.getLogger(ResponseHandler.class);
 
     @SuppressWarnings("unchecked")
@@ -25,7 +25,7 @@ public class ResponseHandler {
         } catch (ApiException e) {
             if (e.getCode() == 401) {
                 logger.info("The current token is invalid, re-generating token for you and calling it again");
-                EasemobConfig.initTokenByProp();
+                initTokenByProp();
                 try {
                     result = easemobAPI.invokeEasemobAPI();
                 } catch (ApiException e1) {

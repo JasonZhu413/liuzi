@@ -4,6 +4,10 @@ import java.lang.reflect.Method;
 
 
 
+
+
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CachingConfigurerSupport;
 import org.springframework.cache.annotation.EnableCaching;
@@ -19,8 +23,10 @@ import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.liuzi.util.LiuziUtil;
 
 
+@Slf4j
 @Configuration
 @EnableCaching
 public class RedisConfig extends CachingConfigurerSupport{
@@ -30,6 +36,8 @@ public class RedisConfig extends CachingConfigurerSupport{
 	 */
 	@Bean
 	public CacheManager cacheManager(RedisTemplate redisTemplate) {
+		LiuziUtil.tag("--------  Liuzi Redis初始化 --------");
+		log.info("--------  Liuzi Redis初始化，注入cacheManager  --------");
 		return new RedisCacheManager(redisTemplate);
 	}
 	
@@ -40,6 +48,8 @@ public class RedisConfig extends CachingConfigurerSupport{
 	 */
 	@Bean
     public RedisTemplate<String, String> redisTemplate(RedisConnectionFactory factory) {
+		log.info("--------  Liuzi Redis初始化，注入redisTemplate  --------");
+		
 		StringRedisTemplate template = new StringRedisTemplate(factory);
         Jackson2JsonRedisSerializer jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer(Object.class);
         ObjectMapper om = new ObjectMapper();
@@ -56,6 +66,8 @@ public class RedisConfig extends CachingConfigurerSupport{
 	 */
 	@Bean
 	public KeyGenerator keyGenerator() {
+		log.info("--------  Liuzi Redis初始化，注入keyGenerator  --------");
+		
 		return new KeyGenerator() {
 			@Override
 			public Object generate(Object target, Method method, Object... params) {
@@ -65,7 +77,7 @@ public class RedisConfig extends CachingConfigurerSupport{
                 for (Object obj : params) {
                     sb.append(obj.toString());
                 }
-                System.out.println("keyGenerator=" + sb.toString());
+                log.info("keyGenerator = " + sb.toString());
                 return sb.toString();
 			}
 		};

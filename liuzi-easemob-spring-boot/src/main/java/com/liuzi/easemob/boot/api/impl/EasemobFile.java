@@ -9,7 +9,7 @@ import io.swagger.client.api.UploadAndDownloadFilesApi;
 import java.io.File;
 
 
-public class EasemobFile implements FileAPI {
+public class EasemobFile extends EasemobConfig implements FileAPI {
     private ResponseHandler responseHandler = new ResponseHandler();
     private UploadAndDownloadFilesApi u_d_api = new UploadAndDownloadFilesApi();
     @Override
@@ -17,7 +17,7 @@ public class EasemobFile implements FileAPI {
         return responseHandler.handle(new EasemobAPI() {
             @Override
             public Object invokeEasemobAPI() throws ApiException {
-                return u_d_api.orgNameAppNameChatfilesPost(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,EasemobConfig.getAccessToken(),(File)file,true);
+                return u_d_api.orgNameAppNameChatfilesPost( ORG_NAME, APP_NAME, getAccessToken(),(File)file,true);
              }
         });
     }
@@ -27,7 +27,7 @@ public class EasemobFile implements FileAPI {
         return responseHandler.handle(new EasemobAPI() {
             @Override
             public Object invokeEasemobAPI() throws ApiException {
-               return u_d_api.orgNameAppNameChatfilesUuidGet(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,EasemobConfig.getAccessToken(),fileUUID,shareSecret,isThumbnail);
+               return u_d_api.orgNameAppNameChatfilesUuidGet( ORG_NAME, APP_NAME, getAccessToken(),fileUUID,shareSecret,isThumbnail);
             }
         });
     }

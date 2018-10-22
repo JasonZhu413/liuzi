@@ -8,6 +8,7 @@ import io.swagger.client.api.AuthenticationApi;
 import io.swagger.client.model.Token;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.Map;
@@ -21,32 +22,38 @@ import lombok.extern.slf4j.Slf4j;
 @Configuration
 public class EasemobConfig {
 	
+	@Value("${spring.datasource.type}")
+    private String type;
+	
     @Value("${easemob.org}")
-	public static String ORG_NAME;
+	protected String ORG_NAME;
     @Value("${easemob.app}")
-	public static String APP_NAME;
+    protected String APP_NAME;
 	@Value("${easemob.grant_type}")
-    public static String GRANT_TYPE;
+	private String GRANT_TYPE;
 	@Value("${easemob.client.id}")
-    private static String CLIENT_ID;
+    private String CLIENT_ID;
 	@Value("${easemob.client.secret}")
-    private static String CLIENT_SECRET;
+    private String CLIENT_SECRET;
 	
     private static Token BODY;
-    private static AuthenticationApi API = new AuthenticationApi();
     private static String ACCESS_TOKEN;
     private static Double EXPIREDAT = -1D;
-
-    public EasemobConfig() {
+    private static AuthenticationApi API = new AuthenticationApi();
+    
+    @Bean
+    public EasemobConfig init() {
     	LiuziUtil.tag("--------  Liuzi Easymock初始化  --------");
 		
         BODY = new Token().clientId(CLIENT_ID).grantType(GRANT_TYPE).clientSecret(CLIENT_SECRET);
         initTokenByProp();
         
-        log.info("--------  Liuzi Easymock初始化完成  --------");
+        log.info("--------  Liuzi Easymock初始化完成 --------");
+        
+        return this;
     }
 
-    public static void initTokenByProp() {
+    public void initTokenByProp() {
         String resp = null;
         try {
             resp = API.orgNameAppNameTokenPost(ORG_NAME, APP_NAME, BODY);
@@ -64,14 +71,14 @@ public class EasemobConfig {
      * get Token from memory
      * @return
      */
-    public static String getAccessToken() {
+    public String getAccessToken() {
         if (ACCESS_TOKEN == null || isExpired()) {
             initTokenByProp();
         }
         return ACCESS_TOKEN;
     }
 
-    private static Boolean isExpired() {
+    private Boolean isExpired() {
         return System.currentTimeMillis() > EXPIREDAT;
     }
 

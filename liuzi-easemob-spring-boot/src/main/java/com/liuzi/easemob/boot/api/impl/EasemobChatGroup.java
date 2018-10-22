@@ -11,7 +11,7 @@ import io.swagger.client.api.GroupsApi;
 import io.swagger.client.model.*;
 
 
-public class EasemobChatGroup implements ChatGroupAPI {
+public class EasemobChatGroup extends EasemobConfig implements ChatGroupAPI {
 
     private ResponseHandler responseHandler = new ResponseHandler();
     private GroupsApi api = new GroupsApi();
@@ -21,7 +21,7 @@ public class EasemobChatGroup implements ChatGroupAPI {
         return responseHandler.handle(new EasemobAPI() {
             @Override
             public Object invokeEasemobAPI() throws ApiException {
-                return api.orgNameAppNameChatgroupsGet(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,EasemobConfig.getAccessToken(),limit+"",cursor);
+                return api.orgNameAppNameChatgroupsGet(ORG_NAME, APP_NAME, getAccessToken(),limit+"",cursor);
             }
         });
     }
@@ -31,7 +31,7 @@ public class EasemobChatGroup implements ChatGroupAPI {
         return responseHandler.handle(new EasemobAPI() {
             @Override
             public Object invokeEasemobAPI() throws ApiException {
-                return api.orgNameAppNameChatgroupsGroupIdsGet(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,EasemobConfig.getAccessToken(),StringUtil.join(groupIds,","));
+                return api.orgNameAppNameChatgroupsGroupIdsGet(ORG_NAME, APP_NAME, getAccessToken(),StringUtil.join(groupIds,","));
             }
         });
     }
@@ -40,7 +40,7 @@ public class EasemobChatGroup implements ChatGroupAPI {
         return responseHandler.handle(new EasemobAPI() {
             @Override
             public Object invokeEasemobAPI() throws ApiException {
-                return api.orgNameAppNameChatgroupsPost(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,EasemobConfig.getAccessToken(), (Group) payload);
+                return api.orgNameAppNameChatgroupsPost(ORG_NAME, APP_NAME, getAccessToken(), (Group) payload);
             }
         });
     }
@@ -50,7 +50,7 @@ public class EasemobChatGroup implements ChatGroupAPI {
         return responseHandler.handle(new EasemobAPI() {
             @Override
             public Object invokeEasemobAPI() throws ApiException {
-                return api.orgNameAppNameChatgroupsGroupIdPut(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,EasemobConfig.getAccessToken(),groupId, (ModifyGroup) payload);
+                return api.orgNameAppNameChatgroupsGroupIdPut( ORG_NAME, APP_NAME, getAccessToken(),groupId, (ModifyGroup) payload);
             }
         });
     }
@@ -60,7 +60,7 @@ public class EasemobChatGroup implements ChatGroupAPI {
         return responseHandler.handle(new EasemobAPI() {
             @Override
             public Object invokeEasemobAPI() throws ApiException {
-                return api.orgNameAppNameChatgroupsGroupIdDelete(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,EasemobConfig.getAccessToken(),groupId);
+                return api.orgNameAppNameChatgroupsGroupIdDelete( ORG_NAME, APP_NAME, getAccessToken(),groupId);
             }
         });
     }
@@ -70,7 +70,7 @@ public class EasemobChatGroup implements ChatGroupAPI {
         return responseHandler.handle(new EasemobAPI() {
             @Override
             public Object invokeEasemobAPI() throws ApiException {
-                return api.orgNameAppNameChatgroupsGroupIdUsersGet(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,EasemobConfig.getAccessToken(),groupId);
+                return api.orgNameAppNameChatgroupsGroupIdUsersGet( ORG_NAME, APP_NAME, getAccessToken(),groupId);
             }
         });
     }
@@ -84,7 +84,7 @@ public class EasemobChatGroup implements ChatGroupAPI {
         return responseHandler.handle(new EasemobAPI() {
             @Override
             public Object invokeEasemobAPI() throws ApiException {
-                return api.orgNameAppNameChatgroupsGroupIdUsersPost(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,EasemobConfig.getAccessToken(),groupId,userNames);
+                return api.orgNameAppNameChatgroupsGroupIdUsersPost( ORG_NAME, APP_NAME, getAccessToken(),groupId,userNames);
             }
         });
     }
@@ -94,7 +94,7 @@ public class EasemobChatGroup implements ChatGroupAPI {
         return responseHandler.handle(new EasemobAPI() {
             @Override
             public Object invokeEasemobAPI() throws ApiException {
-                return api.orgNameAppNameChatgroupsGroupIdUsersPost(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,EasemobConfig.getAccessToken(),groupId, (UserNames) payload);
+                return api.orgNameAppNameChatgroupsGroupIdUsersPost( ORG_NAME, APP_NAME, getAccessToken(),groupId, (UserNames) payload);
             }
         });
     }
@@ -104,7 +104,7 @@ public class EasemobChatGroup implements ChatGroupAPI {
         return responseHandler.handle(new EasemobAPI() {
             @Override
             public Object invokeEasemobAPI() throws ApiException {
-                return api.orgNameAppNameChatgroupsGroupIdUsersUsernameDelete(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,EasemobConfig.getAccessToken(),groupId,userId);
+                return api.orgNameAppNameChatgroupsGroupIdUsersUsernameDelete( ORG_NAME, APP_NAME, getAccessToken(),groupId,userId);
             }
         });
     }
@@ -114,7 +114,7 @@ public class EasemobChatGroup implements ChatGroupAPI {
         return responseHandler.handle(new EasemobAPI() {
             @Override
             public Object invokeEasemobAPI() throws ApiException {
-                return api.orgNameAppNameChatgroupsGroupIdUsersMembersDelete(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,EasemobConfig.getAccessToken(),groupId,StringUtil.join(userIds,","));
+                return api.orgNameAppNameChatgroupsGroupIdUsersMembersDelete( ORG_NAME, APP_NAME, getAccessToken(),groupId,StringUtil.join(userIds,","));
             }
         });
     }
@@ -124,7 +124,7 @@ public class EasemobChatGroup implements ChatGroupAPI {
         return responseHandler.handle(new EasemobAPI() {
             @Override
             public Object invokeEasemobAPI() throws ApiException {
-                return api.orgNameAppNameChatgroupsGroupidPut(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,EasemobConfig.getAccessToken(),groupId, (NewOwner) payload);
+                return api.orgNameAppNameChatgroupsGroupidPut( ORG_NAME, APP_NAME, getAccessToken(),groupId, (NewOwner) payload);
             }
         });
     }
@@ -134,7 +134,7 @@ public class EasemobChatGroup implements ChatGroupAPI {
         return responseHandler.handle(new EasemobAPI() {
             @Override
             public Object invokeEasemobAPI() throws ApiException {
-                return api.orgNameAppNameChatgroupsGroupIdBlocksUsersGet(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,EasemobConfig.getAccessToken(),groupId);
+                return api.orgNameAppNameChatgroupsGroupIdBlocksUsersGet( ORG_NAME, APP_NAME, getAccessToken(),groupId);
             }
         });
     }
@@ -144,7 +144,7 @@ public class EasemobChatGroup implements ChatGroupAPI {
         return responseHandler.handle(new EasemobAPI() {
             @Override
             public Object invokeEasemobAPI() throws ApiException {
-                return api.orgNameAppNameChatgroupsGroupIdBlocksUsersUsernamePost(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,EasemobConfig.getAccessToken(),groupId,userId);
+                return api.orgNameAppNameChatgroupsGroupIdBlocksUsersUsernamePost( ORG_NAME, APP_NAME, getAccessToken(),groupId,userId);
             }
         });
     }
@@ -154,7 +154,7 @@ public class EasemobChatGroup implements ChatGroupAPI {
         return responseHandler.handle(new EasemobAPI() {
             @Override
             public Object invokeEasemobAPI() throws ApiException {
-                return api.orgNameAppNameChatgroupsGroupIdBlocksUsersPost(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,EasemobConfig.getAccessToken(),groupId, (UserNames) payload);
+                return api.orgNameAppNameChatgroupsGroupIdBlocksUsersPost( ORG_NAME, APP_NAME, getAccessToken(),groupId, (UserNames) payload);
             }
         });
     }
@@ -164,7 +164,7 @@ public class EasemobChatGroup implements ChatGroupAPI {
         return responseHandler.handle(new EasemobAPI() {
             @Override
             public Object invokeEasemobAPI() throws ApiException {
-                return api.orgNameAppNameChatgroupsGroupIdBlocksUsersUsernameDelete(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,EasemobConfig.getAccessToken(),groupId,userId);
+                return api.orgNameAppNameChatgroupsGroupIdBlocksUsersUsernameDelete( ORG_NAME, APP_NAME, getAccessToken(),groupId,userId);
             }
         });
     }
@@ -174,7 +174,7 @@ public class EasemobChatGroup implements ChatGroupAPI {
         return responseHandler.handle(new EasemobAPI() {
             @Override
             public Object invokeEasemobAPI() throws ApiException {
-                return api.orgNameAppNameChatgroupsGroupIdBlocksUsersUsernamesDelete(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,EasemobConfig.getAccessToken(),groupId,StringUtil.join(userIds,","));
+                return api.orgNameAppNameChatgroupsGroupIdBlocksUsersUsernamesDelete( ORG_NAME, APP_NAME, getAccessToken(),groupId,StringUtil.join(userIds,","));
             }
         });
     }

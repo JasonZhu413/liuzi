@@ -2,20 +2,41 @@ package com.liuzi.qsms.boot.service.impl;
 
 import java.util.ArrayList;
 
+import javax.annotation.Resource;
+
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Service;
 
+import com.github.qcloudsms.SmsMultiSender;
 import com.github.qcloudsms.SmsMultiSenderResult;
+import com.github.qcloudsms.SmsSingleSender;
 import com.github.qcloudsms.SmsSingleSenderResult;
 import com.github.qcloudsms.SmsStatusPullCallbackResult;
 import com.github.qcloudsms.SmsStatusPullReplyResult;
+import com.github.qcloudsms.SmsStatusPuller;
+import com.github.qcloudsms.SmsVoicePromptSender;
 import com.github.qcloudsms.SmsVoicePromptSenderResult;
+import com.github.qcloudsms.SmsVoiceVerifyCodeSender;
 import com.github.qcloudsms.SmsVoiceVerifyCodeSenderResult;
 import com.liuzi.qsms.boot.service.QSmsService;
-import com.liuzi.qsms.boot.QSmsConfig;
 
+@Slf4j
 @Service("qSmsService")
 public class QSmsServiceImpl implements QSmsService{
-
+	
+	@Resource
+	private SmsSingleSender smsSingleSender;
+	@Resource
+	private SmsMultiSender smsMultiSender;
+	@Resource
+	private SmsVoiceVerifyCodeSender smsVoiceVerifyCodeSender;
+	@Resource
+	private SmsVoicePromptSender smsVoicePromptSender;
+	@Resource
+	private SmsStatusPuller smsStatusPuller;
+	
+	
 	/**
 	 * 短信单发（普通）
 	 * @param phone 电话号码
@@ -23,9 +44,16 @@ public class QSmsServiceImpl implements QSmsService{
 	 * @return
 	 * @throws Exception
 	 */
-	@Override
 	public SmsSingleSenderResult send(String phone, String msg){
-		return QSmsConfig.send(phone, msg);
+		SmsSingleSenderResult result = null;
+		try {
+			result = smsSingleSender.send(0, "86", phone, msg, "", "");
+		} catch (Exception e) {
+			e.printStackTrace();
+			log.info("短信单发（普通）失败：" + e.getMessage());
+		}
+		log.info("短信单发（普通）返回：" + result);
+		return result;
 	}
 	
 	/**
@@ -37,7 +65,15 @@ public class QSmsServiceImpl implements QSmsService{
 	 * @throws Exception
 	 */
 	public SmsSingleSenderResult send(int tempId, String phone, ArrayList<String> params){
-		return QSmsConfig.send(tempId, phone, params);
+		SmsSingleSenderResult result = null;
+		try {
+			result = smsSingleSender.sendWithParam("86", phone, tempId, params, "", "", "");
+		} catch (Exception e) {
+			e.printStackTrace();
+			log.info("短信单发（指定模板）失败：" + e.getMessage());
+		}
+		log.info("短信单发（指定模板）返回：" + result);
+		return result;
 	}
 	
 	/**
@@ -48,7 +84,15 @@ public class QSmsServiceImpl implements QSmsService{
 	 * @throws Exception
 	 */
 	public SmsMultiSenderResult send(ArrayList<String> phones, String msg){
-		return QSmsConfig.send(phones, msg);
+		SmsMultiSenderResult result = null;
+		try {
+			result = smsMultiSender.send(0, "86", phones, msg, "", "");
+		} catch (Exception e) {
+			e.printStackTrace();
+			log.info("短信群发（普通）失败：" + e.getMessage());
+		}
+		log.info("短信群发（普通）返回：" + result);
+		return result;
 	}
 	
 	/**
@@ -60,7 +104,15 @@ public class QSmsServiceImpl implements QSmsService{
 	 * @throws Exception
 	 */
 	public SmsMultiSenderResult send(int tempId, ArrayList<String> phones, ArrayList<String> params){
-		return QSmsConfig.send(tempId, phones, params);
+		SmsMultiSenderResult result = null;
+		try {
+			result = smsMultiSender.sendWithParam("86", phones, tempId, params, "", "", "");
+		} catch (Exception e) {
+			e.printStackTrace();
+			log.info("短信群发（指定模板）失败：" + e.getMessage());
+		}
+		log.info("短信群发（指定模板）返回：" + result);
+		return result;
 	}
 	
 	/**
@@ -71,7 +123,15 @@ public class QSmsServiceImpl implements QSmsService{
 	 * @throws Exception
 	 */
 	public SmsVoiceVerifyCodeSenderResult sendVoiceVerify(String phone, String msg){
-		return QSmsConfig.sendVoiceVerify(phone, msg);
+		SmsVoiceVerifyCodeSenderResult result = null;
+		try {
+			result = smsVoiceVerifyCodeSender.send("86", phone, msg, 2, "");
+		} catch (Exception e) {
+			e.printStackTrace();
+			log.info("短信语音验证码单发失败：" + e.getMessage());
+		}
+		log.info("短信语音验证码单发返回：" + result);
+		return result;
 	}
 	
 	/**
@@ -82,7 +142,15 @@ public class QSmsServiceImpl implements QSmsService{
 	 * @throws Exception
 	 */
 	public SmsVoicePromptSenderResult sendVoicePrompt(String phone, String msg){
-		return QSmsConfig.sendVoicePrompt(phone, msg);
+		SmsVoicePromptSenderResult result = null;
+		try {
+			result = smsVoicePromptSender.send("86", phone, 2, 2, msg, "");
+		} catch (Exception e) {
+			e.printStackTrace();
+			log.info("语音通知单发失败：" + e.getMessage());
+		}
+		log.info("语音通知单发返回：" + result);
+		return result;
 	}
 	
 	/**
@@ -91,7 +159,15 @@ public class QSmsServiceImpl implements QSmsService{
 	 * @throws Exception
 	 */
 	public SmsStatusPullCallbackResult callback(){
-		return QSmsConfig.callback();
+		SmsStatusPullCallbackResult callback = null;
+		try {
+			callback = smsStatusPuller.pullCallback(10);
+		} catch (Exception e) {
+			e.printStackTrace();
+			log.info("拉取短信回执失败：" + e.getMessage());
+		}
+		log.info("拉取短信回执返回：" + callback);
+		return callback;
 	}
 	
 	/**
@@ -100,6 +176,29 @@ public class QSmsServiceImpl implements QSmsService{
 	 * @throws Exception
 	 */
 	public SmsStatusPullReplyResult result(){
-		return QSmsConfig.result();
+		SmsStatusPullReplyResult result = null;
+		try {
+			result = smsStatusPuller.pullReply(10);
+		} catch (Exception e) {
+			e.printStackTrace();
+			log.info("拉取短信回复失败：" + e.getMessage());
+		}
+		
+		log.info("拉取短信回复返回：" + result);
+		return result;
+	}
+	
+	public static void main(String[] args) {
+		try {
+			/*SmsSingleSender sender = new SmsSingleSender(app_id, app_key);
+			ArrayList<String> params = new ArrayList<String>();
+			params.add("123456");
+			params.add("5");
+			SmsSingleSenderResult result = sender.sendWithParam("86", 
+					"15210050811", 102208, params, "", "", "");
+		    System.out.print(result);*/
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

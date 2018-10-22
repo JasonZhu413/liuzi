@@ -24,13 +24,14 @@ import com.liuzi.util.LiuziUtil;
 public class RestConfig {
 	
 	@Value("${rest.connectTimeOut}")
-	private static String g_connectTimeOut = "10000";
+	private String g_connectTimeOut = "10000";
 	@Value("${rest.readTimeOut}")
-	private static String g_readTimeOut = "10000";
+	private String g_readTimeOut = "10000";
 	
 	@Bean
     public RestTemplate restTemplate(){
-		LiuziUtil.tag("  --------  Liuzi Rest初始化......  --------");
+		LiuziUtil.tag("  --------  Liuzi Rest初始化  --------");
+		log.info("  --------  Liuzi Rest初始化，注入restTemplate --------");
 		
 		SimpleClientHttpRequestFactory httpClientFactory = new SimpleClientHttpRequestFactory();
 		httpClientFactory.setConnectTimeout(Integer.parseInt(g_connectTimeOut));

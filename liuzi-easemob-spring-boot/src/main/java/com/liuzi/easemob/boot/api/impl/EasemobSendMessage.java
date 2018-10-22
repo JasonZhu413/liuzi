@@ -8,7 +8,7 @@ import io.swagger.client.ApiException;
 import io.swagger.client.api.MessagesApi;
 import io.swagger.client.model.Msg;
 
-public class EasemobSendMessage implements SendMessageAPI {
+public class EasemobSendMessage extends EasemobConfig implements SendMessageAPI {
     private ResponseHandler responseHandler = new ResponseHandler();
     private MessagesApi msg_api = new MessagesApi();
     @Override
@@ -16,7 +16,7 @@ public class EasemobSendMessage implements SendMessageAPI {
         return responseHandler.handle(new EasemobAPI() {
             @Override
             public Object invokeEasemobAPI() throws ApiException {
-                return msg_api.orgNameAppNameMessagesPost(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,EasemobConfig.getAccessToken(), (Msg) payload);
+                return msg_api.orgNameAppNameMessagesPost( ORG_NAME, APP_NAME, getAccessToken(), (Msg) payload);
             }
         });
     }

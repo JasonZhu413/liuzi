@@ -11,7 +11,7 @@ import io.swagger.client.model.Chatroom;
 import io.swagger.client.model.ModifyChatroom;
 import io.swagger.client.model.UserNames;
 
-public class EasemobChatRoom implements ChatRoomAPI {
+public class EasemobChatRoom extends EasemobConfig implements ChatRoomAPI {
     private ResponseHandler responseHandler = new ResponseHandler();
     private ChatRoomsApi rooms_api = new ChatRoomsApi();
 
@@ -20,7 +20,7 @@ public class EasemobChatRoom implements ChatRoomAPI {
         return responseHandler.handle(new EasemobAPI() {
             @Override
             public Object invokeEasemobAPI() throws ApiException {
-                return rooms_api.orgNameAppNameChatroomsPost(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,EasemobConfig.getAccessToken(), (Chatroom) payload);
+                return rooms_api.orgNameAppNameChatroomsPost( ORG_NAME, APP_NAME, getAccessToken(), (Chatroom) payload);
             }
         });
     }
@@ -30,7 +30,7 @@ public class EasemobChatRoom implements ChatRoomAPI {
         return responseHandler.handle(new EasemobAPI() {
             @Override
             public Object invokeEasemobAPI() throws ApiException {
-                return rooms_api.orgNameAppNameChatroomsChatroomIdPut(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,EasemobConfig.getAccessToken(),roomId, (ModifyChatroom) payload);
+                return rooms_api.orgNameAppNameChatroomsChatroomIdPut( ORG_NAME, APP_NAME, getAccessToken(),roomId, (ModifyChatroom) payload);
             }
         });
     }
@@ -40,7 +40,7 @@ public class EasemobChatRoom implements ChatRoomAPI {
         return responseHandler.handle(new EasemobAPI() {
             @Override
             public Object invokeEasemobAPI() throws ApiException {
-                return rooms_api.orgNameAppNameChatroomsChatroomIdDelete(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,EasemobConfig.getAccessToken(),roomId);
+                return rooms_api.orgNameAppNameChatroomsChatroomIdDelete( ORG_NAME, APP_NAME, getAccessToken(),roomId);
             }
         });
     }
@@ -50,7 +50,7 @@ public class EasemobChatRoom implements ChatRoomAPI {
         return responseHandler.handle(new EasemobAPI() {
             @Override
             public Object invokeEasemobAPI() throws ApiException {
-                return rooms_api.orgNameAppNameChatroomsGet(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,EasemobConfig.getAccessToken());
+                return rooms_api.orgNameAppNameChatroomsGet( ORG_NAME, APP_NAME, getAccessToken());
             }
         });
     }
@@ -60,7 +60,7 @@ public class EasemobChatRoom implements ChatRoomAPI {
         return responseHandler.handle(new EasemobAPI() {
             @Override
             public Object invokeEasemobAPI() throws ApiException {
-                return rooms_api.orgNameAppNameChatroomsChatroomIdGet(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,EasemobConfig.getAccessToken(),roomId);
+                return rooms_api.orgNameAppNameChatroomsChatroomIdGet( ORG_NAME, APP_NAME, getAccessToken(),roomId);
             }
         });
     }
@@ -70,7 +70,7 @@ public class EasemobChatRoom implements ChatRoomAPI {
         return responseHandler.handle(new EasemobAPI() {
             @Override
             public Object invokeEasemobAPI() throws ApiException {
-                return rooms_api.orgNameAppNameChatroomsChatroomIdUsersUsernamePost(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,EasemobConfig.getAccessToken(),roomId,userName);
+                return rooms_api.orgNameAppNameChatroomsChatroomIdUsersUsernamePost( ORG_NAME, APP_NAME, getAccessToken(),roomId,userName);
             }
         });
     }
@@ -80,7 +80,7 @@ public class EasemobChatRoom implements ChatRoomAPI {
         return responseHandler.handle(new EasemobAPI() {
             @Override
             public Object invokeEasemobAPI() throws ApiException {
-                return rooms_api.orgNameAppNameChatroomsChatroomIdUsersPost(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,EasemobConfig.getAccessToken(),roomId, (UserNames) payload);
+                return rooms_api.orgNameAppNameChatroomsChatroomIdUsersPost( ORG_NAME, APP_NAME, getAccessToken(),roomId, (UserNames) payload);
             }
         });
     }
@@ -90,7 +90,7 @@ public class EasemobChatRoom implements ChatRoomAPI {
         return responseHandler.handle(new EasemobAPI() {
             @Override
             public Object invokeEasemobAPI() throws ApiException {
-                return rooms_api.orgNameAppNameChatroomsChatroomIdUsersUsernameDelete(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,EasemobConfig.getAccessToken(),roomId,userName);
+                return rooms_api.orgNameAppNameChatroomsChatroomIdUsersUsernameDelete( ORG_NAME, APP_NAME, getAccessToken(),roomId,userName);
             }
         });
     }
@@ -100,7 +100,7 @@ public class EasemobChatRoom implements ChatRoomAPI {
         return responseHandler.handle(new EasemobAPI() {
             @Override
             public Object invokeEasemobAPI() throws ApiException {
-                return rooms_api.orgNameAppNameChatroomsChatroomIdUsersUsernamesDelete(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,EasemobConfig.getAccessToken(),roomId, StringUtil.join(userNames,","));
+                return rooms_api.orgNameAppNameChatroomsChatroomIdUsersUsernamesDelete( ORG_NAME, APP_NAME, getAccessToken(),roomId, StringUtil.join(userNames,","));
             }
         });
     }

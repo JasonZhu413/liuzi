@@ -25,13 +25,15 @@ import com.liuzi.util.Result;
 @Service("producerService")
 public class ProducerServiceImpl implements ProducerService{
 	
-	@Resource(name="topicTemplate")
+	/*@Resource(name="topicTemplate")
 	private JmsTemplate topicTemplate;
 	@Resource(name="queueTemplate")
-	private JmsTemplate queueTemplate;
-
-	private static ActiveMQQueue queueDestination = new ActiveMQQueue();
-	private static ActiveMQTopic topicDestination = new ActiveMQTopic();
+	private JmsTemplate queueTemplate;*/
+	@Resource
+	private JmsTemplate jmsTemplate;
+	
+	private ActiveMQQueue queueDestination = new ActiveMQQueue();
+	private ActiveMQTopic topicDestination = new ActiveMQTopic();
 	
 	/**
 	 * 向默认topic发送String
@@ -79,22 +81,26 @@ public class ProducerServiceImpl implements ProducerService{
      * 向指定topic发送
      */  
     private void sendTopic_object(Object object) { 
-    	String destination =  topicTemplate.getDefaultDestination().toString();
+    	jmsTemplate.setPubSubDomain(true);
+    	
+    	String destination =  jmsTemplate.getDefaultDestination().toString();
    		System.out.println("向队列" +destination+ "发送了消息------------" + object);
    		Object obj = JSONObject.toJSON(object);
     	MessageCreator mc = new MessageTextCreator(obj.toString());
-   		topicTemplate.send(mc);
+    	jmsTemplate.send(mc);
     } 
     /** 
      * 向指定topic发送
      */  
     private void sendTopic_object(String physicalName, Object object) { 
+    	jmsTemplate.setPubSubDomain(true);
+    	
     	physicalName = MD5.crypt(physicalName);
     	topicDestination.setPhysicalName(physicalName);
     	System.out.println("向队列" + topicDestination.toString() + "发送了消息------------" + object);
     	Object obj = JSONObject.toJSON(object);
     	MessageCreator mc = new MessageTextCreator(obj.toString());
-    	topicTemplate.send(topicDestination, mc);
+    	jmsTemplate.send(topicDestination, mc);
     } 
     
     /**
@@ -137,31 +143,37 @@ public class ProducerServiceImpl implements ProducerService{
 	 * 向默认queue发送
 	 */
 	public void sendQueue_object(Object object) {
-		String destination =  topicTemplate.getDefaultDestination().toString();
+		jmsTemplate.setPubSubDomain(false);
+		
+		String destination =  jmsTemplate.getDefaultDestination().toString();
 		System.out.println("向队列" +destination+ "发送了消息------------" + object);
 		Object obj = JSONObject.toJSON(object);
     	MessageCreator mc = new MessageTextCreator(obj.toString());
-		queueTemplate.send(mc);
+    	jmsTemplate.send(mc);
 	}
     /** 
      * 向指定queue发送
      */  
     private void sendQueue_object(String physicalName, Object object) { 
+    	jmsTemplate.setPubSubDomain(false);
+    	
     	physicalName = MD5.crypt(physicalName);
     	queueDestination.setPhysicalName(physicalName);
     	System.out.println("向队列" + queueDestination.toString() + "发送了消息------------" + object);
     	
     	Object obj = JSONObject.toJSON(object);
     	MessageCreator mc = new MessageTextCreator(obj.toString());
-    	queueTemplate.send(queueDestination, mc);
+    	jmsTemplate.send(queueDestination, mc);
     } 
     
     public TopicSubscriber createTopicConsumer(String clientID, Topic topic, String name,
     		MessageListener listener){
     	
+    	jmsTemplate.setPubSubDomain(true);
+    	
     	TopicSubscriber consumer = null;
     	try{
-    		Connection conn = topicTemplate.getConnectionFactory().createConnection();
+    		Connection conn = jmsTemplate.getConnectionFactory().createConnection();
         	conn.setClientID(clientID);
         	conn.start();
         	

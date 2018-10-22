@@ -9,9 +9,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.liuzi.util.LiuziUtil;
+
 import cn.jpush.api.JPushClient;
 
-import com.liuzi.util.LiuziUtil;
 
 @Slf4j
 @Configuration
@@ -28,8 +29,13 @@ public class JPushConfig{
 	
 	@Bean
     public JPushClient jpushClient(){
-		log.info("--------  Liuzi JPush初始化，jpushClient注入   --------");
-		return new JPushClient(MASTER_SECRET, APP_KEY);
+		LiuziUtil.tag("--------  Liuzi JPush初始化  --------");
+		log.info("--------  Liuzi JPush初始化，注入jpushClient   --------");
+		
+		JPushClient jPushClient = new JPushClient(MASTER_SECRET, APP_KEY);
+		
+		log.info("--------  Liuzi JPush初始化完成   --------");
+		return jPushClient;
     }
 
 }

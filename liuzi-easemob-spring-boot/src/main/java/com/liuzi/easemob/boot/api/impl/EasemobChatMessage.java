@@ -8,7 +8,7 @@ import io.swagger.client.ApiException;
 import io.swagger.client.api.ChatHistoryApi;
 
 
-public class EasemobChatMessage  implements ChatMessageAPI {
+public class EasemobChatMessage extends EasemobConfig implements ChatMessageAPI {
 
     private ResponseHandler responseHandler = new ResponseHandler();
     private ChatHistoryApi history_api = new ChatHistoryApi();
@@ -18,7 +18,7 @@ public class EasemobChatMessage  implements ChatMessageAPI {
         return responseHandler.handle(new EasemobAPI() {
             @Override
             public Object invokeEasemobAPI() throws ApiException {
-                return history_api.orgNameAppNameChatmessagesGet(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,EasemobConfig.getAccessToken(),query,limit+"",cursor);
+                return history_api.orgNameAppNameChatmessagesGet( ORG_NAME, APP_NAME, getAccessToken(),query,limit+"",cursor);
             }
         });
     }
@@ -28,7 +28,7 @@ public class EasemobChatMessage  implements ChatMessageAPI {
         return responseHandler.handle(new EasemobAPI() {
             @Override
             public Object invokeEasemobAPI() throws ApiException {
-                return history_api.orgNameAppNameChatmessagesTimeGet(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,EasemobConfig.getAccessToken(),timeStr);
+                return history_api.orgNameAppNameChatmessagesTimeGet( ORG_NAME, APP_NAME, getAccessToken(),timeStr);
             }
         });
     }

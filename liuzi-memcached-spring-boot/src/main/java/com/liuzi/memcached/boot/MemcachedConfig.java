@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 
 import lombok.extern.slf4j.Slf4j;
 
+import com.liuzi.util.LiuziUtil;
 import com.whalin.MemCached.MemCachedClient;
 import com.whalin.MemCached.SockIOPool;
   
@@ -43,7 +44,9 @@ public class MemcachedConfig {
     
     @Bean
     public SockIOPool sockIOPool(){
-    	log.info("--------  Liuzi Memcached初始化，sockIOPool注入   --------");
+    	LiuziUtil.tag("--------  Liuzi Memcached初始化   --------");
+    	log.info("--------  Liuzi Memcached初始化，注入sockIOPool   --------");
+    	
     	SockIOPool pool = SockIOPool.getInstance();
         pool.setServers(servers);
         pool.setFailover(failover);
@@ -60,7 +63,9 @@ public class MemcachedConfig {
 
     @Bean
     public MemCachedClient memCachedClient(){
-    	log.info("--------  Liuzi Memcached初始化，memCachedClient注入   --------");
-        return new MemCachedClient();
+    	log.info("--------  Liuzi Memcached初始化，注入memCachedClient   --------");
+    	MemCachedClient memCachedClient = new MemCachedClient();
+    	log.info("--------  Liuzi Memcached初始化完成   --------");
+        return memCachedClient;
     }
 }  

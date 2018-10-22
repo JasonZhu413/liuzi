@@ -14,6 +14,7 @@ import com.liuzi.fastdfs.boot.base.TrackerClient;
 import com.liuzi.fastdfs.boot.base.TrackerServer;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.liuzi.util.LiuziUtil;
@@ -27,27 +28,28 @@ public class FastDFSPoolConfig {
     private static ArrayBlockingQueue<StorageClient> idleConnectionPool;//空闲的连接
     
 	@Value("${fdfs.connect_timeout}")
-  private int g_connect_timeout;
-  @Value("${fdfs.network_timeout}")
-  public int g_network_timeout;
-  @Value("${fdfs.charset}")
-  public String g_charset;
-  @Value("${fdfs.http.anti_steal_token}")
-  public boolean g_anti_steal_token;
-  @Value("${fdfs.http.secret_key}")
-  public String g_secret_key;
-  @Value("${fdfs.http.tracker_http_port}")
-  public int g_tracker_http_port;
-  @Value("${fdfs.upload.max.size}")
-  public int g_file_upload_max_size;
-  @Value("${fdfs.connect.pool.size}")
-  public int g_connection_pool_size;
-  @Value("${fdfs.file_server}")
-  public String fileServer;
-  @Value("${fdfs.tracker_server}")
-  public String trackerServer;
-    
-    public FastDFSPoolConfig(){
+	private int g_connect_timeout;
+	@Value("${fdfs.network_timeout}")
+	public int g_network_timeout;
+	@Value("${fdfs.charset}")
+	public String g_charset;
+	@Value("${fdfs.http.anti_steal_token}")
+	public boolean g_anti_steal_token;
+	@Value("${fdfs.http.secret_key}")
+	public String g_secret_key;
+	@Value("${fdfs.http.tracker_http_port}")
+	public int g_tracker_http_port;
+	@Value("${fdfs.upload.max.size}")
+	public int g_file_upload_max_size;
+	@Value("${fdfs.connect.pool.size}")
+	public int g_connection_pool_size;
+	@Value("${fdfs.file_server}")
+	public String fileServer;
+	@Value("${fdfs.tracker_server}")
+	public String trackerServer;
+	
+	@Bean
+    public void init(){
     	LiuziUtil.tag("--------  Liuzi FastDFS Pool初始化  --------");
     	
     	ClientGlobal.g_connect_timeout = g_connect_timeout;
