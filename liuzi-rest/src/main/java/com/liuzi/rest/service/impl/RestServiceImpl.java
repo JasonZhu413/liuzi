@@ -3,8 +3,8 @@ package com.liuzi.rest.service.impl;
 
 import javax.annotation.Resource;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -17,11 +17,9 @@ import com.alibaba.fastjson.JSONObject;
 import com.liuzi.rest.service.RestService;
 
 
-
+@Slf4j
 @Service("restService")
 public class RestServiceImpl implements RestService {
-	
-	private static Logger logger = LoggerFactory.getLogger(RestServiceImpl.class);
 	
 	@Resource
 	private RestTemplate restTemplate;
@@ -60,7 +58,7 @@ public class RestServiceImpl implements RestService {
 	
 	
 	private <T> Object _get(String url, Object obj, Class<T> clazz){
-		logger.info("rest - get params：{}", obj);
+		log.info("rest - get params：{}", obj);
 		 
         HttpHeaders headers = new HttpHeaders();
         headers.set("Accept-Charset", "utf-8");
@@ -76,23 +74,23 @@ public class RestServiceImpl implements RestService {
         ResponseEntity<String> response = restTemplate.getForEntity(url, String.class, httpEntity);
         HttpStatus hs = response.getStatusCode();
         if(hs != HttpStatus.OK){
-        	logger.warn("error_code：{}", hs);
+        	log.warn("error_code：{}", hs);
         	return null;
         }
         
         String body = response.getBody();
         if(clazz != null){
         	T t = JSONObject.parseObject(body, clazz);
-        	logger.info("rest - success：", t);
+        	log.info("rest - success：", t);
         	return t;
         }
         
-        logger.info("rest - success：", body);
+        log.info("rest - success：", body);
 		return body;
 	}
 	
 	private <T> Object _post(String url, Object obj, Class<T> clazz){
-		logger.info("rest - post params：{}", obj);
+		log.info("rest - post params：{}", obj);
 		 
         HttpHeaders headers = new HttpHeaders();
         headers.set("Accept-Charset", "utf-8");
@@ -108,18 +106,18 @@ public class RestServiceImpl implements RestService {
         ResponseEntity<String> response = restTemplate.postForEntity(url, httpEntity, String.class);
         HttpStatus hs = response.getStatusCode();
         if(hs != HttpStatus.OK){
-        	logger.warn("error_code：{}", hs);
+        	log.warn("error_code：{}", hs);
         	return null;
         }
         
         String body = response.getBody();
         if(clazz != null){
         	T t = JSONObject.parseObject(body, clazz);
-        	logger.info("rest - success：", t);
+        	log.info("rest - success：", t);
         	return t;
         }
         
-        logger.info("rest - success：", body);
+        log.info("rest - success：", body);
 		return body;
 	}
 	

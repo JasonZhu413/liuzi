@@ -9,13 +9,13 @@ import com.liuzi.util.Result;
 
 
 public interface BaseController<Q extends BaseEntity, T extends BaseEntity> {
-	public ModelAndView selectList(Q query);
+	public Result selectList(Q query);
 
-	public ModelAndView selectList(Q query, String sort, String order);
+	public Result selectList(Q query, String sort, String order);
    
-	public ModelAndView selectPage(Q query, Integer pageNo, Integer pageSize);
+	public Result selectPage(Q query, Integer pageNo, Integer pageSize);
    
-	public ModelAndView selectPage(Q query, Integer pageNo, Integer pageSize,
+	public Result selectPage(Q query, Integer pageNo, Integer pageSize,
 		   String sort, String order);
    
 	public ModelAndView addView();
@@ -24,7 +24,7 @@ public interface BaseController<Q extends BaseEntity, T extends BaseEntity> {
 
 	public ModelAndView detailView(Long id);
    
-	public Result add(T entity);
+	public Result save(T entity);
    
 	public Result edit(T entity);
    

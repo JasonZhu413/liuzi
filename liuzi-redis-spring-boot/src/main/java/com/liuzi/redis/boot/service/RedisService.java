@@ -4,6 +4,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.springframework.data.redis.connection.RedisConnection;
+import org.springframework.data.redis.core.ClusterOperations;
+import org.springframework.data.redis.core.HashOperations;
+import org.springframework.data.redis.core.HyperLogLogOperations;
+import org.springframework.data.redis.core.ListOperations;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.SetOperations;
+import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.data.redis.core.ZSetOperations;
+
+import com.liuzi.redis.boot.service.RedisCallBack;
+
 public interface RedisService {
 	
 	/**
@@ -42,7 +54,7 @@ public interface RedisService {
      *            可以传一个值 或多个
      */
     public void del(String... key) ;
-
+    
     // ============================String=============================
     /**
      * 普通缓存获取
@@ -109,8 +121,14 @@ public interface RedisService {
      *            项 不能为null
      * @return 值
      */
-    public Object hget(String key, String item) ;
-
+    public <T> T hget(String key, String item) ;
+    
+    
+    public <T> List<T> hgetList(String key, String item) ;
+    
+    public Map<Object, Object> hgetAll(String key);
+    
+    
     /**
      * 获取hashKey对应的所有键值
      * 
@@ -297,6 +315,19 @@ public interface RedisService {
      * @return
      */
     public List<Object> lGet(String key, long start, long end);
+    
+    /**
+     * 获取list缓存的内容
+     * 
+     * @param key
+     *            键
+     * @param start
+     *            开始
+     * @param end
+     *            结束 0 到 -1代表所有值
+     * @return
+     */
+    public <T> List<T> lGet(String key);
 
     /**
      * 获取list缓存的长度
@@ -355,7 +386,7 @@ public interface RedisService {
      *            时间(秒)
      * @return
      */
-    public boolean lSet(String key, List<Object> value);
+    public <T> boolean lSet(String key, List<T> value);
 
     /**
      * 将list放入缓存
@@ -382,6 +413,13 @@ public interface RedisService {
      * @return
      */
     public boolean lUpdateIndex(String key, long index, Object value) ;
+    
+    public <T> List<T> page(String key, String order, boolean desc,
+    		Integer pageNo, Integer pageSize);
+    
+    public long getKey(String tableName);
+    
+    public long getKey(String tableName, long delta);
 
     /**
      * 移除N个值为value
@@ -395,4 +433,24 @@ public interface RedisService {
      * @return 移除的个数
      */
     public long lRemove(String key, long count, Object value);
+    
+    public void setNX(String key, RedisCallBack callBack);
+    
+    public ListOperations<String, Object> opsForList();
+    
+	public HashOperations<String, String, Object> opsForHash();
+	
+	public SetOperations<String, Object> opsForSet();
+	
+	public ValueOperations<String, Object> opsForValue();
+	
+	public ZSetOperations<String, Object> opsForZSet();
+	
+	public HyperLogLogOperations<String, Object> opsForHyperLogLog();
+	
+	public ClusterOperations<String, Object> opsForCluster();
+	
+	public RedisTemplate<String, Object> getTemplate();
+    
+    public RedisConnection getConnection();
 }

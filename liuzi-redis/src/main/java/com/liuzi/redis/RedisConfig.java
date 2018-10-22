@@ -28,7 +28,7 @@ import redis.clients.jedis.JedisPoolConfig;
 public class RedisConfig {
 	private static Logger logger = LoggerFactory.getLogger(RedisConfig.class);
 	
-	private final static String CONFIG_FILE = "conf/redis.properties";
+	private static String CONFIG_FILE = "conf/redis.properties";
 	private static String g_conf_file = CONFIG_FILE;
 	private static Properties properties;
 	

@@ -13,7 +13,7 @@ import com.github.qcloudsms.SmsVoiceVerifyCodeSenderResult;
 import com.liuzi.qsms.QSmsService;
 import com.liuzi.qsms.QSms;
 
-@Service("liuziQSmsService")
+@Service("qSmsService")
 public class QSmsServiceImpl implements QSmsService{
 
 	/**
