@@ -48,7 +48,7 @@ public class ActiveMQConfig{
 	private RedeliveryPolicy redeliveryPolicy;
     
     public ActiveMQConfig(){
-    	LiuziUtil.tag("  --------  Liuzi ActiveMQ初始化......  --------");
+    	LiuziUtil.tag("--------  Liuzi ActiveMQ初始化   --------");
     	
     	redeliveryPolicy = new RedeliveryPolicy();
 		redeliveryPolicy.setUseExponentialBackOff(true);//是否在每次尝试重新发送失败后,增长这个等待时间
@@ -69,27 +69,32 @@ public class ActiveMQConfig{
 		//schedulePeriodForDestinationPurge = 3600000，表示每一小时检查一次，默认为 0，此功能关闭
 		//gcInactiveDestinations，true 表示删除回收闲置的队列，默认为 false
 		//inactiveTimoutBeforeGC = 600000，表示当队列或主题闲置 10 分钟后被删除，默认为 60 秒。
+		
+		log.info("--------  Liuzi ActiveMQ初始化完成   --------");
     }
     
 	
 	@Bean(name="topicTemplate")
     public JmsTemplate topicTemplate(){
-		JmsTemplate topicJmsTemplate = new JmsTemplate(activeMQConnectionFactory);
-		topicJmsTemplate.setPubSubDomain(true);
-		topicJmsTemplate.setReceiveTimeout(receiveTimeout);
-		//topicJmsTemplate.setTimeToLive(timeToLive);
-		topicJmsTemplate.setExplicitQosEnabled(explicitQosEnabled);
-		topicJmsTemplate.setDeliveryMode(deliveryMode);
-		return topicJmsTemplate;
+		log.info("--------  topicTemplate注入   --------");
+		
+		JmsTemplate topicTemplate = new JmsTemplate(activeMQConnectionFactory);
+		topicTemplate.setPubSubDomain(true);
+		topicTemplate.setReceiveTimeout(receiveTimeout);
+		//topicTemplate.setTimeToLive(timeToLive);
+		topicTemplate.setExplicitQosEnabled(explicitQosEnabled);
+		topicTemplate.setDeliveryMode(deliveryMode);
+		return topicTemplate;
     }
 	
-	@Bean(name="queueJmsTemplate")
+	@Bean(name="queueTemplate")
     public JmsTemplate queueTemplate(){
-		JmsTemplate queueJmsTemplate = new JmsTemplate(activeMQConnectionFactory);
-		queueJmsTemplate.setPubSubDomain(false);
-		queueJmsTemplate.setReceiveTimeout(receiveTimeout);
-		queueJmsTemplate.setExplicitQosEnabled(explicitQosEnabled);
-		queueJmsTemplate.setDeliveryMode(deliveryMode);
-		return queueJmsTemplate;
+		log.info("--------  queueTemplate注入   --------");
+		JmsTemplate queueTemplate = new JmsTemplate(activeMQConnectionFactory);
+		queueTemplate.setPubSubDomain(false);
+		queueTemplate.setReceiveTimeout(receiveTimeout);
+		queueTemplate.setExplicitQosEnabled(explicitQosEnabled);
+		queueTemplate.setDeliveryMode(deliveryMode);
+		return queueTemplate;
     }
 }

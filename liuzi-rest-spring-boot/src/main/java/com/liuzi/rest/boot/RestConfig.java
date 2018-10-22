@@ -1,17 +1,11 @@
 package com.liuzi.rest.boot;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.apache.commons.beanutils.PropertyUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

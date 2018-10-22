@@ -34,8 +34,8 @@ public class MemcachedConfig {
     private int maxConn;
     @Value("${memcached.maintSleep}")
     private int maintSleep;
-    @Value("${memcached.nagel}")
-    private boolean nagel;
+    @Value("${memcached.nagle}")
+    private boolean nagle;
     @Value("${memcached.socketTO}")
     private int socketTO;
     @Value("${memcached.aliveCheck}")
@@ -43,6 +43,7 @@ public class MemcachedConfig {
     
     @Bean
     public SockIOPool sockIOPool(){
+    	log.info("--------  Liuzi Memcached初始化，sockIOPool注入   --------");
     	SockIOPool pool = SockIOPool.getInstance();
         pool.setServers(servers);
         pool.setFailover(failover);
@@ -50,7 +51,7 @@ public class MemcachedConfig {
         pool.setMinConn(minConn);
         pool.setMaxConn(maxConn);
         pool.setMaintSleep(maintSleep);
-        pool.setNagle(nagel);
+        pool.setNagle(nagle);
         pool.setSocketTO(socketTO);
         pool.setAliveCheck(aliveCheck);
         pool.initialize();
@@ -59,6 +60,7 @@ public class MemcachedConfig {
 
     @Bean
     public MemCachedClient memCachedClient(){
+    	log.info("--------  Liuzi Memcached初始化，memCachedClient注入   --------");
         return new MemCachedClient();
     }
 }  

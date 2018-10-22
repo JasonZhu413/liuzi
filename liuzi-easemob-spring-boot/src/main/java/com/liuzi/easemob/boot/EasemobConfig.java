@@ -38,12 +38,12 @@ public class EasemobConfig {
     private static Double EXPIREDAT = -1D;
 
     public EasemobConfig() {
-    	LiuziUtil.tag("  --------  Liuzi Easymock初始化......  --------");
+    	LiuziUtil.tag("--------  Liuzi Easymock初始化  --------");
 		
         BODY = new Token().clientId(CLIENT_ID).grantType(GRANT_TYPE).clientSecret(CLIENT_SECRET);
         initTokenByProp();
         
-        log.info("===== easemob初始化完成 ......========");
+        log.info("--------  Liuzi Easymock初始化完成  --------");
     }
 
     public static void initTokenByProp() {

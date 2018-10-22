@@ -7,6 +7,8 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.MimeMessage;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
@@ -18,10 +20,9 @@ import org.springframework.context.annotation.Configuration;
 
 import com.liuzi.util.LiuziUtil;
 
+@Slf4j
 @Configuration
 public class QMailConfig{
-	
-	private static Logger logger = LoggerFactory.getLogger(QMailConfig.class);
 	
 	public static Session session;
 	public static Transport transport;
@@ -43,7 +44,7 @@ public class QMailConfig{
 	
 	@Bean
 	public MimeMessage mimeMessage() {
-		LiuziUtil.tag("  --------  Liuzi Mail初始化......  --------");
+		LiuziUtil.tag("--------  Liuzi Mail初始化，注入mimeMessage  --------");
 		
 		Properties properties = new Properties();
 		properties.setProperty("mail.smtp.host", smtpHost);
@@ -57,17 +58,17 @@ public class QMailConfig{
 	    	session.setDebug(g_debug);
 	    	return new MimeMessage(session);
 		} catch (Exception e) {
-			logger.error("mail初始化失败，错误：" + e.getMessage());
+			log.error("mail初始化失败，错误：" + e.getMessage());
 			e.printStackTrace();
 		}
-	   
-	    logger.info("======== mail初始化完成 ========\n");
 	    return null;
 	}
 	
 	@Bean
 	public VelocityEngine velocityEngine() {
 		VelocityEngine velocityEngine = null;
+		log.info("--------  Liuzi Mail初始化，加载模板，注入velocityEngine："+g_use_temp+"--------");
+		
 		if(g_use_temp){
 			velocityEngine = new VelocityEngine();
 			velocityEngine.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");

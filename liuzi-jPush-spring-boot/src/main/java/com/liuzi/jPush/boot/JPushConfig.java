@@ -3,6 +3,8 @@ package com.liuzi.jPush.boot;
 
 
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,6 +13,7 @@ import cn.jpush.api.JPushClient;
 
 import com.liuzi.util.LiuziUtil;
 
+@Slf4j
 @Configuration
 public class JPushConfig{
 	
@@ -25,7 +28,7 @@ public class JPushConfig{
 	
 	@Bean
     public JPushClient jpushClient(){
-		LiuziUtil.tag("  --------  Liuzi JPush初始化......  --------");
+		log.info("--------  Liuzi JPush初始化，jpushClient注入   --------");
 		return new JPushClient(MASTER_SECRET, APP_KEY);
     }
 
