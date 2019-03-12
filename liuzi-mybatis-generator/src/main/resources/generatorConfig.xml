@@ -50,7 +50,7 @@
         </javaClientGenerator>
 
         <!-- 表名对应生成的实体 --> 
-      	<table tableName="comment_table" domainObjectName="CommentTable" mapperName="CommentTableDao" 
+      	<table tableName="point" domainObjectName="Point" mapperName="PointDao" 
       		enableCountByExample="false" enableUpdateByExample="false" 
       		enableDeleteByExample="false" enableSelectByExample="false" 
       		selectByExampleQueryId="false">
