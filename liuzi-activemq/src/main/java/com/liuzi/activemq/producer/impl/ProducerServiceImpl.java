@@ -61,7 +61,7 @@ public class ProducerServiceImpl implements ProducerService{
     /** 
      * 向指定topic发送对象
      */  
-    public void sendTopic(String physicalName, Result res) { 
+    public void sendTopic(String physicalName, Result2 res) { 
     	sendTopic_object(physicalName, res);
     } 
    	/**

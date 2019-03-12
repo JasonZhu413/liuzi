@@ -50,8 +50,8 @@ public class ClientGlobal {
   public static final String DEFAULT_HTTP_SECRET_KEY = "FastDFS1234567890";
   public static final int DEFAULT_HTTP_TRACKER_HTTP_PORT = 80;
   
-  public static final int DEFAULT_FILE_UPLOAD_MAX_SIZE = 20;
-  public static final int DEFAULT_CONNECTION_POOL_SIZE = 20;
+  public static final int DEFAULT_FILE_UPLOAD_MAX_SIZE = 0;
+  public static final int DEFAULT_CONNECTION_POOL_SIZE = 8;
 
   public static int g_connect_timeout = DEFAULT_CONNECT_TIMEOUT * 1000; //millisecond
   public static int g_network_timeout = DEFAULT_NETWORK_TIMEOUT * 1000; //millisecond
@@ -119,11 +119,12 @@ public class ClientGlobal {
       g_secret_key = iniReader.getStrValue("http.secret_key");
     }
     
-    g_file_upload_max_size = iniReader.getIntValue("file.upload.max.size", DEFAULT_FILE_UPLOAD_MAX_SIZE);//新增
-    
-    g_connection_pool_size = iniReader.getIntValue("connect.pool.size", DEFAULT_CONNECTION_POOL_SIZE);//新增
-    
-    fileServer = iniReader.getStrValue("file_server");//新增
+    //新增 最大下载大小M，默认0无限制
+    g_file_upload_max_size = iniReader.getIntValue("file.upload.max.size", DEFAULT_FILE_UPLOAD_MAX_SIZE);
+    //新增 初始化连接池数 默认8
+    g_connection_pool_size = iniReader.getIntValue("connect.pool.size", DEFAULT_CONNECTION_POOL_SIZE);
+    //新增 访问上传资源地址
+    fileServer = iniReader.getStrValue("file_server");
   }
 
   /**

@@ -9,8 +9,6 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.liuzi.util.executor.ExecutorPool;
-
 
 public class DelayedCache {
 
@@ -18,32 +16,8 @@ public class DelayedCache {
 	
     private final TimeUnit unit = TimeUnit.SECONDS;//超时单位
     
-    private static ExecutorPool pool;
-    private static int threadMax = 20;
-    
     private volatile long firstExpireTime;//首次超时时间
     private volatile DelayQueue<DelayedItem> _Q = new DelayQueue<DelayedItem>();
-    //private volatile CacheCallBack expireCallBack;
-    
-    private static DelayedCache instance;
-    
-    private DelayedCache(int poolSize) {
-    	if(pool == null){
-    		pool = ExecutorPool.getInstance(poolSize);
-    	}
-    }
-    
-    public static DelayedCache getInstance(){
-    	return getInstance(threadMax);
-    }
-    
-    public static DelayedCache getInstance(int poolSize){
-    	if(instance == null){
-    		poolSize = poolSize == 0 ? threadMax : poolSize;
-    		instance = new DelayedCache(poolSize);
-    	}
-    	return instance;
-    }
     
     /**
      * 带有失效回调函数的build方法
@@ -63,7 +37,7 @@ public class DelayedCache {
         
         this.put(key, params);
         
-        pool.execute(new Runnable() {
+        new Thread(new Runnable() {
             public void run() {
             	try {
             		expireCheck(callBack);

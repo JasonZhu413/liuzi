@@ -10,36 +10,23 @@ import com.liuzi.fastdfs.base.StorageClient;
 import com.liuzi.fastdfs.base.StorageServer;
 import com.liuzi.fastdfs.base.TrackerClient;
 import com.liuzi.fastdfs.base.TrackerServer;
+import com.liuzi.util.common.LiuziUtil;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.StringUtils;
-
-import com.liuzi.util.LiuziUtil;
 
 
-public class FastDFSPoolConfig {
+public class FastDFSPoolConfig{
 	
 	private static Logger logger = LoggerFactory.getLogger(FastDFSPoolConfig.class);
 
-	private final static String DEFAULT_CONF_FILE_NAME = "conf/fdfs.properties";
-	
-	private static String g_conf_file = DEFAULT_CONF_FILE_NAME;
-    private static Object obj = new Object();
+	private String configPath;
+    private Object obj = new Object();
     
-    private static ConcurrentHashMap<StorageClient, Object> busyConnectionPool = null;//被使用的连接
-    private static ArrayBlockingQueue<StorageClient> idleConnectionPool;//空闲的连接
+    private ConcurrentHashMap<StorageClient, Object> busyConnectionPool;//被使用的连接
+    private ArrayBlockingQueue<StorageClient> idleConnectionPool;//空闲的连接
     
-    public FastDFSPoolConfig(){
-        init();
-    }
-    
-    public FastDFSPoolConfig(String fileName){
-    	if(!StringUtils.isEmpty(fileName)) g_conf_file = fileName;
-        init();
-    }
-    
-    //初始化连接池
-    private void init(){
+    public void init(){
     	LiuziUtil.tag("  --------  Liuzi FastDFS Pool初始化......  --------");
     	
     	logger.info("===== fastdfs初始化连接池...... ========");
@@ -51,7 +38,7 @@ public class FastDFSPoolConfig {
         StorageClient storageClient;
     	
         try {
-        	ClientGlobal.init(g_conf_file);
+        	ClientGlobal.init(configPath);
         	
         	int size = ClientGlobal.g_connection_pool_size;
         	busyConnectionPool = new ConcurrentHashMap<StorageClient, Object>();
@@ -93,7 +80,7 @@ public class FastDFSPoolConfig {
     }
     
     //取出连接
-    public static StorageClient checkOut(int waitTime){
+    public StorageClient checkOut(int waitTime){
     	TrackerServer trackerServer = null;
     	StorageServer storageServer = null;
     	
@@ -138,7 +125,7 @@ public class FastDFSPoolConfig {
     }
     
     //回收连接
-    public static void checkIn(StorageClient storageClient) {
+    public void checkIn(StorageClient storageClient) {
     	Object obj = busyConnectionPool.remove(storageClient);
     	logger.info("busyConnPool移除，剩余连接：" + busyConnectionPool.size());
         if(obj != null){
@@ -176,7 +163,7 @@ public class FastDFSPoolConfig {
     }
     
     //如果连接无效则抛弃，新建连接来补充到池里
-    public static void drop(StorageClient storageClient){
+    public void drop(StorageClient storageClient){
     	Object obj = busyConnectionPool.remove(storageClient);
         if(obj != null){
         	StorageServer storageServer = null;

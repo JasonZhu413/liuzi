@@ -9,34 +9,23 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;  
 import java.util.Date;  
 
-import javax.annotation.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import lombok.extern.slf4j.Slf4j;
 
-import com.liuzi.util.DateUtil;
+import com.liuzi.util.common.DateUtil;
 import com.whalin.MemCached.MemCachedClient;
   
 /** 
- *  
- * @ClassName: MemcachedUtils 
- * @Description: Memcached工具类 
- * @author yinjw 
- * @date 2014-6-18 下午5:28:08 
- *  
+ * Memcached工具类 
+ * @author zsy 
  */  
 @Slf4j
-public class Memcached{  
-  
-	/*static{
-		if (cachedClient == null){
-		    synchronized(Memcached.class) {
-		      if (cachedClient == null)
-		    	  init();
-		    }
-		}
-	}*/
-    
-	@Resource
+@Service("memcached")
+public class Memcached{
+	
+	@Autowired
 	private MemCachedClient cachedClient;
 	
     /** 

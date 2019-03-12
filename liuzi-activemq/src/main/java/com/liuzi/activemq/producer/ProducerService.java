@@ -45,7 +45,7 @@ public interface ProducerService {
     /** 
      * 向指定队列发送对象
      */  
-    public void sendTopic(String physicalName, Result res);
+    public void sendTopic(String physicalName, Result2 res);
     
     /** 
      * 向指定队列发送对象

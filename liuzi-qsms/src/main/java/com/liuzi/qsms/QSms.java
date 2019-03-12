@@ -2,9 +2,11 @@ package com.liuzi.qsms;
 
 import java.util.ArrayList;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.StringUtils;
 
 import com.github.qcloudsms.SmsMultiSender;
 import com.github.qcloudsms.SmsMultiSenderResult;
@@ -18,23 +20,13 @@ import com.github.qcloudsms.SmsVoicePromptSenderResult;
 import com.github.qcloudsms.SmsVoiceVerifyCodeSender;
 import com.github.qcloudsms.SmsVoiceVerifyCodeSenderResult;
 
-public class QSms extends QSmsConfig{
 
-	private static Logger logger = LoggerFactory.getLogger(QSms.class);
+public class QSms{
+
+	private Logger logger = LoggerFactory.getLogger(QSms.class);
 	
-	static{
-		if (app_id == 0 || StringUtils.isEmpty(app_key)){
-		    synchronized(QSms.class) {
-		    	if (app_id == 0 || StringUtils.isEmpty(app_key)){
-		    		init();
-		    	}
-		    }
-		}
-	}
-	
-	public QSms(){
-		super();
-	}
+	@Getter @Setter private int appId;
+	@Getter @Setter private String appKey;
 	
 	/**
 	 * 短信单发（普通）
@@ -43,11 +35,11 @@ public class QSms extends QSmsConfig{
 	 * @return
 	 * @throws Exception
 	 */
-	public static SmsSingleSenderResult send(String phone, String msg){
+	public SmsSingleSenderResult send(String phone, String msg){
 		SmsSingleSender sender;
 		SmsSingleSenderResult result = null;
 		try {
-			sender = new SmsSingleSender(app_id, app_key);
+			sender = new SmsSingleSender(appId, appKey);
 			result = sender.send(0, "86", phone, msg, "", "");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -65,11 +57,11 @@ public class QSms extends QSmsConfig{
 	 * @return
 	 * @throws Exception
 	 */
-	public static SmsSingleSenderResult send(int tempId, String phone, ArrayList<String> params){
+	public SmsSingleSenderResult send(int tempId, String phone, ArrayList<String> params){
 		SmsSingleSender sender;
 		SmsSingleSenderResult result = null;
 		try {
-			sender = new SmsSingleSender(app_id, app_key);
+			sender = new SmsSingleSender(appId, appKey);
 			result = sender.sendWithParam("86", phone, tempId, params, "", "", "");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -86,11 +78,11 @@ public class QSms extends QSmsConfig{
 	 * @return
 	 * @throws Exception
 	 */
-	public static SmsMultiSenderResult send(ArrayList<String> phones, String msg){
+	public SmsMultiSenderResult send(ArrayList<String> phones, String msg){
 		SmsMultiSender sender;
 		SmsMultiSenderResult result = null;
 		try {
-			sender = new SmsMultiSender(app_id, app_key);
+			sender = new SmsMultiSender(appId, appKey);
 			result = sender.send(0, "86", phones, msg, "", "");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -108,11 +100,11 @@ public class QSms extends QSmsConfig{
 	 * @return
 	 * @throws Exception
 	 */
-	public static SmsMultiSenderResult send(int tempId, ArrayList<String> phones, ArrayList<String> params){
+	public SmsMultiSenderResult send(int tempId, ArrayList<String> phones, ArrayList<String> params){
 		SmsMultiSender sender;
 		SmsMultiSenderResult result = null;
 		try {
-			sender = new SmsMultiSender(app_id, app_key);
+			sender = new SmsMultiSender(appId, appKey);
 			result = sender.sendWithParam("86", phones, tempId, params, "", "", "");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -129,8 +121,8 @@ public class QSms extends QSmsConfig{
 	 * @return
 	 * @throws Exception
 	 */
-	public static SmsVoiceVerifyCodeSenderResult sendVoiceVerify(String phone, String msg){
-		SmsVoiceVerifyCodeSender sender = new SmsVoiceVerifyCodeSender(app_id, app_key);
+	public SmsVoiceVerifyCodeSenderResult sendVoiceVerify(String phone, String msg){
+		SmsVoiceVerifyCodeSender sender = new SmsVoiceVerifyCodeSender(appId, appKey);
 		SmsVoiceVerifyCodeSenderResult result = null;
 		try {
 			result = sender.send("86", phone, msg, 2, "");
@@ -149,8 +141,8 @@ public class QSms extends QSmsConfig{
 	 * @return
 	 * @throws Exception
 	 */
-	public static SmsVoicePromptSenderResult sendVoicePrompt(String phone, String msg){
-		SmsVoicePromptSender sender = new SmsVoicePromptSender(app_id, app_key);
+	public SmsVoicePromptSenderResult sendVoicePrompt(String phone, String msg){
+		SmsVoicePromptSender sender = new SmsVoicePromptSender(appId, appKey);
 		SmsVoicePromptSenderResult result = null;
 		try {
 			result = sender.send("86", phone, 2, 2, msg, "");
@@ -167,8 +159,8 @@ public class QSms extends QSmsConfig{
 	 * @return
 	 * @throws Exception
 	 */
-	public static SmsStatusPullCallbackResult callback(){
-		SmsStatusPuller pullstatus = new SmsStatusPuller(app_id, app_key);
+	public SmsStatusPullCallbackResult callback(){
+		SmsStatusPuller pullstatus = new SmsStatusPuller(appId, appKey);
 		SmsStatusPullCallbackResult callback = null;
 		try {
 			callback = pullstatus.pullCallback(10);
@@ -185,8 +177,8 @@ public class QSms extends QSmsConfig{
 	 * @return
 	 * @throws Exception
 	 */
-	public static SmsStatusPullReplyResult result(){
-		SmsStatusPuller pullstatus = new SmsStatusPuller(app_id, app_key);
+	public SmsStatusPullReplyResult result(){
+		SmsStatusPuller pullstatus = new SmsStatusPuller(appId, appKey);
 		SmsStatusPullReplyResult result = null;
 		try {
 			result = pullstatus.pullReply(10);
@@ -199,9 +191,9 @@ public class QSms extends QSmsConfig{
 		return result;
 	}
 	
-	public static void main(String[] args) {
+	public void main(String[] args) {
 		try {
-			SmsSingleSender sender = new SmsSingleSender(app_id, app_key);
+			SmsSingleSender sender = new SmsSingleSender(appId, appKey);
 			ArrayList<String> params = new ArrayList<String>();
 			params.add("123456");
 			params.add("5");

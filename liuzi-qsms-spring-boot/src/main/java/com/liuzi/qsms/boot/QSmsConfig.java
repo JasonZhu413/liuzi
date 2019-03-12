@@ -12,7 +12,7 @@ import com.github.qcloudsms.SmsSingleSender;
 import com.github.qcloudsms.SmsStatusPuller;
 import com.github.qcloudsms.SmsVoicePromptSender;
 import com.github.qcloudsms.SmsVoiceVerifyCodeSender;
-import com.liuzi.util.LiuziUtil;
+import com.liuzi.util.common.LiuziUtil;
 
 @Slf4j
 @Configuration

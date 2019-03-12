@@ -1,104 +1,125 @@
 package com.liuzi.rest;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.X509Certificate;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Properties;
 
-import org.apache.commons.beanutils.PropertyUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import javax.net.ssl.SSLContext;
+
+import lombok.Getter;
+import lombok.Setter;
+
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.conn.ssl.SSLContexts;
+import org.apache.http.conn.ssl.TrustStrategy;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.client.SimpleClientHttpRequestFactory;
-import org.springframework.http.converter.FormHttpMessageConverter;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.http.converter.xml.MappingJackson2XmlHttpMessageConverter;
-import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
-import com.liuzi.util.LiuziUtil;
 
 @Configuration
 public class RestConfig {
-	private static Logger logger = LoggerFactory.getLogger(RestConfig.class);
 	
-	private final static String DEFAULT_CONF_FILE_NAME = "conf/rest.properties";
-	private final static String DEFAULT_CONNECT_TIME_OUT = "10000";
-	private final static String DEFAULT_READ_TIME_OUT = "10000";
-	
-	private static Properties properties;
-	private static String g_conf_file = DEFAULT_CONF_FILE_NAME;
-	
-	private static String g_connectTimeOut = DEFAULT_CONNECT_TIME_OUT;
-	private static String g_readTimeOut = DEFAULT_READ_TIME_OUT;
-	
-	public RestTemplate restTemplate;
-	
-	@Bean
-    public RestTemplate restTemplate(){
-		logger.info("restTemplate 注入:" + (restTemplate != null));
-		return restTemplate;
-    }
-	
-	public RestConfig(){
-		init();
-	}
-	
-	public RestConfig(String fileName){
-		if(!StringUtils.isEmpty(fileName)) g_conf_file = fileName;
-        init();
-	}
+	private static final Charset charset = Charset.forName("UTF-8");
 
-	public void init() {
-		LiuziUtil.tag("  --------  Liuzi Rest初始化......  --------");
-		
-		logger.info("======== rest初始化，加载配置" + g_conf_file + " ========");
-		if(properties == null){
-			try (InputStream in = PropertyUtils.class.getClassLoader().getResourceAsStream(g_conf_file)){
-				properties = new Properties();
-				properties.load(in);
-			} catch (IOException e) {
-				logger.error("rest初始化失败，错误：" + e.getMessage());
-				e.printStackTrace();
-				return;
-			}
-		}
-		
-		try {
-			String connectTimeOut = properties.getProperty("rest.connectTimeOut");
-			String readTimeOut = properties.getProperty("rest.readTimeOut");
-			
-			if(!StringUtils.isEmpty(connectTimeOut)){
-				g_connectTimeOut = connectTimeOut;
-			}
-			if(!StringUtils.isEmpty(readTimeOut)){
-				g_readTimeOut = readTimeOut;
-			}
-			
-			SimpleClientHttpRequestFactory httpClientFactory = new SimpleClientHttpRequestFactory();
-			httpClientFactory.setConnectTimeout(Integer.parseInt(g_connectTimeOut));
-			httpClientFactory.setReadTimeout(Integer.parseInt(g_readTimeOut));
-			
-			restTemplate = new RestTemplate(httpClientFactory);
-			
-			/*List<HttpMessageConverter<?>> messageConverters = new ArrayList<>();
-			messageConverters.add(new FormHttpMessageConverter());
-			messageConverters.add(new MappingJackson2HttpMessageConverter());
-			//messageConverters.add(new MappingJackson2XmlHttpMessageConverter());
-			StringHttpMessageConverter shmc = new StringHttpMessageConverter(Charset.forName("UTF-8"));
-			messageConverters.add(shmc);
-			restTemplate.setMessageConverters(messageConverters);*/
-			
-		} catch (NumberFormatException e) {
-			logger.error("rest初始化失败，错误：" + e.getMessage());
-			e.printStackTrace();
-			return;
-		}
-		logger.info("======== rest初始化完成 ========\n");
+	@Getter @Setter private int maxTotal = 8;
+	@Getter @Setter private int maxPerRoute = 5;
+	@Getter @Setter private int connectTimeout = 6000;
+	@Getter @Setter private int readTimeout = 6000;
+	
+	public RestConfig(int maxTotal, int maxPerRoute, int connectTimeout, int readTimeout){
+		this.maxTotal = maxTotal;
+		this.maxPerRoute = maxPerRoute;
+		this.connectTimeout = connectTimeout;
+		this.readTimeout = readTimeout;
 	}
+	
+    @Bean
+    public PoolingHttpClientConnectionManager poolingHttpClientConnectionManager() {
+    	PoolingHttpClientConnectionManager poolingHttpClientConnectionManager = new PoolingHttpClientConnectionManager();
+    	poolingHttpClientConnectionManager.setMaxTotal(maxTotal); // 连接池最大连接数  
+    	poolingHttpClientConnectionManager.setDefaultMaxPerRoute(maxPerRoute); // 每个主机的并发
+		return poolingHttpClientConnectionManager;
+    }
+    
+    @Bean
+    public CloseableHttpClient closeableHttpClient(PoolingHttpClientConnectionManager poolingHttpClientConnectionManager) {
+		HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
+		httpClientBuilder.setConnectionManager(poolingHttpClientConnectionManager);
+		CloseableHttpClient closeableHttpClient = httpClientBuilder.build();
+		return closeableHttpClient;
+    }
+    
+    @Bean
+    public HttpComponentsClientHttpRequestFactory httpFactory(CloseableHttpClient closeableHttpClient) { 
+		HttpComponentsClientHttpRequestFactory httpFactory = new HttpComponentsClientHttpRequestFactory();
+		httpFactory.setHttpClient(closeableHttpClient);
+		httpFactory.setConnectTimeout(connectTimeout);// 连接超时，毫秒		
+		httpFactory.setReadTimeout(readTimeout); // 读写超时，毫秒		
+		return httpFactory;
+    }
+    
+    @Bean
+    public RestTemplate restHttpTemplate(HttpComponentsClientHttpRequestFactory httpFactory) {
+		RestTemplate restHttpTemplate = new RestTemplate(httpFactory);
+        List<HttpMessageConverter<?>> messageConverters = restHttpTemplate.getMessageConverters();
+        Iterator<HttpMessageConverter<?>> iterator = messageConverters.iterator();
+        while (iterator.hasNext()) {
+            HttpMessageConverter<?> converter = iterator.next();
+            if (converter instanceof StringHttpMessageConverter) {
+                iterator.remove();
+            }
+        }
+        messageConverters.add(new StringHttpMessageConverter(charset));
+        return restHttpTemplate;
+    }
+    
+    @Bean
+    public CloseableHttpClient closeableHttpsClient(PoolingHttpClientConnectionManager poolingHttpClientConnectionManager) throws Exception{
+    	TrustStrategy acceptingTrustStrategy = (X509Certificate[] chain, String authType) -> true;
+	    SSLContext sslContext = SSLContexts.custom().loadTrustMaterial(null, acceptingTrustStrategy).build();
+	    SSLConnectionSocketFactory csf = new SSLConnectionSocketFactory(sslContext);
+    	
+    	HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
+		httpClientBuilder.setConnectionManager(poolingHttpClientConnectionManager);
+		CloseableHttpClient closeableHttpsClient = httpClientBuilder.setSSLSocketFactory(csf).build();
+    	
+	    return closeableHttpsClient;
+    }
+    
+    
+    @Bean
+    public HttpComponentsClientHttpRequestFactory httpsFactory(CloseableHttpClient closeableHttpsClient){
+	    HttpComponentsClientHttpRequestFactory httpsFactory = new HttpComponentsClientHttpRequestFactory();
+	    httpsFactory.setHttpClient(closeableHttpsClient);
+	    httpsFactory.setConnectTimeout(connectTimeout);// 连接超时，毫秒		
+	    httpsFactory.setReadTimeout(readTimeout); // 读写超时，毫秒	
+	    return httpsFactory;
+    }
+    
+    @Bean
+    public RestTemplate restHttpsTemplate(HttpComponentsClientHttpRequestFactory httpsFactory) {
+		RestTemplate restTemplate = new RestTemplate(httpsFactory);
+        List<HttpMessageConverter<?>> messageConverters = restTemplate.getMessageConverters();
+        Iterator<HttpMessageConverter<?>> iterator = messageConverters.iterator();
+        while (iterator.hasNext()) {
+            HttpMessageConverter<?> converter = iterator.next();
+            if (converter instanceof StringHttpMessageConverter) {
+                iterator.remove();
+            }
+        }
+        messageConverters.add(new StringHttpMessageConverter(charset));
+        return restTemplate;
+    }
 }

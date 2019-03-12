@@ -1,10 +1,9 @@
 package com.liuzi.rest.service.impl;
 
 
-import javax.annotation.Resource;
-
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -21,7 +20,7 @@ import com.liuzi.rest.service.RestService;
 @Service("restService")
 public class RestServiceImpl implements RestService {
 	
-	@Resource
+	@Autowired
 	private RestTemplate restTemplate;
 	
 	@Override

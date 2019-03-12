@@ -1,0 +1,94 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.liuzi</groupId>
+    <artifactId>liuzi</artifactId>
+    <version>1.0</version>
+  </parent>
+  <artifactId>liuzi-push</artifactId>
+  
+  <properties>
+	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+  <dependencies>
+  	<dependency>
+		<groupId>com.liuzi</groupId>
+  		<artifactId>liuzi-util</artifactId>
+	</dependency>
+    <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-all</artifactId>
+        <scope>compile</scope>
+    </dependency>
+    <dependency>
+        <groupId>com.google.code.gson</groupId>
+        <artifactId>gson</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+    </dependency>
+    
+    <!-- jpush -->
+    <dependency>
+	    <groupId>cn.jpush.api</groupId>
+	    <artifactId>jpush-client</artifactId>
+	</dependency>
+	<dependency>
+        <groupId>cn.jpush.api</groupId>
+        <artifactId>jiguang-common</artifactId>
+    </dependency>
+		
+	<!-- gpush -->
+	<dependency>
+      <groupId>com.gexin.platform</groupId>
+      <artifactId>gexin-rp-sdk-http</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.gexin.platform</groupId>
+      <artifactId>gexin-rp-sdk-template</artifactId>
+    </dependency>
+    <dependency>
+	    <groupId>com.gexin.platform</groupId>
+	    <artifactId>gexin-rp-sdk-base</artifactId>
+	</dependency>
+			
+    <!-- umpush -->
+	<dependency>
+	    <groupId>com.umeng.api</groupId>
+	    <artifactId>umeng-push</artifactId>
+	</dependency>
+	
+	<!-- huawei - push -->
+	<dependency>
+	    <groupId>com.geesanke.plugin</groupId>
+	    <artifactId>huawei-push</artifactId>
+	</dependency>
+	
+	<!-- apns -->
+	<dependency>
+	    <groupId>org.apache.commons</groupId>
+	    <artifactId>commons-lang3</artifactId>
+	</dependency>
+	<dependency>
+	    <groupId>org.bouncycastle</groupId>
+	    <artifactId>bcprov-jdk15on</artifactId>
+	</dependency>
+	<dependency>
+	    <groupId>com.github.fernandospr</groupId>
+	    <artifactId>javapns-jdk16</artifactId>
+	</dependency>
+	
+	<!-- xiaomi-push -->
+	<dependency>
+	  <groupId>com.xiaomi</groupId>
+	  <artifactId>json-simple</artifactId>
+	</dependency>
+	<dependency>
+	  <groupId>com.xiaomi</groupId>
+	  <artifactId>MiPush_SDK_Server</artifactId>
+	</dependency>
+  </dependencies>
+  
+</project>

@@ -1,19 +1,21 @@
 package com.liuzi.redis.boot.service.impl;
 
 import java.util.Collections;
-import java.util.List;
 
+import org.springframework.dao.DataAccessException;
+import org.springframework.data.redis.connection.RedisConnection;
+import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
+
+import redis.clients.jedis.Jedis;
 
 import com.liuzi.redis.boot.service.RedisLock;
 
 public class RedisLockImpl implements RedisLock{
 	
-	private static final String COMPARE_AND_DELETE =
-            "if redis.call('get', KEYS[1]) == ARGV[1]\n " +
-            "then\n    return redis.call('del',KEYS[1])\n " +
-            "else\n    return 0\n end";
+	private static final String COMPARE_AND_DELETE = "if redis.call('get', KEYS[1]) == ARGV[1] then return redis.call('del', KEYS[1]) else return 0 end";
+	private static final Long RELEASE_SUCCESS = 1L;
 	
 	private RedisTemplate<String, Object> redisTemplate;
     private String key;
@@ -29,12 +31,28 @@ public class RedisLockImpl implements RedisLock{
     /**
      * 释放redis分布式锁
      */
-    @SuppressWarnings("unchecked")
 	@Override
     public void unlock(){
-        List<String> keys = Collections.singletonList(key);
-        redisTemplate.execute(new DefaultRedisScript(COMPARE_AND_DELETE, String.class), 
-        		keys, value);
+        redisTemplate.execute(new DefaultRedisScript<String>(COMPARE_AND_DELETE, String.class), 
+        		Collections.singletonList(key), Collections.singletonList(value));
+    }
+	
+	@Override
+    public boolean release(){
+        String result = redisTemplate.execute(new RedisCallback<String>() {
+            @Override
+            public String doInRedis(RedisConnection connection) throws DataAccessException {
+            	Jedis jedis = (Jedis) connection.getNativeConnection();
+                Object obj = jedis.eval(COMPARE_AND_DELETE, Collections.singletonList(key), 
+                		Collections.singletonList(value));
+                return obj == null ? null : obj.toString();
+            }
+        });
+        
+        if (RELEASE_SUCCESS.equals(result)) {
+            return true;
+        }
+        return false;
     }
 
     @Override

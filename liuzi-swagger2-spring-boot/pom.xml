@@ -1,0 +1,29 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.liuzi</groupId>
+    <artifactId>liuzi</artifactId>
+    <version>1.0</version>
+  </parent>
+  <artifactId>liuzi-swagger2-spring-boot</artifactId>
+  <name>liuzi-swagger2-spring-boot</name>
+  
+  <dependencies>
+  	<dependency>
+			<groupId>com.liuzi</groupId>
+   		 	<artifactId>liuzi-util</artifactId>
+		</dependency>
+  	<!--springfox-swagger2 -->
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>2.7.0</version>
+        </dependency>
+        <!--springfox-swagger-ui -->
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <version>2.7.0</version>
+        </dependency>
+  </dependencies>
+</project>

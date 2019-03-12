@@ -4,11 +4,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.annotation.Resource;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Repository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.alibaba.fastjson.JSONArray;
@@ -18,11 +17,11 @@ import com.liuzi.redis.service.RedisClusterService;
 import redis.clients.jedis.JedisCluster;
 
 
-@Repository("redisClusterService")
+@Service("redisClusterService")
 public class RedisClusterServiceImpl implements RedisClusterService {
 	private static Logger logger = LoggerFactory.getLogger(RedisClusterServiceImpl.class);
 	
-	@Resource
+	@Autowired
 	private JedisCluster jedisCluster;
 	
 	@Override

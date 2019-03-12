@@ -18,13 +18,19 @@ import com.liuzi.fastdfs.base.StorageClient;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+@Service("fastDFSPool")
 public class FastDFSPool{
 	
 	private static Logger logger = LoggerFactory.getLogger(FastDFSPool.class);
+	
+	@Autowired
+	private FastDFSPoolConfig fastDFSPoolConfig;
 	
 	/**
 	 * 上传
@@ -36,10 +42,10 @@ public class FastDFSPool{
 	 * 		   path 地址
 	 * 		   url 详细地址(group + path)
 	 * 		   size 大小(M)
-	 * 		   ext 扩展名
+	 * 		   suffix 扩展名
 	 */
-	public static FastDFSFile upload(HttpServletRequest request){
-		List<FastDFSFile> list = uploadBatch(request);
+	public FastDFSFile upload(HttpServletRequest request){
+		List<FastDFSFile> list = this.uploadBatch(request);
 		return list == null ? null : list.get(0);
 	}
 	
@@ -53,9 +59,9 @@ public class FastDFSPool{
 	 * 		   path 地址
 	 * 		   url 详细地址(group + path)
 	 * 		   size 大小(M)
-	 * 		   ext 扩展名
+	 * 		   suffix 扩展名
 	 */
-	private static List<FastDFSFile> uploadBatch(HttpServletRequest request){
+	private List<FastDFSFile> uploadBatch(HttpServletRequest request){
 		logger.info("FastDFS上传文件开始...");
 	    MultipartHttpServletRequest multi = (MultipartHttpServletRequest) request;
         
@@ -77,17 +83,19 @@ public class FastDFSPool{
         	
         	String fileName = mf.getOriginalFilename();
             long fileSize = mf.getSize();
-            String ext = fileName.substring(fileName.lastIndexOf(".") + 1);
+            String suffix = fileName.substring(fileName.lastIndexOf(".") + 1);
             
             logger.info("文件" + count + "：开始上传...\n文件名：" + fileName + "\n文件大小：" + fileSize + "b");
             
             int maxSize = ClientGlobal.g_file_upload_max_size;
-            if(fileSize > (maxSize * 1024 * 1024)){
-            	logger.warn("上传文件大小超过" + maxSize + "M，上传文件取消，上传结束...");
-            	return null;
+            if(maxSize > 0){
+            	if(fileSize > (maxSize * 1024 * 1024)){
+                	logger.warn("上传文件大小超过" + maxSize + "M，上传文件取消，上传结束...");
+                	return null;
+                }
             }
             
-            String[] uploadResults = upload_object(mf, ext);
+            String[] uploadResults = this.upload_object(mf, suffix);
             String group = uploadResults[0];//组
             String path = uploadResults[1];//地址
             
@@ -98,7 +106,7 @@ public class FastDFSPool{
             fdf.setPath(path);
             fdf.setUrl(group + "/" + path); 
             fdf.setSize(fileSize / 1024);
-            fdf.setExt(ext);
+            fdf.setSuffix(suffix);
             returnList.add(fdf);
             
             logger.info("文件" + count + "：上传成功...\ngroup：" + group + "\npath：" + path + "");
@@ -112,16 +120,16 @@ public class FastDFSPool{
 	/**
      * 写文件
      * @param content
-     * @param ext
+     * @param suffix
      * @return
      */
-    public static FastDFSFile write(String content, String ext){
+    public FastDFSFile write(String content, String suffix){
     	if(StringUtils.isEmpty(content)){
 			return null;
 		}
     	
-    	if(StringUtils.isEmpty(ext)){
-    		ext = "txt";
+    	if(StringUtils.isEmpty(suffix)){
+    		suffix = "txt";
     	}
 		
     	FastDFSFile fdf = new FastDFSFile();
@@ -133,9 +141,9 @@ public class FastDFSPool{
 			e.printStackTrace();
 		}
 		fdf.setSize(b.length / 1024);
-        fdf.setExt(ext);
+        fdf.setSuffix(suffix);
 		
-		String[] data = upload_object(b, ext, null);
+		String[] data = this.upload_object(b, suffix, null);
 		String group = data[0];
 		String path = data[1];
 		String fileName = path.substring(path.lastIndexOf("/") + 1);
@@ -154,7 +162,7 @@ public class FastDFSPool{
      * @param url
      * @return
      */
-    public static void download(HttpServletResponse response, String url){
+    public void download(HttpServletResponse response, String url){
     	if(StringUtils.isEmpty(url)){
 			return;
 		}
@@ -163,7 +171,7 @@ public class FastDFSPool{
 		String groupName = url.substring(0, first);
 		String filePath = url.substring(first + 1);
 		
-		download(response, groupName, filePath);
+		this.download(response, groupName, filePath);
     }
     
     /**
@@ -173,13 +181,13 @@ public class FastDFSPool{
      * @param path
      * @return
      */
-    public static void download(HttpServletResponse response,
+    public void download(HttpServletResponse response,
     		String group, String path){
     	//response.setContentType("application/octet-stream");
     	OutputStream os = null;
     	try {
     		os = response.getOutputStream();
-	    	byte[] b = download_object(group, path);
+	    	byte[] b = this.download_object(group, path);
 			if(b == null){
 				return;
 			}
@@ -205,7 +213,7 @@ public class FastDFSPool{
      * @param url
      * @return
      */
-    public static void downloadZip(HttpServletResponse response, String url){
+    public void downloadZip(HttpServletResponse response, String url){
     	if(StringUtils.isEmpty(url)){
 			return;
 		}
@@ -214,7 +222,7 @@ public class FastDFSPool{
 		String groupName = url.substring(0, first);
 		String filePath = url.substring(first + 1);
 		
-		downloadZip(response, groupName, filePath);
+		this.downloadZip(response, groupName, filePath);
     }
     
     /**
@@ -224,8 +232,7 @@ public class FastDFSPool{
      * @param path
      * @return
      */
-    public static void downloadZip(HttpServletResponse response,
-    		String group, String path){
+    public void downloadZip(HttpServletResponse response, String group, String path){
     	//response.setContentType("application/octet-stream");
     	OutputStream os = null;
     	GZIPOutputStream out = null;
@@ -233,7 +240,7 @@ public class FastDFSPool{
     		os = response.getOutputStream();
     		out = new GZIPOutputStream(os);
     		
-	    	byte[] b = download_object(group, path);
+	    	byte[] b = this.download_object(group, path);
 	    	
 			if(b == null){
 				return;
@@ -262,7 +269,7 @@ public class FastDFSPool{
      * @param url
      * @return
      */
-    public static String read(String url){
+    public String read(String url){
     	if(StringUtils.isEmpty(url)){
 			return null;
 		}
@@ -271,7 +278,7 @@ public class FastDFSPool{
 		String groupName = url.substring(0, first);
 		String filePath = url.substring(first + 1);
 		
-    	return read(groupName, filePath);
+    	return this.read(groupName, filePath);
     }
     
     /**
@@ -280,8 +287,8 @@ public class FastDFSPool{
      * @param path
      * @return
      */
-    public static String read(String group, String path){
-    	byte[] b = download_object(group, path);
+    public String read(String group, String path){
+    	byte[] b = this.download_object(group, path);
 		if(b == null){
 			return null;
 		}
@@ -302,7 +309,7 @@ public class FastDFSPool{
      * @param url
      * @return
      */
-    public static int delete(String url){
+    public int delete(String url){
     	if(StringUtils.isEmpty(url)){
 			return -1;
 		}
@@ -311,7 +318,7 @@ public class FastDFSPool{
 		String groupName = url.substring(0, first);
 		String filePath = url.substring(first + 1);
 		
-    	return delete(groupName, filePath);
+    	return this.delete(groupName, filePath);
     }
     
     /**
@@ -320,25 +327,24 @@ public class FastDFSPool{
      * @param path
      * @return
      */
-    public static int delete(String group, String path){
-    	StorageClient storageClient1 = FastDFSPoolConfig.checkOut(10);
+    public int delete(String group, String path){
+    	StorageClient storageClient1 = fastDFSPoolConfig.checkOut(10);
     	int i = -1;
     	try {
-    		
     		i = storageClient1.delete_file(group, path);
-    		FastDFSPoolConfig.checkIn(storageClient1);
+    		fastDFSPoolConfig.checkIn(storageClient1);
     	} catch (Exception e) {
-    		FastDFSPoolConfig.drop(storageClient1);
+    		fastDFSPoolConfig.drop(storageClient1);
     		e.printStackTrace(); 
     		logger.error("file delete fail：" + e.getMessage());
     	}
     	return i;
     }
     
-    private static String[] upload_object(MultipartFile mf, String ext){
+    private String[] upload_object(MultipartFile mf, String ext){
     	String[] str = null;
 		try {
-			str = upload_object(mf.getBytes(), ext, null);
+			str = this.upload_object(mf.getBytes(), ext, null);
 		} catch (IOException e) {
 			logger.error("upload error：" + e.getMessage());
 			e.printStackTrace();
@@ -346,15 +352,15 @@ public class FastDFSPool{
         return str;
     }
     
-    private static String[] upload_object(byte[] b, String ext, NameValuePair[] list){
+    private String[] upload_object(byte[] b, String ext, NameValuePair[] list){
         String[] data = null;
-        StorageClient storageClient1 = FastDFSPoolConfig.checkOut(10);
+        StorageClient storageClient1 = fastDFSPoolConfig.checkOut(10);
         try {
         	data = storageClient1.upload_file(b, ext, list);
             
-        	FastDFSPoolConfig.checkIn(storageClient1);
+        	fastDFSPoolConfig.checkIn(storageClient1);
         } catch (Exception e) {
-        	FastDFSPoolConfig.drop(storageClient1);//异常销毁此连接
+        	fastDFSPoolConfig.drop(storageClient1);//异常销毁此连接
             logger.error("upload fail：" + e.getMessage());
             e.printStackTrace();
         }
@@ -362,18 +368,18 @@ public class FastDFSPool{
         return data;
     }
     
-    public static byte[] download_object(String group, String path){
+    public byte[] download_object(String group, String path){
     	if(StringUtils.isEmpty(group) || StringUtils.isEmpty(path)){
 			return null;
 		}
     	
     	byte[] b = null;
-    	StorageClient storageClient1 = FastDFSPoolConfig.checkOut(10);
+    	StorageClient storageClient1 = fastDFSPoolConfig.checkOut(10);
     	try{
         	b = storageClient1.download_file(group, path);
-        	FastDFSPoolConfig.checkIn(storageClient1);
+        	fastDFSPoolConfig.checkIn(storageClient1);
         } catch (Exception e) {
-        	FastDFSPoolConfig.drop(storageClient1);//异常销毁此连接
+        	fastDFSPoolConfig.drop(storageClient1);//异常销毁此连接
         	e.printStackTrace();
         	logger.error("file download fail：" + e.getMessage());
         }

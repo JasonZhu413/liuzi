@@ -1,5 +1,6 @@
 package com.liuzi.mybatis.service.impl;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +32,9 @@ public abstract class BaseServiceImpl<T> implements BaseService<T>{
 	
 	@Override
 	public List<T> select(Map<String, Object> map, LinkedHashMap<String, Object> sort){
+		if(map == null){
+			map = new HashMap<>();
+		}
 		map.put("sort_list", sort);
 		return getBaseDao().select(map);
 	}
@@ -68,6 +72,9 @@ public abstract class BaseServiceImpl<T> implements BaseService<T>{
 		
 		Page<T> page = new Page<>(pageNo, pageSize);
 		
+		if(map == null){
+			map = new HashMap<>();
+		}
 		map.put("limit", page.getLimit());
 		map.put("offset", page.getOffset());
 		

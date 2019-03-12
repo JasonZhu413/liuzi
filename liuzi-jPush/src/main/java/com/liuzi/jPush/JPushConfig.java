@@ -14,7 +14,6 @@ import org.springframework.util.StringUtils;
 
 import cn.jpush.api.JPushClient;
 
-import com.liuzi.util.LiuziUtil;
 
 
 @Configuration
