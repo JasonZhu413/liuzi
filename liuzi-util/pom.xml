@@ -56,7 +56,7 @@
 	</dependency>
   	<dependency>
 		<groupId>javax.servlet</groupId>
-		<artifactId>servlet-api</artifactId>
+		<artifactId>javax.servlet-api</artifactId>
 	</dependency>
   	<dependency>
 		<groupId>ch.qos.logback</groupId>
@@ -90,12 +90,21 @@
     </dependency>
     
     <dependency>
-           <groupId>redis.clients</groupId>
-           <artifactId>jedis</artifactId>
-       </dependency>
+        <groupId>redis.clients</groupId>
+        <artifactId>jedis</artifactId>
+    </dependency>
+       
+    <dependency>
+	    <groupId>com.nimbusds</groupId>
+	    <artifactId>nimbus-jose-jwt</artifactId>
+	    <version>7.2.1</version>
+	</dependency>
+
+       
+       
   </dependencies>
   
-  	<!-- 插件配置 
+  	<!-- 插件配置 -->
 	<build>
 		<plugins>
 			<plugin>
@@ -115,7 +124,12 @@
 					<encoding>${project.build.sourceEncoding}</encoding>
 				</configuration>
 			</plugin>
+			<!-- 打包时打包依赖 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+            </plugin>
+            
 		</plugins>
-	</build>-->
-	
+	</build>
 </project>

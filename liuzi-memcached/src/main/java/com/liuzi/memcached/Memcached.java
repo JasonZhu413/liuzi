@@ -9,9 +9,7 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;  
 import java.util.Date;  
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 import com.liuzi.util.common.DateUtil;
@@ -22,10 +20,9 @@ import com.whalin.MemCached.MemCachedClient;
  * @author zsy 
  */  
 @Slf4j
-@Service("memcached")
+@Data
 public class Memcached{
 	
-	@Autowired
 	private MemCachedClient cachedClient;
 	
     /** 

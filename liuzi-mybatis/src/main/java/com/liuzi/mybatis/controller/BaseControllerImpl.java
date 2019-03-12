@@ -12,8 +12,8 @@ import org.springframework.web.servlet.ModelAndView;
 import com.liuzi.mybatis.pojo.BaseEntity;
 import com.liuzi.mybatis.pojo.Page;
 import com.liuzi.mybatis.service.BaseService;
-import com.liuzi.util.LiuziUtil;
-import com.liuzi.util.Result;
+import com.liuzi.util.common.LiuziUtil;
+import com.liuzi.util.common.Result;
 
 import java.util.List;
 import java.util.Map;
@@ -37,38 +37,38 @@ public abstract class BaseControllerImpl<Q extends BaseEntity, T extends BaseEnt
    @Override
    @RequestMapping(method = RequestMethod.POST)
    @ResponseBody
-   public Result2 selectList(Q query) {
+   public Result selectList(Q query) {
 	  Map<String, Object> map = LiuziUtil.object2Map(query);
       List<T> list = getBaseService().select(map);
-      return new Result2(list);
+      return Result.success(list);
    }
    
    @Override
    @RequestMapping(method = RequestMethod.POST)
    @ResponseBody
-   public Result2 selectList(Q query, String sort, String order) {
+   public Result selectList(Q query, String sort, String order) {
 	  Map<String, Object> map = LiuziUtil.object2Map(query);
       List<T> list = getBaseService().select(map, sort, order);
-      return new Result2(list);
+      return Result.success(list);
    }
    
    @Override
    @RequestMapping(method = RequestMethod.POST)
    @ResponseBody
-   public Result2 selectPage(Q query, Integer pageNo, Integer pageSize) {
+   public Result selectPage(Q query, Integer pageNo, Integer pageSize) {
 	  Map<String, Object> map = LiuziUtil.object2Map(query);
       Page<T> page = getBaseService().select(map, pageNo, pageSize);
-      return new Result2(page);
+      return Result.success(page);
    }
    
    @Override
    @RequestMapping(method = RequestMethod.POST)
    @ResponseBody
-   public Result2 selectPage(Q query, Integer pageNo, Integer pageSize,
+   public Result selectPage(Q query, Integer pageNo, Integer pageSize,
 		   String sort, String order) {
 	  Map<String, Object> map = LiuziUtil.object2Map(query);
       Page<T> page = getBaseService().select(map, pageNo, pageSize, sort, order);
-      return new Result2(page);
+      return Result.success(page);
    }
    
    @Override
@@ -97,9 +97,9 @@ public abstract class BaseControllerImpl<Q extends BaseEntity, T extends BaseEnt
    @Override
    @ResponseBody
    @RequestMapping(value = "/save", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-   public Result2 save(T entity){
+   public Result save(T entity){
       getBaseService().insertSelective(entity);
-      return new Result2();
+      return Result.success();
    }
 
    /*
@@ -108,25 +108,25 @@ public abstract class BaseControllerImpl<Q extends BaseEntity, T extends BaseEnt
    @Override
    @ResponseBody
    @RequestMapping(value = "/edit", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-   public Result2 edit(T entity){
+   public Result edit(T entity){
       getBaseService().updateByPrimaryKeySelective(entity);
-      return new Result2(1);
+      return Result.success(1);
    }
    
    @Override
    @ResponseBody
    @RequestMapping(value = "/delete", method = RequestMethod.DELETE, 
    	produces = MediaType.APPLICATION_JSON_VALUE)
-   public Result2 delete(@PathVariable("id") Long id) {
+   public Result delete(@PathVariable("id") Long id) {
       if (id == null || id == 0) {
          log.error("要删除的ID号为null或空字符串！对象：{}", path.getEntityName());
-         return new Result2(0, "要删除的记录不存在！");
+         return Result.error("要删除的记录不存在！");
       }
       int count = getBaseService().deleteByPrimaryKey(id);
       if (count == 0){
-    	  return new Result2(0, "要删除的记录不存在！");
+    	  return Result.error("要删除的记录不存在！");
       }
-      return new Result2();
+      return Result.success();
    }
    
    
@@ -134,19 +134,19 @@ public abstract class BaseControllerImpl<Q extends BaseEntity, T extends BaseEnt
    @ResponseBody
    @RequestMapping(value = "/delete/by/ids", method = RequestMethod.DELETE, 
    	produces = MediaType.APPLICATION_JSON_VALUE)
-   public Result2 deleteByIds(String id) {
-	   List<Long> ids = LiuziUtil.ids(id);
+   public Result deleteByIds(String id) {
+	   List<Long> ids = LiuziUtil.string2ListLong(id);
 	   if (ids == null) {
 		   log.error("未设置批量删除对象的ID号！对象：{}", path.getEntityName());
-		   return new Result2(0, "要删除的记录不存在！");
+		   return Result.error("要删除的记录不存在！");
 	   }
 	   try {
 		   getBaseService().deleteByListKey(ids);
 	   } catch (Exception e) {
 		   log.error("批量删除对象失败！对象:" + path.getEntityName(), e);
-		   return new Result2(0, "批量删除失败！");
+		   return Result.error("批量删除失败！");
       }
-      return new Result2();
+      return Result.success();
    }
 
    

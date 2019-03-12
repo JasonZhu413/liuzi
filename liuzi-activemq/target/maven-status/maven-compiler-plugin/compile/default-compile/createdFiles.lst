@@ -1,7 +1,8 @@
+com\liuzi\activemq\consumer\Consumer.class
 com\liuzi\activemq\message\MessageObjectCreator.class
-com\liuzi\activemq\producer\ProducerService.class
+com\liuzi\activemq\producer\Producer.class
+com\liuzi\activemq\consumer\OnMessage.class
+com\liuzi\activemq\consumer\ConsumerListener.class
+com\liuzi\activemq\producer\ProducerImpl.class
 com\liuzi\activemq\message\MessageTextCreator.class
-com\liuzi\activemq\producer\impl\ProducerServiceImpl.class
-com\liuzi\activemq\ProducerModel.class
 com\liuzi\activemq\message\MessageMapCreator.class
-com\liuzi\activemq\ActiveMQConfig.class

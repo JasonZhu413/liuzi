@@ -14,7 +14,7 @@ public class ExcelImportCallBack{
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return Result.ERROR.error("-1", "Excel导入, new ExcelCallBack未覆盖handler函数");
+		return Result.error("-1", "Excel导入, new ExcelCallBack未覆盖handler函数");
 	}
 	
 	public String getString(Object obj) {

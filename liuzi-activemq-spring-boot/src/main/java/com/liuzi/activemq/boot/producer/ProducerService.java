@@ -3,7 +3,7 @@ package com.liuzi.activemq.boot.producer;
 import java.io.Serializable;
 import java.util.Map;
 
-import com.liuzi.util.Result;
+import com.liuzi.util.common.Result;
 
 
 public interface ProducerService {
@@ -45,7 +45,7 @@ public interface ProducerService {
     /** 
      * 向指定队列发送对象
      */  
-    public void sendTopic(String physicalName, Result2 res);
+    public void sendTopic(String physicalName, Result res);
     
     /** 
      * 向指定队列发送对象

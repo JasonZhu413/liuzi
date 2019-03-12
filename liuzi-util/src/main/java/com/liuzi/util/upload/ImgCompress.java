@@ -1,4 +1,4 @@
-package com.liuzi.util.upoload;
+package com.liuzi.util.upload;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -14,8 +14,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import javax.imageio.ImageIO;
-
-import com.liuzi.util.common.ConfigUtil;
 
 import lombok.extern.slf4j.Slf4j;
 

@@ -1,4 +1,4 @@
-package com.liuzi.util.upoload;
+package com.liuzi.util.upload;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -45,14 +45,14 @@ public class FileUpload {
      */
     public static Result start(HttpServletRequest request, String path){
     	if(request == null || StringUtils.isEmpty(path)){
-    		return Result.ERROR.error("参数错误, request/path is null");
+    		return Result.error("参数错误, request/path is null");
     	}
     	
     	MultipartHttpServletRequest multi = (MultipartHttpServletRequest) request;
 		
     	MultipartFile file = multi.getFile(multi.getFileNames().next());
 		if(file == null || file.isEmpty()){
-        	return Result.ERROR.error("文件不存在");
+        	return Result.error("文件不存在");
         }
 		
 		Map<String, Object> map = new HashMap<>();
@@ -112,13 +112,13 @@ public class FileUpload {
         }catch (Exception e) {
         	e.printStackTrace();
             log.error("上传文件出错：" + e.getMessage());
-            return Result.ERROR.error("文件上传错误");
+            return Result.error("文件上传错误");
         } finally{
         	session.setAttribute(sizeKey + "_" + newName, null);
             session.setAttribute(progressKey + "_" + newName, null);
         }
         
-        return Result.SUCCESS;
+        return Result.success();
     }
     
     /**
@@ -129,13 +129,13 @@ public class FileUpload {
      */
     public static Result schedule(HttpServletRequest request, String newName){
     	if(request == null || StringUtils.isEmpty(newName)){
-    		return Result.ERROR.error("参数错误, newName/request is null");
+    		return Result.error("参数错误, newName/request is null");
     	}
     	
     	HttpSession session = request.getSession();
     	Object size = session.getAttribute(sizeKey + "_" + newName);
     	if(StringUtils.isEmpty(size)){
-    		return Result.SUCCESS;
+    		return Result.success();
     	}
     	
     	Object progress = session.getAttribute(progressKey + "_" + newName);
@@ -146,7 +146,7 @@ public class FileUpload {
     	map.put("size", size);
     	map.put("progress", progress);
     	map.put("schedule", schedule + "%");
-        return Result.SUCCESS.data(map);
+        return Result.success(map);
     }
     
     private static float getFloat(float num){

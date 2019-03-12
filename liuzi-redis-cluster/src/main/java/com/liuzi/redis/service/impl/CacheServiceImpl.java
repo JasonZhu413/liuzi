@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
-import com.liuzi.util.ConfigUtil;
+import com.liuzi.util.common.ConfigUtil;
 import com.liuzi.redis.service.CacheService;
 import com.liuzi.redis.service.RedisClusterService;
 
@@ -25,7 +25,7 @@ public class CacheServiceImpl<T> implements CacheService {
 	private RedisClusterService redisClusterService;
 	
 	//User缓存时间
-	public static final Integer SYS_USER_SEC = ConfigUtil.getIntValue("cache.time.user");
+	public static final Integer SYS_USER_SEC = ConfigUtil.getInt("cache.time.user");
 	
 	
 	public void save(String key,String value,Integer seconds){

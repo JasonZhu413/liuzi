@@ -1,9 +1,8 @@
-package com.liuzi.activemq.producer.impl;
+package com.liuzi.activemq.producer;
 
 import java.io.Serializable;
 import java.util.Map;
 
-import javax.annotation.Resource;
 import javax.jms.Connection;
 import javax.jms.MessageListener;
 import javax.jms.Session;
@@ -12,27 +11,27 @@ import javax.jms.TopicSubscriber;
 
 import org.apache.activemq.command.ActiveMQQueue;
 import org.apache.activemq.command.ActiveMQTopic;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.MessageCreator;
 import org.springframework.stereotype.Service;
 
-import com.alibaba.fastjson.JSONObject;
 import com.liuzi.activemq.message.MessageTextCreator;
-import com.liuzi.activemq.producer.ProducerService;
-import com.liuzi.util.MD5;
-import com.liuzi.util.Result;
+import com.liuzi.util.common.Result;
 
-@Service("producerService")
-public class ProducerServiceImpl implements ProducerService{
+
+
+@Service("producer")
+public class ProducerImpl implements Producer{
 	
-	@Resource
+	@Autowired
 	private JmsTemplate topicTemplate;
-	
-	@Resource
+	@Autowired
 	private JmsTemplate queueTemplate;
-
-	private static ActiveMQQueue queueDestination = new ActiveMQQueue();
-	private static ActiveMQTopic topicDestination = new ActiveMQTopic();
+	@Autowired
+	private ActiveMQQueue activeMQQueue;
+	@Autowired
+	private ActiveMQTopic activeMQTopic;
 	
 	/**
 	 * 向默认topic发送String
@@ -61,7 +60,7 @@ public class ProducerServiceImpl implements ProducerService{
     /** 
      * 向指定topic发送对象
      */  
-    public void sendTopic(String physicalName, Result2 res) { 
+    public void sendTopic(String physicalName, Result res) { 
     	sendTopic_object(physicalName, res);
     } 
    	/**
@@ -82,20 +81,19 @@ public class ProducerServiceImpl implements ProducerService{
     private void sendTopic_object(Object object) { 
     	String destination =  topicTemplate.getDefaultDestination().toString();
    		System.out.println("向队列" +destination+ "发送了消息------------" + object);
-   		Object obj = JSONObject.toJSON(object);
-    	MessageCreator mc = new MessageTextCreator(obj.toString());
+   		//Object obj = JSONObject.toJSON(object);
+    	MessageCreator mc = new MessageTextCreator(object.toString());
    		topicTemplate.send(mc);
     } 
     /** 
      * 向指定topic发送
      */  
     private void sendTopic_object(String physicalName, Object object) { 
-    	physicalName = MD5.crypt(physicalName);
-    	topicDestination.setPhysicalName(physicalName);
-    	System.out.println("向队列" + topicDestination.toString() + "发送了消息------------" + object);
-    	Object obj = JSONObject.toJSON(object);
-    	MessageCreator mc = new MessageTextCreator(obj.toString());
-    	topicTemplate.send(topicDestination, mc);
+    	activeMQTopic.setPhysicalName(physicalName);
+    	System.out.println("向队列" + activeMQTopic.toString() + "发送了消息------------" + object);
+    	//Object obj = JSONObject.toJSON(object);
+    	MessageCreator mc = new MessageTextCreator(object.toString());
+    	topicTemplate.send(activeMQTopic, mc);
     } 
     
     /**
@@ -140,21 +138,20 @@ public class ProducerServiceImpl implements ProducerService{
 	public void sendQueue_object(Object object) {
 		String destination =  topicTemplate.getDefaultDestination().toString();
 		System.out.println("向队列" +destination+ "发送了消息------------" + object);
-		Object obj = JSONObject.toJSON(object);
-    	MessageCreator mc = new MessageTextCreator(obj.toString());
+		//Object obj = JSONObject.toJSON(object);
+    	MessageCreator mc = new MessageTextCreator(object.toString());
 		queueTemplate.send(mc);
 	}
     /** 
      * 向指定queue发送
      */  
     private void sendQueue_object(String physicalName, Object object) { 
-    	physicalName = MD5.crypt(physicalName);
-    	queueDestination.setPhysicalName(physicalName);
-    	System.out.println("向队列" + queueDestination.toString() + "发送了消息------------" + object);
+    	activeMQQueue.setPhysicalName(physicalName);
+    	System.out.println("向队列" + activeMQQueue.toString() + "发送了消息------------" + object);
     	
-    	Object obj = JSONObject.toJSON(object);
-    	MessageCreator mc = new MessageTextCreator(obj.toString());
-    	queueTemplate.send(queueDestination, mc);
+    	//Object obj = JSONObject.toJSON(object);
+    	MessageCreator mc = new MessageTextCreator(object.toString());
+    	queueTemplate.send(activeMQQueue, mc);
     } 
     
     public TopicSubscriber createTopicConsumer(String clientID, Topic topic, String name,
@@ -175,5 +172,4 @@ public class ProducerServiceImpl implements ProducerService{
     	
     	return consumer;
     } 
-    
 }

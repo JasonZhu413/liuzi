@@ -8,22 +8,31 @@ import java.util.regex.Pattern;
 
 import org.springframework.core.io.Resource;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
 
 import com.whalin.MemCached.SockIOPool;
   
-/** 
- */  
+  
 @Slf4j
+@Data
+@EqualsAndHashCode(callSuper=false)
 public class MemcachedPool extends SockIOPool{
 	
-	@Getter @Setter private Resource addressConfig;
-	@Getter @Setter private String addressKeyPrefix;
+	private static final Pattern PATTERN = Pattern.compile("^.+[:]\\d{1,5}\\s*$");
 	
-	private Pattern p = Pattern.compile("^.+[:]\\d{1,5}\\s*$");
-
+	private Resource addressConfig;
+	private String addressKeyPrefix;
+	
+    public void afterPropertiesSet(SockIOPool sockIOPool) throws Exception {
+    	String[] address = this.getAddress();
+    	
+		sockIOPool.setServers(address);
+		sockIOPool.initialize();
+		log.info("SockIOPool initialize");
+    }
+    
     private String[] getAddress() throws Exception {
         try {
             Properties prop = new Properties();
@@ -38,7 +47,7 @@ public class MemcachedPool extends SockIOPool{
 
                 String val = (String) prop.get(key);
 
-                boolean isIpPort = p.matcher(val).matches();
+                boolean isIpPort = PATTERN.matcher(val).matches();
                 if (!isIpPort) {
                     throw new IllegalArgumentException("ip或 port不合法");
                 }
@@ -59,18 +68,4 @@ public class MemcachedPool extends SockIOPool{
             throw new Exception("解析 memcached 配置文件失败", ex);
         }
     }
-    
-    public void afterPropertiesSet(SockIOPool sockIOPool) throws Exception {
-    	String[] address = this.getAddress();
-    	
-		sockIOPool.setServers(address);
-		sockIOPool.initialize();
-		log.info("SockIOPool initialize");
-    }
-  
-    public static void main(String[] args) {
-    	String cats[] = new String[]{};
-    	cats[0] = "abc";
-    	System.out.println(cats);
-	}
 }  

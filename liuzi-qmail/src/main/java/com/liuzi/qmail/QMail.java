@@ -8,11 +8,9 @@ import javax.mail.internet.MimeMessage;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.stereotype.Service;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
@@ -21,16 +19,12 @@ import freemarker.template.Template;
 
 
 @Slf4j
-@Service("qMail")
-public class QMail {
+public class QMail extends QmailConfig{
 	
-	@Autowired
-    private JavaMailSender javaMailSender;
-    @Autowired
+	private JavaMailSender javaMailSender;
     private SimpleMailMessage simpleMailMessage;
-    @Autowired
     private FreeMarkerConfigurer freeMarkerConfigurer;
-    
+	
     /**
      * 发送邮件(模板)
      * @param to 接收方邮箱

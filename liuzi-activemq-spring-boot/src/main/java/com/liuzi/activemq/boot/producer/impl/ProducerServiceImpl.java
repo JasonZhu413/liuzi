@@ -19,8 +19,7 @@ import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSONObject;
 import com.liuzi.activemq.boot.message.MessageTextCreator;
 import com.liuzi.activemq.boot.producer.ProducerService;
-import com.liuzi.util.MD5;
-import com.liuzi.util.Result;
+import com.liuzi.util.common.Result;
 
 @Service("producerService")
 public class ProducerServiceImpl implements ProducerService{
@@ -62,7 +61,7 @@ public class ProducerServiceImpl implements ProducerService{
     /** 
      * 向指定topic发送对象
      */  
-    public void sendTopic(String physicalName, Result2 res) { 
+    public void sendTopic(String physicalName, Result res) { 
     	sendTopic_object(physicalName, res);
     } 
    	/**
@@ -95,7 +94,6 @@ public class ProducerServiceImpl implements ProducerService{
     private void sendTopic_object(String physicalName, Object object) { 
     	jmsTemplate.setPubSubDomain(true);
     	
-    	physicalName = MD5.crypt(physicalName);
     	topicDestination.setPhysicalName(physicalName);
     	System.out.println("向队列" + topicDestination.toString() + "发送了消息------------" + object);
     	Object obj = JSONObject.toJSON(object);
@@ -157,7 +155,6 @@ public class ProducerServiceImpl implements ProducerService{
     private void sendQueue_object(String physicalName, Object object) { 
     	jmsTemplate.setPubSubDomain(false);
     	
-    	physicalName = MD5.crypt(physicalName);
     	queueDestination.setPhysicalName(physicalName);
     	System.out.println("向队列" + queueDestination.toString() + "发送了消息------------" + object);
     	

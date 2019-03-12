@@ -11,7 +11,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jms.core.JmsTemplate;
 
-import com.liuzi.util.LiuziUtil;
+import com.liuzi.util.common.LiuziUtil;
+
 
 @Slf4j
 @Configuration

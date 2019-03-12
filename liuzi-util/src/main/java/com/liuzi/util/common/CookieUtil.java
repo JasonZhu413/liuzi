@@ -5,11 +5,12 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 
+
+import org.springframework.util.StringUtils;
+
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.springframework.util.StringUtils;
 
 import com.alibaba.fastjson.JSONObject;
 
@@ -69,6 +70,8 @@ public class CookieUtil {
 	    Cookie cookie = new Cookie(name, value);
 	    cookie.setMaxAge(seconds);
 	    cookie.setPath(path);
+	    cookie.setHttpOnly(true);
+	    
 	    /*if(!StringUtils.isEmpty(domain)){
 	    	cookie.setDomain(domain);
 	    }*/
@@ -132,6 +135,7 @@ public class CookieUtil {
 	    cookie.setValue(null);
 	    cookie.setMaxAge(0);
 	    cookie.setPath(path);
+	    cookie.setHttpOnly(true);
 	    response.addCookie(cookie);
 	}
 	

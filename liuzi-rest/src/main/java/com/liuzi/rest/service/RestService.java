@@ -1,17 +1,91 @@
 package com.liuzi.rest.service;
 
 
-public interface RestService {
+
+
+/**
+ * rest接口
+ * @author zsy
+ */
+public interface RestService{
 	
-	public String get(String url);
+	/**
+	 * HTTP GET请求
+	 * @param url 地址
+	 */
+	public String httpGet(String url);
 	
-	public String get(String url, Object params);
+	/**
+	 * HTTP GET请求
+	 * @param url 地址
+	 * @param obj 参数
+	 */
+	public String httpGet(String url, Object obj);
 	
-	public <T> T get(String url, Object params, Class<T> clazz);
+	/**
+	 * HTTP GET请求
+	 * @param url 地址
+	 * @param obj 参数(application/json)
+	 */
+	public String httpGetByJson(String url, Object obj);
 	
-	public String post(String url);
+	/**
+	 * HTTPS GET请求
+	 * @param url 地址
+	 */
+	public String httpsGet(String url);
 	
-	public String post(String url, Object params);
+	/**
+	 * HTTPS GET请求
+	 * @param url 地址
+	 * @param obj 参数
+	 */
+	public String httpsGet(String url, Object obj);
 	
-	public <T> T post(String url, Object params, Class<T> clazz);
+	/**
+	 * HTTPS GET请求
+	 * @param url 地址
+	 * @param obj 参数(application/json)
+	 */
+	public String httpsGetByJson(String url, Object obj);
+	
+	/**
+	 * HTTP POST请求
+	 * @param url 地址
+	 */
+	public String httpPost(String url);
+	
+	/**
+	 * HTTP POST请求
+	 * @param url 地址
+	 * @param obj 参数
+	 */
+	public String httpPost(String url, Object obj);
+	
+	/**
+	 * HTTP POST请求
+	 * @param url 地址
+	 * @param obj 参数(application/json)
+	 */
+	public String httpPostByJson(String url, Object obj);
+	
+	/**
+	 * HTTPS POST请求
+	 * @param url 地址
+	 */
+	public String httpsPost(String url);
+	
+	/**
+	 * HTTPS POST请求
+	 * @param url 地址
+	 * @param obj 参数
+	 */
+	public String httpsPost(String url, Object obj);
+	
+	/**
+	 * HTTPS POST请求
+	 * @param url 地址
+	 * @param obj 参数(application/json)
+	 */
+	public String httpsPostByJson(String url, Object obj);
 }

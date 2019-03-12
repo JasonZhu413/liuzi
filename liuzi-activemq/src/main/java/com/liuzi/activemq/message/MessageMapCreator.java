@@ -10,13 +10,12 @@ import javax.jms.Session;
 
 import org.springframework.jms.core.MessageCreator;
 
-public class MessageMapCreator implements MessageCreator {
-	
+public class MessageMapCreator implements MessageCreator{
 	private Map<String,Object> map;
 
 	public MessageMapCreator(Map<String,Object> map) {
 		super();
-		this.map=map;
+		this.map = map;
 	}
 
 	@Override
@@ -33,5 +32,4 @@ public class MessageMapCreator implements MessageCreator {
 		
 		return mm;
 	}
-
 }

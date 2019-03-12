@@ -14,7 +14,19 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ThreadPoolExecutor {
 
+	private static final int DEFAULT_LENGTH = 10;
+	
     private ExecutorService executor;
+    
+    public ThreadPoolExecutor() {
+        log.info("  >>>>>>> 初始化线程池, 最大连接数: " + DEFAULT_LENGTH + " >>>>>>>");
+        executor = ThreadServiceFactory.getInstance().createFixedThreadPool(DEFAULT_LENGTH);
+    }
+    
+    public ThreadPoolExecutor(int len) {
+        log.info("  >>>>>>> 初始化线程池, 最大连接数: " + len + " >>>>>>>");
+        executor = ThreadServiceFactory.getInstance().createFixedThreadPool(len);
+    }
 
     public ThreadPoolExecutor(int len, String msg) {
         log.info("  >>>>>>> 初始化线程池: " + msg + ", 最大连接数: " + len + " >>>>>>>");

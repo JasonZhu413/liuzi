@@ -17,7 +17,6 @@ public class MessageTextCreator implements MessageCreator {
 
 	@Override
 	public Message createMessage(Session session) throws JMSException {
-		
 		return session.createTextMessage(mes);
 	}
 

@@ -23,7 +23,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.util.StringUtils;
 
 import com.liuzi.util.common.Result;
-import com.liuzi.util.upoload.FileUpload;
+import com.liuzi.util.upload.FileUpload;
 
 @Slf4j
 public class ExcelImportUtil{
@@ -83,7 +83,7 @@ public class ExcelImportUtil{
             }else if("XLS".equals(fileType)){
                 wb = new HSSFWorkbook(is);
             }else{
-            	return Result.ERROR.error("文件类型错误，导入失败");
+            	return Result.error("文件类型错误，导入失败");
             }
             
             List<List<Object>> list = readExcel(wb);
@@ -96,7 +96,7 @@ public class ExcelImportUtil{
             return getData(list, type, excelCallBack);
         } catch (Exception e) {
             e.printStackTrace();
-            return Result.ERROR.error("文件导入错误" + e.getMessage());
+            return Result.error("文件导入错误" + e.getMessage());
         }
     }
     
@@ -198,7 +198,7 @@ public class ExcelImportUtil{
                     break;
                 }
 
-                Result res = Result.SUCCESS;
+                Result res = Result.success();
                 if(excelCallBack != null){
                 	res = excelCallBack.handler(list.get(i));
                 }
@@ -219,14 +219,14 @@ public class ExcelImportUtil{
 			
 			if(reCod == 0){
 				log.warn(sbf.toString());
-				return Result.ERROR.data(sbf.toString());
+				return Result.error(sbf.toString());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			log.error("导入失败，系统错误" + e.getMessage());
-			return Result.ERROR.error("导入失败，系统错误");
+			return Result.error("导入失败，系统错误");
 		} 
 
-        return Result.SUCCESS.data(listT);
+        return Result.success(listT);
     }
 }

@@ -34,50 +34,57 @@ public class EasemobConfig {
 	@Getter @Setter private String grant_type;
 	@Getter @Setter private String client_id;
 	@Getter @Setter private String client_secret;
-	@Getter @Setter private String ACCESS_TOKEN;
-	@Getter @Setter private Double EXPIREDAT = -1D;
     
-	@Getter @Setter private ResponseHandler response_handler;
+	/*@Getter @Setter private ResponseHandler response_handler;
 	@Getter @Setter private GroupsApi groups_api;
 	@Getter @Setter private ChatHistoryApi history_api;
 	@Getter @Setter private ChatRoomsApi rooms_api;
 	@Getter @Setter private UploadAndDownloadFilesApi u_d_api;
 	@Getter @Setter private UsersApi users_api;
-	@Getter @Setter private MessagesApi msg_api;
-	@Getter @Setter private AuthenticationApi api;
-	@Getter @Setter private Token body;
+	@Getter @Setter private MessagesApi msg_api;*/
+	public static AuthenticationApi api = new AuthenticationApi();
+	
+	public static String ORG_NAME;
+	public static String APP_NAME;
+	public static String ACCESS_TOKEN;
+	public static Double EXPIREDAT = -1D;
+	public static Token body;
 	
     public void init() {
     	LiuziUtil.tag("  --------  Liuzi Easymock初始化......  --------");
 		
-    	response_handler = new ResponseHandler();
+    	/*response_handler = new ResponseHandler();
     	groups_api = new GroupsApi();
     	history_api = new ChatHistoryApi();
     	rooms_api = new ChatRoomsApi();
     	u_d_api = new UploadAndDownloadFilesApi();
     	users_api = new UsersApi();
-    	msg_api = new MessagesApi();
+    	msg_api = new MessagesApi();*/
     	
-    	api = new AuthenticationApi();
+    	EasemobConfig.ORG_NAME = this.org;
+    	EasemobConfig.APP_NAME = this.app;
     	
-    	body = new Token().clientId(client_id).grantType(grant_type).clientSecret(client_secret);
+    	EasemobConfig.body = new Token().clientId(this.client_id)
+    			.grantType(this.grant_type)
+    			.clientSecret(this.client_secret);
         initTokenByProp();
         
 		logger.info("===== easemob初始化完成 ......========");
     }
 
-    public void initTokenByProp() {
+    @SuppressWarnings("rawtypes")
+    public static void initTokenByProp() {
         String resp = null;
         try {
-            resp = api.orgNameAppNameTokenPost(org, app, body);
+            resp = EasemobConfig.api.orgNameAppNameTokenPost(EasemobConfig.ORG_NAME, 
+            		EasemobConfig.APP_NAME, EasemobConfig.body);
         } catch (ApiException e) {
             logger.error(e.getMessage());
         }
         Gson gson = new Gson();
-        
-        Map map = gson.fromJson(resp, Map.class);
-        ACCESS_TOKEN = " Bearer " + map.get("access_token");
-        EXPIREDAT = System.currentTimeMillis() + (Double) map.get("expires_in");
+		Map map = gson.fromJson(resp, Map.class);
+        EasemobConfig.ACCESS_TOKEN = " Bearer " + map.get("access_token");
+        EasemobConfig.EXPIREDAT = System.currentTimeMillis() + (Double) map.get("expires_in");
     }
 
     /**
@@ -85,15 +92,15 @@ public class EasemobConfig {
      *
      * @return
      */
-    public String getAccessToken() {
-        if (ACCESS_TOKEN == null || isExpired()) {
+    public static String getAccessToken() {
+        if (EasemobConfig.ACCESS_TOKEN == null || isExpired()) {
             initTokenByProp();
         }
-        return ACCESS_TOKEN;
+        return EasemobConfig.ACCESS_TOKEN;
     }
 
-    private Boolean isExpired() {
-        return System.currentTimeMillis() > EXPIREDAT;
+    private static Boolean isExpired() {
+        return System.currentTimeMillis() > EasemobConfig.EXPIREDAT;
     }
 
     

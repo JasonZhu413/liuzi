@@ -1,9 +1,6 @@
 package com.liuzi.rest;
 
 import java.nio.charset.Charset;
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
 import java.util.Iterator;
 import java.util.List;
@@ -18,32 +15,35 @@ import org.apache.http.conn.ssl.SSLContexts;
 import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
 
-@Configuration
 public class RestConfig {
 	
-	private static final Charset charset = Charset.forName("UTF-8");
-
+	private static final Charset CHARSET = Charset.forName("UTF-8");
+	
+	/**
+	 * 最大连接数, 默认值8
+	 */
 	@Getter @Setter private int maxTotal = 8;
+	/**
+	 * 最大并发数, 默认值5
+	 */
 	@Getter @Setter private int maxPerRoute = 5;
+	/**
+	 * 连接超时时间(毫秒), 默认值6000
+	 */
 	@Getter @Setter private int connectTimeout = 6000;
+	/**
+	 * 读写超时时间(毫秒), 默认值6000
+	 */
 	@Getter @Setter private int readTimeout = 6000;
 	
-	public RestConfig(int maxTotal, int maxPerRoute, int connectTimeout, int readTimeout){
-		this.maxTotal = maxTotal;
-		this.maxPerRoute = maxPerRoute;
-		this.connectTimeout = connectTimeout;
-		this.readTimeout = readTimeout;
-	}
 	
     @Bean
     public PoolingHttpClientConnectionManager poolingHttpClientConnectionManager() {
@@ -81,7 +81,7 @@ public class RestConfig {
                 iterator.remove();
             }
         }
-        messageConverters.add(new StringHttpMessageConverter(charset));
+        messageConverters.add(new StringHttpMessageConverter(CHARSET));
         return restHttpTemplate;
     }
     
@@ -119,7 +119,7 @@ public class RestConfig {
                 iterator.remove();
             }
         }
-        messageConverters.add(new StringHttpMessageConverter(charset));
+        messageConverters.add(new StringHttpMessageConverter(CHARSET));
         return restTemplate;
     }
 }

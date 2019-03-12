@@ -27,7 +27,7 @@ public class ExcelUtil {
 			public Result handler(List<Object> list) throws Exception {
 				Long id = this.getLong(list.get(0));
 				if(id == null){
-					return Result.ERROR.error("id不能为空");
+					return Result.error("id不能为空");
 				}
 				
 				String name = this.getString(list.get(1));
@@ -35,7 +35,7 @@ public class ExcelUtil {
 				Test test = new Test();
 				test.setId(id);
 				test.setName(name);
-				return Result.SUCCESS.data(test);
+				return Result.success(test);
 			}
 		});
 	 * @return
@@ -54,7 +54,7 @@ public class ExcelUtil {
 			public Result handler(List<Object> list) throws Exception {
 				Long id = this.getLong(list.get(0));
 				if(id == null){
-					return Result.ERROR.error("id不能为空");
+					return Result.error("id不能为空");
 				}
 				
 				String name = this.getString(list.get(1));
@@ -62,7 +62,7 @@ public class ExcelUtil {
 				Test test = new Test();
 				test.setId(id);
 				test.setName(name);
-				return Result.SUCCESS.data(test);
+				return Result.success(test);
 			}
 		});
 	 * @return
@@ -81,7 +81,7 @@ public class ExcelUtil {
 			public Result handler(List<Object> list) throws Exception {
 				Long id = this.getLong(list.get(0));
 				if(id == null){
-					return Result.ERROR.error("id不能为空");
+					return Result.error("id不能为空");
 				}
 				
 				String name = this.getString(list.get(1));
@@ -89,7 +89,7 @@ public class ExcelUtil {
 				Test test = new Test();
 				test.setId(id);
 				test.setName(name);
-				return Result.SUCCESS.data(test);
+				return Result.success(test);
 			}
 		});
      * @return
@@ -110,7 +110,7 @@ public class ExcelUtil {
 			public Result handler(List<Object> list) throws Exception {
 				Long id = this.getLong(list.get(0));
 				if(id == null){
-					return Result.ERROR.error("id不能为空");
+					return Result.error("id不能为空");
 				}
 				
 				String name = this.getString(list.get(1));
@@ -118,7 +118,7 @@ public class ExcelUtil {
 				Test test = new Test();
 				test.setId(id);
 				test.setName(name);
-				return Result.SUCCESS.data(test);
+				return Result.success(test);
 			}
 		});
      * @return
@@ -211,7 +211,7 @@ public class ExcelUtil {
 			public Result handler(List<Object> list) throws Exception {
 				Long id = this.getLong(list.get(0));
 				if(id == 1){
-					return Result.ERROR.error("id不能等于1");
+					return Result.error("id不能等于1");
 				}
 				
 				String name = this.getString(list.get(1));
@@ -219,7 +219,7 @@ public class ExcelUtil {
 				ExcelTestEntity test = new ExcelTestEntity();
 				test.setId(id);
 				test.setName(name);
-				return Result.SUCCESS.data(test);
+				return Result.success(test);
 			}
 		});
 		if(result.getResult() == 0){

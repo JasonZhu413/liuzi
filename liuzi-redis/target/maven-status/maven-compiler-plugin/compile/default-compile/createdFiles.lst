@@ -2,7 +2,7 @@ com\liuzi\redis\service\impl\RedisLockImpl.class
 com\liuzi\redis\service\impl\RedisServiceImpl.class
 com\liuzi\redis\service\RedisCallBack.class
 com\liuzi\redis\service\RedisLock.class
-com\liuzi\redis\RedisConfig.class
 com\liuzi\redis\service\impl\RedisLockImpl$1.class
+com\liuzi\redis\service\impl\RedisConfig.class
 com\liuzi\redis\service\impl\RedisServiceImpl$1.class
 com\liuzi\redis\service\RedisService.class

@@ -22,5 +22,4 @@ public class MessageObjectCreator implements MessageCreator {
 		
 		return session.createObjectMessage(object);
 	}
-
 }

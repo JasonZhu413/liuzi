@@ -10,13 +10,13 @@ import java.util.Set;
 
 import net.sf.json.JSONObject;
 import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.JedisSentinelPool;
 import redis.clients.jedis.JedisPoolConfig;
 import redis.clients.jedis.Pipeline;
 
 
 
-public class RedisPool {
+public class RedisSentinel {
 	
 	private static final int LOCK_TIME = 1000;
 	private static final String LOCK_SUCCESS = "OK";
@@ -26,11 +26,15 @@ public class RedisPool {
     private static final String SCRIPT = "if redis.call('get', KEYS[1]) == ARGV[1] " + 
     		"then return redis.call('del', KEYS[1]) else return 0 end";
     
-    private JedisPool jedisPool;
+    private JedisSentinelPool jedisPool;
     
-    public RedisPool(JedisPoolConfig jedisPoolConfig, String host, int port,
-    		int timeout, String password){
-    	jedisPool = new JedisPool(jedisPoolConfig, host, port, timeout, password);
+    /**
+     * 
+     * @param jedisPoolConfig
+     * @param sentinels host:port
+     */
+    public RedisSentinel(String masterName, Set<String> sentinels, JedisPoolConfig jedisPoolConfig){
+    	jedisPool = new JedisSentinelPool(masterName, sentinels, jedisPoolConfig);
     }
     
     /**

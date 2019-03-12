@@ -59,7 +59,7 @@ public class Easemob{
             
             public Object invokeEasemobAPI() throws ApiException {
             	logger.info("getChatGroups - params{limit: {}, cursor: {} }", limit, cursor);
-            	String str = groups_api.orgNameAppNameChatgroupsGet(easemobConfig.getOrg(),easemobConfig.getApp(),easemobConfig.getAccessToken(),limit+"",cursor);
+            	String str = groups_api.orgNameAppNameChatgroupsGet(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),limit+"",cursor);
             	logger.info("getChatGroups - return {}", str);
                 return str;
             }
@@ -76,7 +76,7 @@ public class Easemob{
         Object obj =  response_handler.handle(new EasemobAPI() {
             
             public Object invokeEasemobAPI() throws ApiException {
-                return groups_api.orgNameAppNameChatgroupsGroupIdsGet(easemobConfig.getOrg(),easemobConfig.getApp(),easemobConfig.getAccessToken(),StringUtil.join(groupIds,","));
+                return groups_api.orgNameAppNameChatgroupsGroupIdsGet(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),StringUtil.join(groupIds,","));
             }
         });
 		
@@ -91,7 +91,7 @@ public class Easemob{
         Object obj =  response_handler.handle(new EasemobAPI() {
             
             public Object invokeEasemobAPI() throws ApiException {
-                return groups_api.orgNameAppNameChatgroupsPost(easemobConfig.getOrg(),easemobConfig.getApp(),easemobConfig.getAccessToken(), (Group) payload);
+                return groups_api.orgNameAppNameChatgroupsPost(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(), (Group) payload);
             }
         });
 		
@@ -106,7 +106,7 @@ public class Easemob{
         Object obj =  response_handler.handle(new EasemobAPI() {
             
             public Object invokeEasemobAPI() throws ApiException {
-                return groups_api.orgNameAppNameChatgroupsGroupIdPut(easemobConfig.getOrg(),easemobConfig.getApp(),easemobConfig.getAccessToken(),groupId, (ModifyGroup) payload);
+                return groups_api.orgNameAppNameChatgroupsGroupIdPut(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),groupId, (ModifyGroup) payload);
             }
         });
 		
@@ -121,7 +121,7 @@ public class Easemob{
         Object obj =  response_handler.handle(new EasemobAPI() {
             
             public Object invokeEasemobAPI() throws ApiException {
-                return groups_api.orgNameAppNameChatgroupsGroupIdDelete(easemobConfig.getOrg(),easemobConfig.getApp(),easemobConfig.getAccessToken(),groupId);
+                return groups_api.orgNameAppNameChatgroupsGroupIdDelete(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),groupId);
             }
         });
 		
@@ -136,7 +136,7 @@ public class Easemob{
         Object obj =  response_handler.handle(new EasemobAPI() {
             
             public Object invokeEasemobAPI() throws ApiException {
-                return groups_api.orgNameAppNameChatgroupsGroupIdUsersGet(easemobConfig.getOrg(),easemobConfig.getApp(),easemobConfig.getAccessToken(),groupId);
+                return groups_api.orgNameAppNameChatgroupsGroupIdUsersGet(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),groupId);
             }
         });
 		
@@ -155,7 +155,7 @@ public class Easemob{
         Object obj =  response_handler.handle(new EasemobAPI() {
             
             public Object invokeEasemobAPI() throws ApiException {
-                return groups_api.orgNameAppNameChatgroupsGroupIdUsersPost(easemobConfig.getOrg(),easemobConfig.getApp(),easemobConfig.getAccessToken(),groupId,userNames);
+                return groups_api.orgNameAppNameChatgroupsGroupIdUsersPost(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),groupId,userNames);
             }
         });
 		
@@ -170,7 +170,7 @@ public class Easemob{
         Object obj =  response_handler.handle(new EasemobAPI() {
             
             public Object invokeEasemobAPI() throws ApiException {
-                return groups_api.orgNameAppNameChatgroupsGroupIdUsersPost(easemobConfig.getOrg(),easemobConfig.getApp(),easemobConfig.getAccessToken(),groupId, (UserNames) payload);
+                return groups_api.orgNameAppNameChatgroupsGroupIdUsersPost(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),groupId, (UserNames) payload);
             }
         });
 		
@@ -185,7 +185,7 @@ public class Easemob{
         Object obj =  response_handler.handle(new EasemobAPI() {
             
             public Object invokeEasemobAPI() throws ApiException {
-                return groups_api.orgNameAppNameChatgroupsGroupIdUsersUsernameDelete(easemobConfig.getOrg(),easemobConfig.getApp(),easemobConfig.getAccessToken(),groupId,userId);
+                return groups_api.orgNameAppNameChatgroupsGroupIdUsersUsernameDelete(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),groupId,userId);
             }
         });
 		
@@ -200,7 +200,7 @@ public class Easemob{
         Object obj =  response_handler.handle(new EasemobAPI() {
             
             public Object invokeEasemobAPI() throws ApiException {
-                return groups_api.orgNameAppNameChatgroupsGroupIdUsersMembersDelete(easemobConfig.getOrg(),easemobConfig.getApp(),easemobConfig.getAccessToken(),groupId,StringUtil.join(userIds,","));
+                return groups_api.orgNameAppNameChatgroupsGroupIdUsersMembersDelete(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),groupId,StringUtil.join(userIds,","));
             }
         });
 		
@@ -215,7 +215,7 @@ public class Easemob{
         Object obj =  response_handler.handle(new EasemobAPI() {
             
             public Object invokeEasemobAPI() throws ApiException {
-                return groups_api.orgNameAppNameChatgroupsGroupidPut(easemobConfig.getOrg(),easemobConfig.getApp(),easemobConfig.getAccessToken(),groupId, (NewOwner) payload);
+                return groups_api.orgNameAppNameChatgroupsGroupidPut(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),groupId, (NewOwner) payload);
             }
         });
 		
@@ -230,7 +230,7 @@ public class Easemob{
         Object obj =  response_handler.handle(new EasemobAPI() {
             
             public Object invokeEasemobAPI() throws ApiException {
-                return groups_api.orgNameAppNameChatgroupsGroupIdBlocksUsersGet(easemobConfig.getOrg(),easemobConfig.getApp(),easemobConfig.getAccessToken(),groupId);
+                return groups_api.orgNameAppNameChatgroupsGroupIdBlocksUsersGet(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),groupId);
             }
         });
 		
@@ -245,7 +245,7 @@ public class Easemob{
         Object obj =  response_handler.handle(new EasemobAPI() {
             
             public Object invokeEasemobAPI() throws ApiException {
-                return groups_api.orgNameAppNameChatgroupsGroupIdBlocksUsersUsernamePost(easemobConfig.getOrg(),easemobConfig.getApp(),easemobConfig.getAccessToken(),groupId,userId);
+                return groups_api.orgNameAppNameChatgroupsGroupIdBlocksUsersUsernamePost(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),groupId,userId);
             }
         });
 		
@@ -260,7 +260,7 @@ public class Easemob{
         Object obj =  response_handler.handle(new EasemobAPI() {
             
             public Object invokeEasemobAPI() throws ApiException {
-                return groups_api.orgNameAppNameChatgroupsGroupIdBlocksUsersPost(easemobConfig.getOrg(),easemobConfig.getApp(),easemobConfig.getAccessToken(),groupId, (UserNames) payload);
+                return groups_api.orgNameAppNameChatgroupsGroupIdBlocksUsersPost(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),groupId, (UserNames) payload);
             }
         });
 		
@@ -275,7 +275,7 @@ public class Easemob{
         Object obj =  response_handler.handle(new EasemobAPI() {
             
             public Object invokeEasemobAPI() throws ApiException {
-                return groups_api.orgNameAppNameChatgroupsGroupIdBlocksUsersUsernameDelete(easemobConfig.getOrg(),easemobConfig.getApp(),easemobConfig.getAccessToken(),groupId,userId);
+                return groups_api.orgNameAppNameChatgroupsGroupIdBlocksUsersUsernameDelete(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),groupId,userId);
             }
         });
 		
@@ -290,7 +290,7 @@ public class Easemob{
         Object obj =  response_handler.handle(new EasemobAPI() {
             
             public Object invokeEasemobAPI() throws ApiException {
-                return groups_api.orgNameAppNameChatgroupsGroupIdBlocksUsersUsernamesDelete(easemobConfig.getOrg(),easemobConfig.getApp(),easemobConfig.getAccessToken(),groupId,StringUtil.join(userIds,","));
+                return groups_api.orgNameAppNameChatgroupsGroupIdBlocksUsersUsernamesDelete(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),groupId,StringUtil.join(userIds,","));
             }
         });
 		
@@ -305,7 +305,7 @@ public class Easemob{
         Object obj =  response_handler.handle(new EasemobAPI() {
             
             public Object invokeEasemobAPI() throws ApiException {
-                return history_api.orgNameAppNameChatmessagesGet(easemobConfig.getOrg(),easemobConfig.getApp(),easemobConfig.getAccessToken(),query,limit+"",cursor);
+                return history_api.orgNameAppNameChatmessagesGet(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),query,limit+"",cursor);
             }
         });
 		
@@ -320,7 +320,7 @@ public class Easemob{
         Object obj =  response_handler.handle(new EasemobAPI() {
             
             public Object invokeEasemobAPI() throws ApiException {
-                return history_api.orgNameAppNameChatmessagesTimeGet(easemobConfig.getOrg(),easemobConfig.getApp(),easemobConfig.getAccessToken(),timeStr);
+                return history_api.orgNameAppNameChatmessagesTimeGet(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),timeStr);
             }
         });
 		
@@ -335,7 +335,7 @@ public class Easemob{
         Object obj =  response_handler.handle(new EasemobAPI() {
             
             public Object invokeEasemobAPI() throws ApiException {
-                return rooms_api.orgNameAppNameChatroomsPost(easemobConfig.getOrg(),easemobConfig.getApp(),easemobConfig.getAccessToken(), (Chatroom) payload);
+                return rooms_api.orgNameAppNameChatroomsPost(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(), (Chatroom) payload);
             }
         });
 		
@@ -350,7 +350,7 @@ public class Easemob{
         Object obj =  response_handler.handle(new EasemobAPI() {
             
             public Object invokeEasemobAPI() throws ApiException {
-                return rooms_api.orgNameAppNameChatroomsChatroomIdPut(easemobConfig.getOrg(),easemobConfig.getApp(),easemobConfig.getAccessToken(),roomId, (ModifyChatroom) payload);
+                return rooms_api.orgNameAppNameChatroomsChatroomIdPut(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),roomId, (ModifyChatroom) payload);
             }
         });
 		
@@ -365,7 +365,7 @@ public class Easemob{
         Object obj =  response_handler.handle(new EasemobAPI() {
             
             public Object invokeEasemobAPI() throws ApiException {
-                return rooms_api.orgNameAppNameChatroomsChatroomIdDelete(easemobConfig.getOrg(),easemobConfig.getApp(),easemobConfig.getAccessToken(),roomId);
+                return rooms_api.orgNameAppNameChatroomsChatroomIdDelete(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),roomId);
             }
         });
 		
@@ -380,7 +380,7 @@ public class Easemob{
         Object obj =  response_handler.handle(new EasemobAPI() {
             
             public Object invokeEasemobAPI() throws ApiException {
-                return rooms_api.orgNameAppNameChatroomsGet(easemobConfig.getOrg(),easemobConfig.getApp(),easemobConfig.getAccessToken());
+                return rooms_api.orgNameAppNameChatroomsGet(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken());
             }
         });
 		
@@ -395,7 +395,7 @@ public class Easemob{
         Object obj =  response_handler.handle(new EasemobAPI() {
             
             public Object invokeEasemobAPI() throws ApiException {
-                return rooms_api.orgNameAppNameChatroomsChatroomIdGet(easemobConfig.getOrg(),easemobConfig.getApp(),easemobConfig.getAccessToken(),roomId);
+                return rooms_api.orgNameAppNameChatroomsChatroomIdGet(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),roomId);
             }
         });
 		
@@ -410,7 +410,7 @@ public class Easemob{
         Object obj =  response_handler.handle(new EasemobAPI() {
             
             public Object invokeEasemobAPI() throws ApiException {
-                return rooms_api.orgNameAppNameChatroomsChatroomIdUsersUsernamePost(easemobConfig.getOrg(),easemobConfig.getApp(),easemobConfig.getAccessToken(),roomId,userName);
+                return rooms_api.orgNameAppNameChatroomsChatroomIdUsersUsernamePost(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),roomId,userName);
             }
         });
 		
@@ -425,7 +425,7 @@ public class Easemob{
         Object obj =  response_handler.handle(new EasemobAPI() {
             
             public Object invokeEasemobAPI() throws ApiException {
-                return rooms_api.orgNameAppNameChatroomsChatroomIdUsersPost(easemobConfig.getOrg(),easemobConfig.getApp(),easemobConfig.getAccessToken(),roomId, (UserNames) payload);
+                return rooms_api.orgNameAppNameChatroomsChatroomIdUsersPost(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),roomId, (UserNames) payload);
             }
         });
 		
@@ -440,7 +440,7 @@ public class Easemob{
         Object obj =  response_handler.handle(new EasemobAPI() {
             
             public Object invokeEasemobAPI() throws ApiException {
-                return rooms_api.orgNameAppNameChatroomsChatroomIdUsersUsernameDelete(easemobConfig.getOrg(),easemobConfig.getApp(),easemobConfig.getAccessToken(),roomId,userName);
+                return rooms_api.orgNameAppNameChatroomsChatroomIdUsersUsernameDelete(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),roomId,userName);
             }
         });
 		
@@ -455,7 +455,7 @@ public class Easemob{
         Object obj =  response_handler.handle(new EasemobAPI() {
             
             public Object invokeEasemobAPI() throws ApiException {
-                return rooms_api.orgNameAppNameChatroomsChatroomIdUsersUsernamesDelete(easemobConfig.getOrg(),easemobConfig.getApp(),easemobConfig.getAccessToken(),roomId, StringUtil.join(userNames,","));
+                return rooms_api.orgNameAppNameChatroomsChatroomIdUsersUsernamesDelete(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),roomId, StringUtil.join(userNames,","));
             }
         });
 		
@@ -470,7 +470,7 @@ public class Easemob{
         Object obj =  response_handler.handle(new EasemobAPI() {
             
             public Object invokeEasemobAPI() throws ApiException {
-                return u_d_api.orgNameAppNameChatfilesPost(easemobConfig.getOrg(),easemobConfig.getApp(),easemobConfig.getAccessToken(),(File)file,true);
+                return u_d_api.orgNameAppNameChatfilesPost(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),(File)file,true);
              }
         });
 		
@@ -485,7 +485,7 @@ public class Easemob{
         Object obj =  response_handler.handle(new EasemobAPI() {
             
             public Object invokeEasemobAPI() throws ApiException {
-               return u_d_api.orgNameAppNameChatfilesUuidGet(easemobConfig.getOrg(),easemobConfig.getApp(),easemobConfig.getAccessToken(),fileUUID,shareSecret,isThumbnail);
+               return u_d_api.orgNameAppNameChatfilesUuidGet(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),fileUUID,shareSecret,isThumbnail);
             }
         });
 		
@@ -500,7 +500,7 @@ public class Easemob{
 		Object obj =  response_handler.handle(new EasemobAPI() {
 			
 			public Object invokeEasemobAPI() throws ApiException {
-				return users_api.orgNameAppNameUsersPost(easemobConfig.getOrg(),easemobConfig.getApp(), (RegisterUsers) payload,easemobConfig.getAccessToken());
+				return users_api.orgNameAppNameUsersPost(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME, (RegisterUsers) payload,easemobConfig.getAccessToken());
 			}
 		});
 		
@@ -515,7 +515,7 @@ public class Easemob{
 		Object obj =  response_handler.handle(new EasemobAPI() {
 			
 			public Object invokeEasemobAPI() throws ApiException {
-				return users_api.orgNameAppNameUsersPost(easemobConfig.getOrg(),easemobConfig.getApp(), (RegisterUsers) payload,easemobConfig.getAccessToken());
+				return users_api.orgNameAppNameUsersPost(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME, (RegisterUsers) payload,easemobConfig.getAccessToken());
 			}
 		});
 		
@@ -530,7 +530,7 @@ public class Easemob{
 		Object obj =  response_handler.handle(new EasemobAPI() {
 			
 			public Object invokeEasemobAPI() throws ApiException {
-				return users_api.orgNameAppNameUsersUsernameGet(easemobConfig.getOrg(),easemobConfig.getApp(),easemobConfig.getAccessToken(),userName);
+				return users_api.orgNameAppNameUsersUsernameGet(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),userName);
 		}
 		});
 		
@@ -545,7 +545,7 @@ public class Easemob{
 		Object obj =  response_handler.handle(new EasemobAPI() {
 			
 			public Object invokeEasemobAPI() throws ApiException {
-				return users_api.orgNameAppNameUsersGet(easemobConfig.getOrg(),easemobConfig.getApp(),easemobConfig.getAccessToken(),limit+"",cursor);
+				return users_api.orgNameAppNameUsersGet(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),limit+"",cursor);
 			}
 		});
 		
@@ -560,7 +560,7 @@ public class Easemob{
 		Object obj =  response_handler.handle(new EasemobAPI() {
 			
 			public Object invokeEasemobAPI() throws ApiException {
-				return users_api.orgNameAppNameUsersUsernameDelete(easemobConfig.getOrg(),easemobConfig.getApp(),easemobConfig.getAccessToken(),userName);
+				return users_api.orgNameAppNameUsersUsernameDelete(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),userName);
 			}
 		});
 		
@@ -575,7 +575,7 @@ public class Easemob{
 		Object obj =  response_handler.handle(new EasemobAPI() {
 			
 			public Object invokeEasemobAPI() throws ApiException {
-				return users_api.orgNameAppNameUsersDelete(easemobConfig.getOrg(),easemobConfig.getApp(),easemobConfig.getAccessToken(),limit+"",cursor);
+				return users_api.orgNameAppNameUsersDelete(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),limit+"",cursor);
 			}
 		});
 		
@@ -590,7 +590,7 @@ public class Easemob{
 		Object obj =  response_handler.handle(new EasemobAPI() {
 			
 			public Object invokeEasemobAPI() throws ApiException {
-				return users_api.orgNameAppNameUsersUsernamePasswordPut(easemobConfig.getOrg(),easemobConfig.getApp(),userName, (NewPassword) payload,easemobConfig.getAccessToken());
+				return users_api.orgNameAppNameUsersUsernamePasswordPut(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,userName, (NewPassword) payload,easemobConfig.getAccessToken());
 			}
 		});
 		
@@ -605,7 +605,7 @@ public class Easemob{
 		Object obj =  response_handler.handle(new EasemobAPI() {
 			
 			public Object invokeEasemobAPI() throws ApiException {
-				return users_api.orgNameAppNameUsersUsernamePut(easemobConfig.getOrg(),easemobConfig.getApp(),userName, (Nickname) payload,easemobConfig.getAccessToken());
+				return users_api.orgNameAppNameUsersUsernamePut(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,userName, (Nickname) payload,easemobConfig.getAccessToken());
 			}
 		});
 		
@@ -620,7 +620,7 @@ public class Easemob{
 		Object obj =  response_handler.handle(new EasemobAPI() {
 			
 			public Object invokeEasemobAPI() throws ApiException {
-				return users_api.orgNameAppNameUsersOwnerUsernameContactsUsersFriendUsernamePost(easemobConfig.getOrg(),easemobConfig.getApp(),easemobConfig.getAccessToken(),userName,friendName);
+				return users_api.orgNameAppNameUsersOwnerUsernameContactsUsersFriendUsernamePost(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),userName,friendName);
 			}
 		});
 		
@@ -635,7 +635,7 @@ public class Easemob{
 		Object obj =  response_handler.handle(new EasemobAPI() {
 			
 			public Object invokeEasemobAPI() throws ApiException {
-				return users_api.orgNameAppNameUsersOwnerUsernameContactsUsersFriendUsernameDelete(easemobConfig.getOrg(),easemobConfig.getApp(),easemobConfig.getAccessToken(),userName,friendName);
+				return users_api.orgNameAppNameUsersOwnerUsernameContactsUsersFriendUsernameDelete(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),userName,friendName);
 			}
 		});
 		
@@ -650,7 +650,7 @@ public class Easemob{
 		Object obj =  response_handler.handle(new EasemobAPI() {
 			
 			public Object invokeEasemobAPI() throws ApiException {
-				return users_api.orgNameAppNameUsersOwnerUsernameContactsUsersGet(easemobConfig.getOrg(),easemobConfig.getApp(),easemobConfig.getAccessToken(),userName);
+				return users_api.orgNameAppNameUsersOwnerUsernameContactsUsersGet(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),userName);
 			}
 		});
 		
@@ -665,7 +665,7 @@ public class Easemob{
 		Object obj =  response_handler.handle(new EasemobAPI() {
 			
 			public Object invokeEasemobAPI() throws ApiException {
-				return users_api.orgNameAppNameUsersOwnerUsernameBlocksUsersGet(easemobConfig.getOrg(),easemobConfig.getApp(),easemobConfig.getAccessToken(),userName);
+				return users_api.orgNameAppNameUsersOwnerUsernameBlocksUsersGet(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),userName);
 			}
 		});
 		
@@ -680,7 +680,7 @@ public class Easemob{
 		Object obj =  response_handler.handle(new EasemobAPI() {
 			
 			public Object invokeEasemobAPI() throws ApiException {
-				return users_api.orgNameAppNameUsersOwnerUsernameBlocksUsersPost(easemobConfig.getOrg(),easemobConfig.getApp(),easemobConfig.getAccessToken(),userName, (UserNames) payload);
+				return users_api.orgNameAppNameUsersOwnerUsernameBlocksUsersPost(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),userName, (UserNames) payload);
 			}
 		});
 		
@@ -695,7 +695,7 @@ public class Easemob{
 		Object obj =  response_handler.handle(new EasemobAPI() {
 			
 			public Object invokeEasemobAPI() throws ApiException {
-				return users_api.orgNameAppNameUsersOwnerUsernameBlocksUsersBlockedUsernameDelete(easemobConfig.getOrg(),easemobConfig.getApp(),easemobConfig.getAccessToken(),userName,blackListName);
+				return users_api.orgNameAppNameUsersOwnerUsernameBlocksUsersBlockedUsernameDelete(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),userName,blackListName);
 			}
 		});
 		
@@ -710,7 +710,7 @@ public class Easemob{
 		Object obj =  response_handler.handle(new EasemobAPI() {
 			
 			public Object invokeEasemobAPI() throws ApiException {
-				return users_api.orgNameAppNameUsersUsernameStatusGet(easemobConfig.getOrg(),easemobConfig.getApp(),easemobConfig.getAccessToken(),userName);
+				return users_api.orgNameAppNameUsersUsernameStatusGet(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),userName);
 			}
 		});
 		
@@ -725,7 +725,7 @@ public class Easemob{
 		Object obj =  response_handler.handle(new EasemobAPI() {
 			
 			public Object invokeEasemobAPI() throws ApiException {
-				return users_api.orgNameAppNameUsersOwnerUsernameOfflineMsgCountGet(easemobConfig.getOrg(),easemobConfig.getApp(),easemobConfig.getAccessToken(),userName);
+				return users_api.orgNameAppNameUsersOwnerUsernameOfflineMsgCountGet(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),userName);
 			}
 		});
 		
@@ -740,7 +740,7 @@ public class Easemob{
 		Object obj =  response_handler.handle(new EasemobAPI() {
 			
 			public Object invokeEasemobAPI() throws ApiException {
-				return users_api.orgNameAppNameUsersUsernameOfflineMsgStatusMsgIdGet(easemobConfig.getOrg(),easemobConfig.getApp(),easemobConfig.getAccessToken(),userName,msgId);
+				return users_api.orgNameAppNameUsersUsernameOfflineMsgStatusMsgIdGet(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),userName,msgId);
 			}
 		});
 		
@@ -755,7 +755,7 @@ public class Easemob{
 		Object obj =  response_handler.handle(new EasemobAPI() {
 			
 			public Object invokeEasemobAPI() throws ApiException {
-				return users_api.orgNameAppNameUsersUsernameDeactivatePost(easemobConfig.getOrg(),easemobConfig.getApp(),easemobConfig.getAccessToken(),userName);
+				return users_api.orgNameAppNameUsersUsernameDeactivatePost(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),userName);
 			}
 		});
 		
@@ -770,7 +770,7 @@ public class Easemob{
 		Object obj =  response_handler.handle(new EasemobAPI() {
 			
 			public Object invokeEasemobAPI() throws ApiException {
-				return users_api.orgNameAppNameUsersUsernameActivatePost(easemobConfig.getOrg(),easemobConfig.getApp(),easemobConfig.getAccessToken(),userName);
+				return users_api.orgNameAppNameUsersUsernameActivatePost(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),userName);
 			}
 		});
 		
@@ -785,7 +785,7 @@ public class Easemob{
 		Object obj =  response_handler.handle(new EasemobAPI() {
 			
 			public Object invokeEasemobAPI() throws ApiException {
-				return users_api.orgNameAppNameUsersUsernameDisconnectGet(easemobConfig.getOrg(),easemobConfig.getApp(),easemobConfig.getAccessToken(),userName);
+				return users_api.orgNameAppNameUsersUsernameDisconnectGet(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),userName);
 			}
 		});
 		
@@ -800,7 +800,7 @@ public class Easemob{
 		Object obj =  response_handler.handle(new EasemobAPI() {
 			
 			public Object invokeEasemobAPI() throws ApiException {
-				return users_api.orgNameAppNameUsersUsernameJoinedChatgroupsGet(easemobConfig.getOrg(),easemobConfig.getApp(),easemobConfig.getAccessToken(),userName);
+				return users_api.orgNameAppNameUsersUsernameJoinedChatgroupsGet(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),userName);
 			}
 		});
 		
@@ -815,7 +815,7 @@ public class Easemob{
 		Object obj =  response_handler.handle(new EasemobAPI() {
 			
 			public Object invokeEasemobAPI() throws ApiException {
-				return users_api.orgNameAppNameUsersUsernameJoinedChatroomsGet(easemobConfig.getOrg(),easemobConfig.getApp(),easemobConfig.getAccessToken(),userName);
+				return users_api.orgNameAppNameUsersUsernameJoinedChatroomsGet(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),userName);
 			}
 		});
 		
@@ -830,7 +830,7 @@ public class Easemob{
         Object obj =  response_handler.handle(new EasemobAPI() {
             
             public Object invokeEasemobAPI() throws ApiException {
-                return msg_api.orgNameAppNameMessagesPost(easemobConfig.getOrg(),easemobConfig.getApp(),easemobConfig.getAccessToken(), (Msg) payload);
+                return msg_api.orgNameAppNameMessagesPost(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(), (Msg) payload);
             }
         });
 		

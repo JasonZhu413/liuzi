@@ -1,4 +1,4 @@
-package com.liuzi.util.upoload;
+package com.liuzi.util.upload;
 
 import java.awt.Color;
 import java.awt.Component;

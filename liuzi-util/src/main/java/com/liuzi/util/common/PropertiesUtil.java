@@ -1,31 +1,28 @@
 package com.liuzi.util.common;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
+@Slf4j
 public class PropertiesUtil extends PropertiesConfiguration{
 	
-	private static Logger logger = LoggerFactory.getLogger(PropertiesUtil.class);
 	private PropertiesConfiguration prop;
 	
 	public PropertiesUtil(String path){
 		if(StringUtils.isEmpty(path)){
-			logger.warn("警告：配置文件目录path为空");
-			return;
+			throw new IllegalArgumentException(">>> WARN!!! Properties path is null");
 		}
 		
 		prop = new PropertiesConfiguration();
 		prop.setEncoding("UTF-8");
-		
 		try{
 			prop.load(path);
-			logger.info("加载" + path + "文件......");
+			log.info("Properties load " + path + "...");
 	    } catch (Exception e) {
-	    	logger.error("加载" + path + "文件失败：" + e.getMessage());
-	    	e.fillInStackTrace();
+	    	log.error("Properties load " + path + " fail：" + e.getMessage());
 	    }
 	}
 	
@@ -34,8 +31,7 @@ public class PropertiesUtil extends PropertiesConfiguration{
 	    try {
 	    	value = prop.getString(key);
 	    } catch (Exception e) {
-	    	logger.error("错误：" + e.getMessage());
-	    	e.fillInStackTrace();
+	    	log.error("Error：" + e.getMessage());
 	    }
 	    return value;
 	}
@@ -45,8 +41,7 @@ public class PropertiesUtil extends PropertiesConfiguration{
 	    try {
 	    	value = prop.getString(key, defaultValue);
 	    } catch (Exception e) {
-	    	logger.error("错误：" + e.getMessage());
-	    	e.fillInStackTrace();
+	    	log.error("Error：" + e.getMessage());
 	    }
 	    return value;
 	}
@@ -56,8 +51,7 @@ public class PropertiesUtil extends PropertiesConfiguration{
 	    try {
 	    	value = prop.getInt(key);
 	    } catch (Exception e) {
-	    	logger.error("错误：" + e.getMessage());
-	    	e.fillInStackTrace();
+	    	log.error("Error：" + e.getMessage());
 	    }
 	    return value;
 	}
@@ -67,8 +61,7 @@ public class PropertiesUtil extends PropertiesConfiguration{
 	    try {
 	    	value = prop.getInt(key, defaultValue);
 	    } catch (Exception e) {
-	    	logger.error("错误：" + e.getMessage());
-	    	e.fillInStackTrace();
+	    	log.error("Error：" + e.getMessage());
 	    }
 	    return value;
 	}
@@ -78,8 +71,7 @@ public class PropertiesUtil extends PropertiesConfiguration{
 	    try {
 	    	value = prop.getLong(key);
 	    } catch (Exception e) {
-	    	logger.error("错误：" + e.getMessage());
-	    	e.fillInStackTrace();
+	    	log.error("Error：" + e.getMessage());
 	    }
 	    return value;
 	}
@@ -89,8 +81,7 @@ public class PropertiesUtil extends PropertiesConfiguration{
 	    try {
 	    	value = prop.getLong(key, defaultValue);
 	    } catch (Exception e) {
-	    	logger.error("错误：" + e.getMessage());
-	    	e.fillInStackTrace();
+	    	log.error("Error：" + e.getMessage());
 	    }
 	    return value;
 	}
@@ -100,8 +91,7 @@ public class PropertiesUtil extends PropertiesConfiguration{
 	    try {
 	    	value = prop.getDouble(key);
 	    } catch (Exception e) {
-	    	logger.error("错误：" + e.getMessage());
-	    	e.fillInStackTrace();
+	    	log.error("Error：" + e.getMessage());
 	    }
 
 	    return value;
@@ -112,8 +102,7 @@ public class PropertiesUtil extends PropertiesConfiguration{
 	    try {
 	    	value = prop.getDouble(key, defaultValue);
 	    } catch (Exception e) {
-	    	logger.error("错误：" + e.getMessage());
-	    	e.fillInStackTrace();
+	    	log.error("Error：" + e.getMessage());
 	    }
 
 	    return value;
@@ -124,8 +113,7 @@ public class PropertiesUtil extends PropertiesConfiguration{
 	    try {
 	    	value = prop.getBoolean(key);
 	    } catch (Exception e) {
-	    	logger.error("错误：" + e.getMessage());
-	    	e.fillInStackTrace();
+	    	log.error("Error：" + e.getMessage());
 	    }
 	    return value;
 	}
@@ -135,27 +123,21 @@ public class PropertiesUtil extends PropertiesConfiguration{
 	    try {
 	    	value = prop.getBoolean(key, defaultValue);
 	    } catch (Exception e) {
-	    	logger.error("错误：" + e.getMessage());
-	    	e.fillInStackTrace();
+	    	log.error("Error：" + e.getMessage());
 	    }
 	    return value;
 	}
 
 	public void save(String key, Object value) {
 		String path = prop.getBasePath();
-		logger.info(path + "保存key: " + key + ", value：" + value);
+		log.info(path + "Properties save key: " + key + ", value：" + value);
 	    try{
 	    	prop.setProperty(key, value);
 	    	prop.save(path);
 	    	prop.load(path);
-	    	logger.info("重新加载配置文件......");
+	    	log.info("Properties reload...");
 	    } catch (ConfigurationException e) {
-	    	logger.error("重新加载配置文件出错：" + e.getMessage());
-	    	e.printStackTrace();
+	    	log.error("Properties save error：" + e.getMessage());
 	    }
-	}
-	
-	public static void main(String[] args) {
-		//new PropertiesUtil("").getString(key, defaultValue);
 	}
 }

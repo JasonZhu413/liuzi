@@ -1,9 +1,10 @@
 package com.liuzi.util.common;
 
+import java.io.Serializable;
+
 import org.springframework.util.StringUtils;
 
-import lombok.Getter;
-import lombok.ToString;
+import lombok.Data;
 
 /**
  * @Title:        Result
@@ -17,24 +18,27 @@ import lombok.ToString;
  * @version       1.0
  * 
  */
-@Getter
-@ToString
-public enum Result{ 
+@Data
+public class Result implements Serializable{ 
 	
-	SUCCESS(0, "SUCCESS", "成功"), ERROR(-1, "FAIL", "失败");
+	private static final long serialVersionUID = 1L;
+	
+	private static final int[] RESULTS = new int[]{0, -1, -2};
+	private static final String[] CODES = new String[]{"SUCCESS", "ERROR", "WARN"};
+	private static final String[] MSGS = new String[]{"成功", "失败", "警告"};
 	
 	/**
-	 * 标识 0(成功) -1(失败)
+	 * 标识 0(成功) -1(失败) -2(警告)
 	 */
 	private int result;
 	
 	/**
-	 * 代码  SUCCESS(result=0) FAIL(result=-1)
+	 * 代码  SUCCESS(result=0) ERROR(result=-1) WARN(result=-2)
 	 */
 	private String code;
 	
 	/**
-	 * 提示信息 成功(result=0) 失败(result=-1)
+	 * 提示信息 成功(result=0) 失败(result=-1) 警告(result=-2)
 	 */
 	private String msg;
 	
@@ -58,81 +62,98 @@ public enum Result{
 	 */
 	private Object data;
 	
-	Result(int result, String code, String msg){
-		this.result = result;
-		this.code = code;
-		this.msg = msg;
+	public static Result success(){
+		return success(null, null);
 	}
 	
-	public Result msg(String msg){
-		this.msg = msg;
-		return this;
+	public static Result success(String msg){
+		return success(msg, null);
 	}
 	
-	public Result data(Object data){
-		this.data = data;
-		return this;
+	public static Result success(Object data){
+		return success(null, data);
+	}
+
+	public static Result success(String msg, Object data){
+		Result result = new Result();
+		result.setResult(RESULTS[0]);
+		result.setCode(CODES[0]);
+		result.setMsg(StringUtils.isEmpty(msg) ? MSGS[0] : msg);
+		result.setData(data);
+		return result;
 	}
 	
-	public Result data(String msg, Object data){
-		this.msg = msg;
-		this.data = data;
-		return this;
+	public static Result error(){
+		return error(null, null, null, null);
 	}
 	
-	public Result error(String errorMsg){
-		this.errorMsg = errorMsg;
-		return this;
+	public static Result error(String errorMsg){
+		return error(null, null, errorMsg, null);
 	}
 	
-	public Result error(String errorCode, String errorMsg){
-		this.errorCode = errorCode;
-		this.errorMsg = errorMsg;
-		return this;
+	public static Result error(Object data){
+		return error(null, null, null, data);
 	}
 	
-	public Result error(String errorCode, String errorEngCode,
+	public static Result error(String errorCode, String errorMsg){
+		return error(errorCode, null, errorMsg, null);
+	}
+	
+	public static Result error(String errorCode, String errorMsg, Object data){
+		return error(errorCode, null, errorMsg, data);
+	}
+	
+	public static Result error(String errorCode, String errorEngCode,
 			String errorMsg){
-		this.errorCode = errorCode;
-		this.errorEngCode = errorEngCode;
-		this.errorMsg = errorMsg;
-		return this;
+		return error(errorCode, errorEngCode, errorMsg, null);
 	}
 	
-	public Result error(String errorCode, String errorEngCode,
+	public static Result error(String errorCode, String errorEngCode,
 			String errorMsg, Object data){
-		this.errorCode = errorCode;
-		this.errorEngCode = errorEngCode;
-		this.errorMsg = errorMsg;
-		this.data = data;
-		return this;
+		Result result = new Result();
+		result.setResult(RESULTS[1]);
+		result.setCode(CODES[1]);
+		result.setMsg(MSGS[1]);
+		result.setErrorCode(errorCode);
+		result.setErrorEngCode(errorEngCode);
+		result.setErrorMsg(errorMsg);
+		result.setData(data);
+		return result;
 	}
 	
-	private void check(){
-		if(judge()){
-			return;
-		}
-		
-		try {
-			throw new IllegalArgumentException(" >>> WARN 返回信息异常: " + this);
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-		}
+	public static Result warn(){
+		return warn(null, null);
 	}
 	
-	private boolean judge(){
-		if(this.result == -1 && StringUtils.isEmpty(this.errorCode)){
-			return false;
-		}
-		if(this.result == -1 && this.errorCode.length() != 6){
-			return false;
-		}
-		if(this.result == -1 && StringUtils.isEmpty(this.errorEngCode)){
-			return false;
-		}
-		if(this.result == -1 && StringUtils.isEmpty(this.errorMsg)){
-			return false;
-		}
-		return true;
+	public static Result warn(String msg){
+		return warn(msg, null);
 	}
+	
+	public static Result warn(Object data){
+		return warn(null, data);
+	}
+
+	public static Result warn(String msg, Object data){
+		Result result = new Result();
+		result.setResult(RESULTS[2]);
+		result.setCode(CODES[2]);
+		result.setMsg(StringUtils.isEmpty(msg) ? MSGS[2] : msg);
+		result.setData(data);
+		return result;
+	}
+	
+	@Override
+	public String toString() {
+		StringBuffer sbf = new StringBuffer();
+		sbf.append("Result{\n");
+		sbf.append(" result: " + this.getResult() + ",\n");
+		sbf.append(" code: " + this.getCode() + ",\n");
+		sbf.append(" msg: " + this.getMsg() + ",\n");
+		sbf.append(" errorCode: " + this.getErrorCode() + ",\n");
+		sbf.append(" errorEngCode: " + this.getErrorEngCode() + ",\n");
+		sbf.append(" errorMsg: " + this.getErrorMsg() + ",\n");
+		sbf.append(" data: " + this.getData() + "\n");
+		sbf.append("}");
+        return sbf.toString();
+    }
 }

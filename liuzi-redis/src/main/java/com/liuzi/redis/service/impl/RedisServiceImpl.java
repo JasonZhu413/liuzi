@@ -9,7 +9,6 @@ import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -19,7 +18,6 @@ import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.HyperLogLogOperations;
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisCallback;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.SetOperations;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.data.redis.core.ZSetOperations;
@@ -38,80 +36,28 @@ import com.liuzi.util.common.DateUtil;
 
 @Slf4j
 @Service("redisService")
-public class RedisServiceImpl implements RedisService{
-	
-	private final static long LOCK_TIME = 2000L;
-	private final static String LOCK_SUCCESS = "OK";
-	private final static String IF_NOT_EXIST = "NX";
-    private final static String WITH_EXPIRE_TIME = "PX";
+public class RedisServiceImpl extends RedisConfig implements RedisService{
 	
 	@Autowired
-    private RedisTemplate<String, Object> redisTemplate;
-	
 	private ValueOperations<String, Object> valueOperations;
+	@Autowired
 	private HashOperations<String, String, Object> hashOperations;
+	@Autowired
 	private ListOperations<String, Object> listOperations;
+	@Autowired
 	private SetOperations<String, Object> setOperations;
+	@Autowired
 	private ZSetOperations<String, Object> zSetOperations;
+	@Autowired
 	private HyperLogLogOperations<String, Object> hyperLogLogOperations;
+	@Autowired
 	private ClusterOperations<String, Object> clusterOperations;
-	
+	@Autowired
 	private RedisConnectionFactory redisConnectionFactory;
+	@Autowired
 	private RedisConnection redisConnection;
 	
-    @Bean
-    public HashOperations<String, String, Object> hashOperations() {
-    	hashOperations = redisTemplate.opsForHash();
-    	return hashOperations;
-    }
-
-    @Bean
-    public ValueOperations<String, Object> valueOperations() {
-    	valueOperations = redisTemplate.opsForValue();
-    	return valueOperations;
-    }
-
-    @Bean
-    public ListOperations<String, Object> listOperations() {
-    	listOperations = redisTemplate.opsForList();
-    	return listOperations;
-    }
-
-    @Bean
-    public SetOperations<String, Object> setOperations() {
-    	setOperations = redisTemplate.opsForSet();
-    	return setOperations;
-    }
-
-    @Bean
-    public ZSetOperations<String, Object> zSetOperations() {
-    	zSetOperations = redisTemplate.opsForZSet();
-        return zSetOperations;
-    }
     
-    @Bean
-	public HyperLogLogOperations<String, Object> opsForHyperLogLog() {
-    	hyperLogLogOperations = redisTemplate.opsForHyperLogLog();
-    	return hyperLogLogOperations;
-	}
-    
-    @Bean
-	public ClusterOperations<String, Object> opsForCluster() {
-    	clusterOperations = redisTemplate.opsForCluster();
-		return clusterOperations;
-	}
-    
-    @Bean
-    public RedisConnectionFactory redisConnectionFactory() {
-    	redisConnectionFactory = redisTemplate.getConnectionFactory();
-        return redisConnectionFactory;
-    }
-    
-    @Bean
-    public RedisConnection redisConnection() {
-    	redisConnection = redisConnectionFactory.getConnection();
-        return redisConnection;
-    }
     
 	/**
      * 指定缓存失效时间

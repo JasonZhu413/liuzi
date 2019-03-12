@@ -2,15 +2,11 @@ package com.liuzi.fastdfs;
 
 import java.io.Serializable;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
 
 
 
-@Setter
-@Getter
-@ToString
+@Data
 public class FastDFSFile implements Serializable{
 
 	private static final long serialVersionUID = 1L;

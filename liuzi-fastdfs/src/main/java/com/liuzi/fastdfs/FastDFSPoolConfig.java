@@ -5,6 +5,9 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import com.liuzi.fastdfs.base.ClientGlobal;
 import com.liuzi.fastdfs.base.StorageClient;
 import com.liuzi.fastdfs.base.StorageServer;
@@ -20,7 +23,7 @@ public class FastDFSPoolConfig{
 	
 	private static Logger logger = LoggerFactory.getLogger(FastDFSPoolConfig.class);
 
-	private String configPath;
+	@Getter @Setter private String configPath;
     private Object obj = new Object();
     
     private ConcurrentHashMap<StorageClient, Object> busyConnectionPool;//被使用的连接

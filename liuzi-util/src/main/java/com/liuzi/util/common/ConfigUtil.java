@@ -1,15 +1,14 @@
 package com.liuzi.util.common;
 
-import org.apache.commons.configuration.ConfigurationException;
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.springframework.util.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 
 /**
- * @Title:        ConfigUtil.init(path)
+ * @Title:        
  * 
  * @Description   初始化公共配置文件
  * 
@@ -20,58 +19,42 @@ import org.slf4j.LoggerFactory;
  * @version       1.0
  * 
  */
+@Slf4j
 public class ConfigUtil{
 	
-	private static Logger logger = LoggerFactory.getLogger(ConfigUtil.class);
-	
-	private static String file_path;
+	private static String configPath = "";
 	private static PropertiesConfiguration p;
 	
-	public static void init(String path){
-		file_path = path;
-		if(pathIsNotNull()){
-			return;
+	protected static void init(String path){
+		if(p == null){
+			configPath = path;
+			if(pathNotNull()){
+				prop();
+			}
 		}
-		prop();
 	}
 	
-	private static boolean pathIsNotNull(){
-		if(!StringUtils.isEmpty(file_path)){
-			return true;
+	private static boolean pathNotNull(){
+		if(StringUtils.isEmpty(configPath)){
+			throw new IllegalArgumentException(">>> WARN!!! ConfigUtil path is null");
 		}
-		
-		try {
-			throw new IllegalArgumentException(">>> WARN!!! 公共配置文件初始化错误，文件地址path为空");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return false;
+		return true;
 	}
 	
-	public static PropertiesConfiguration prop(){
-		if(p != null){
-			return p;
+	private static PropertiesConfiguration prop(){
+		if(p == null && pathNotNull()){
+			LiuziUtil.tag(" --------  Liuzi ConfigUtil init --------");
+			try{
+				log.info(" path: " + configPath);
+				p = new PropertiesConfiguration();
+				p.setEncoding("UTF-8");
+				p.load(configPath);
+		    } catch (Exception e) {
+		    	log.error(" --------  ConfigUtil(" + configPath + ") init fail：" +
+		    			e.getMessage() + " --------");
+		    }
+		    log.info(" --------  ConfigUtil init success --------  ");
 		}
-		
-		if(pathIsNotNull()){
-			return null;
-		}
-		
-		LiuziUtil.tag(" --------  Liuzi 公共配置文件初始化...... --------");
-		
-		logger.info("===== 公共配置文件初始化，加载配置 " + file_path + " ......========");
-		
-		try{
-			p = new PropertiesConfiguration();
-			p.setEncoding("UTF-8");
-			p.load(file_path);
-			logger.info("加载" + file_path + "文件。。。。。。");
-	    } catch (Exception e) {
-	    	logger.error("加载" + file_path + "文件失败：" + e.getMessage());
-	    	e.fillInStackTrace();
-	    }
-		logger.info("===== 公共配置文件初始化完成 ......========\n");
-		
 		return p;
 	}
 	
@@ -80,18 +63,18 @@ public class ConfigUtil{
 	    try {
 	    	value = prop().getString(key);
 	    } catch (Exception e) {
-	    	logger.error("错误：" + e.getMessage());
+	    	log.error("错误：" + e.getMessage());
 	    	e.fillInStackTrace();
 	    }
 	    return value;
 	}
 	
 	public static String getString(String key, String defaultValue){
-		String value = null;
+		String value = defaultValue;
 	    try {
 	    	value = prop().getString(key, defaultValue);
 	    } catch (Exception e) {
-	    	logger.error("错误：" + e.getMessage());
+	    	log.error("错误：" + e.getMessage());
 	    	e.fillInStackTrace();
 	    }
 	    return value;
@@ -102,7 +85,7 @@ public class ConfigUtil{
 	    try {
 	    	value = prop().getInt(key);
 	    } catch (Exception e) {
-	    	logger.error("错误：" + e.getMessage());
+	    	log.error("错误：" + e.getMessage());
 	    	e.fillInStackTrace();
 	    }
 	    return value;
@@ -113,7 +96,7 @@ public class ConfigUtil{
 	    try {
 	    	value = prop().getInt(key, defaultValue);
 	    } catch (Exception e) {
-	    	logger.error("错误：" + e.getMessage());
+	    	log.error("错误：" + e.getMessage());
 	    	e.fillInStackTrace();
 	    }
 	    return value;
@@ -124,7 +107,7 @@ public class ConfigUtil{
 	    try {
 	    	value = prop().getLong(key);
 	    } catch (Exception e) {
-	    	logger.error("错误：" + e.getMessage());
+	    	log.error("错误：" + e.getMessage());
 	    	e.fillInStackTrace();
 	    }
 	    return value;
@@ -135,7 +118,7 @@ public class ConfigUtil{
 	    try {
 	    	value = prop().getLong(key, defaultValue);
 	    } catch (Exception e) {
-	    	logger.error("错误：" + e.getMessage());
+	    	log.error("错误：" + e.getMessage());
 	    	e.fillInStackTrace();
 	    }
 	    return value;
@@ -146,7 +129,7 @@ public class ConfigUtil{
 	    try {
 	    	value = prop().getDouble(key);
 	    } catch (Exception e) {
-	    	logger.error("错误：" + e.getMessage());
+	    	log.error("错误：" + e.getMessage());
 	    	e.fillInStackTrace();
 	    }
 
@@ -158,7 +141,7 @@ public class ConfigUtil{
 	    try {
 	    	value = prop().getDouble(key, defaultValue);
 	    } catch (Exception e) {
-	    	logger.error("错误：" + e.getMessage());
+	    	log.error("错误：" + e.getMessage());
 	    	e.fillInStackTrace();
 	    }
 
@@ -170,7 +153,7 @@ public class ConfigUtil{
 	    try {
 	    	value = prop().getBoolean(key);
 	    } catch (Exception e) {
-	    	logger.error("错误：" + e.getMessage());
+	    	log.error("错误：" + e.getMessage());
 	    	e.fillInStackTrace();
 	    }
 	    return value;
@@ -181,31 +164,9 @@ public class ConfigUtil{
 	    try {
 	    	value = prop().getBoolean(key, defaultValue);
 	    } catch (Exception e) {
-	    	logger.error("错误：" + e.getMessage());
+	    	log.error("错误：" + e.getMessage());
 	    	e.fillInStackTrace();
 	    }
 	    return value;
-	}
-
-	public static void save(String key, Object value) {
-		logger.info(file_path + "保存key: " + key + ", value：" + value);
-		
-	    try{
-	    	PropertiesConfiguration pc = prop();
-	    	if(pc == null){
-	    		logger.warn("重新加载配置文件失败......");
-	    		return;
-	    	}
-	    	pc.setProperty(key, value);
-	    	pc.save(file_path);
-
-	    	pc = new PropertiesConfiguration();
-	    	pc.setEncoding("UTF-8");
-	    	pc.load(file_path);
-	    	logger.info("重新加载配置文件......");
-	    } catch (ConfigurationException e) {
-	    	logger.error("重新加载配置文件出错：" + e.getMessage());
-	    	e.printStackTrace();
-	    }
 	}
 }
