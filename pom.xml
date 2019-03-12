@@ -11,7 +11,7 @@
   <modules>
   	<module>liuzi-util</module>
   	<module>liuzi-mybatis</module>
-  	<!-- <module>liuzi-mybatis-generator</module> -->
+  	<module>liuzi-mybatis-generator</module>
   	<module>liuzi-redis</module>
   	<module>liuzi-activemq</module>
   	<module>liuzi-qsms</module>
