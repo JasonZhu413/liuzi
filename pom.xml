@@ -931,7 +931,7 @@
 					<version>2.1.1</version>
 					<configuration>
 						<warName>${project.artifactId}</warName>
-						<encoding>${project.build.sourceEncoding}</encoding>
+						<!--<encoding>${project.build.sourceEncoding}</encoding>-->
 					</configuration>
 				</plugin>
 
