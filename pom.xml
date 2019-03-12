@@ -17,7 +17,6 @@
   	<module>liuzi-qsms</module>
   	<module>liuzi-fastdfs</module>
   	<module>liuzi-qmail</module>
-  	<module>liuzi-mail</module>
   	<module>liuzi-redis-cluster</module>
   	<module>liuzi-redis-spring-boot</module>
   	<module>liuzi-memcached</module>
