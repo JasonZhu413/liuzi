@@ -185,7 +185,7 @@ public class RedisPool {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public <T> Map<String, T> hgetAll(String key, String filed){
+	public <T> Map<String, T> hgetAll(String key){
 		Jedis jedis = get();
 	    try {
 	    	Map<String, T> rMap = new HashMap<>();

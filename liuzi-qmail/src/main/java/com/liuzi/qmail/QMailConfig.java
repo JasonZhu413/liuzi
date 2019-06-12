@@ -11,7 +11,7 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 
 @Data
-class QmailConfig {
+public class QMailConfig {
 	
 	private static final String TEMP_LOADER_PATH = "/";
 	private static final int TEMP_UPDATE_DELAY = 0;

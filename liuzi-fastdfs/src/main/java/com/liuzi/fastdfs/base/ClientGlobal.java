@@ -8,9 +8,13 @@
 
 package com.liuzi.fastdfs.base;
 
+import net.coobird.thumbnailator.geometry.Positions;
+
 import org.csource.common.IniFileReader;
 import org.csource.common.MyException;
+import org.springframework.util.StringUtils;
 
+import java.awt.Color;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetSocketAddress;
@@ -18,6 +22,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+
 
 /**
  * Global variables
@@ -64,9 +69,67 @@ public class ClientGlobal {
   public static int g_connection_pool_size = DEFAULT_CONNECTION_POOL_SIZE;
   public static String fileServer = null;
   public static TrackerGroup g_tracker_group;
-
-  private ClientGlobal() {
-  }
+  
+  /**
+   * 是否压缩
+   */
+  public static boolean g_compress = false;
+  /**
+   * 缩略图透明度
+   */
+  public static float g_quality = 1f;
+  /**
+   * 缩略图原图比例
+   */
+  public static float g_compressScaleLarge = 1f;
+  /**
+   * 缩略图中图比例
+   */
+  public static float g_compressScaleMiddle = 0.7f;
+  /**
+   * 缩略图小图比例
+   */
+  public static float g_compressScaleSmall = 0.4f;
+  
+  /**
+   * 是否添加水印
+   */
+  public static boolean g_watermark = false;
+  /**
+   * 水印位置
+   */
+  public static Positions g_watermark_positions = Positions.BOTTOM_RIGHT;
+  /**
+   * 水印透明度
+   */
+  public static float g_watermark_quality = 1f;
+  /**
+   * 图片水印
+   */
+  public static boolean g_watermark_img = true;
+  /**
+   * 图片水印目录
+   */
+  public static String g_watermark_img_path;
+  /**
+   * 图片水印宽
+   */
+  public static int g_watermark_img_width = 100;
+  /**
+   * 图片水印高
+   */
+  public static int g_watermark_img_height = 50;
+  /**
+   * 文字水印字体大小
+   */
+  public static int g_watermark_font_size = 15;
+  /**
+   * 文字水印字体颜色
+   */
+  public static Color g_watermark_font_color = Color.red;
+  
+  
+  private ClientGlobal() {}
 
   /**
    * load global variables
@@ -97,10 +160,19 @@ public class ClientGlobal {
       g_charset = "ISO8859-1";
     }
 
-    szTrackerServers = iniReader.getValues("tracker_server");
+    String ts = iniReader.getStrValue("tracker_server");
+    if (ts == null) {
+    	throw new MyException("item \"tracker_server\" in " + conf_filename + " not found");
+    }
+    
+    szTrackerServers = ts.trim().split(",");
+    if (szTrackerServers == null || szTrackerServers.length == 0) {
+        throw new MyException("item \"tracker_server\" in " + conf_filename + " not found");
+    }
+    /*szTrackerServers = iniReader.getValues("tracker_server");
     if (szTrackerServers == null) {
       throw new MyException("item \"tracker_server\" in " + conf_filename + " not found");
-    }
+    }*/
 
     InetSocketAddress[] tracker_servers = new InetSocketAddress[szTrackerServers.length];
     for (int i = 0; i < szTrackerServers.length; i++) {
@@ -120,11 +192,57 @@ public class ClientGlobal {
     }
     
     //新增 最大下载大小M，默认0无限制
-    g_file_upload_max_size = iniReader.getIntValue("file.upload.max.size", DEFAULT_FILE_UPLOAD_MAX_SIZE);
+    g_file_upload_max_size = iniReader.getIntValue("upload.max.size", DEFAULT_FILE_UPLOAD_MAX_SIZE);
     //新增 初始化连接池数 默认8
     g_connection_pool_size = iniReader.getIntValue("connect.pool.size", DEFAULT_CONNECTION_POOL_SIZE);
     //新增 访问上传资源地址
     fileServer = iniReader.getStrValue("file_server");
+    if(StringUtils.isEmpty(fileServer)){
+    	fileServer = "/";
+    }else{
+    	String lastStr = fileServer.substring(fileServer.length() - 1);
+    	String xg = "/";
+    	if(!xg.equals(lastStr)){
+    		fileServer += xg;
+    	}
+    }
+    
+    
+    g_compress = iniReader.getBoolValue("image.compress", false);
+    
+    String quality = iniReader.getStrValue("image.quality");
+    if(!StringUtils.isEmpty(quality)){
+    	g_quality = Float.parseFloat(quality);
+    }
+    String compressScaleLarge = iniReader.getStrValue("image.compress.scale.large");
+    if(!StringUtils.isEmpty(compressScaleLarge)){
+    	g_compressScaleLarge = Float.parseFloat(compressScaleLarge);
+    }
+    String compressScaleMiddle = iniReader.getStrValue("image.compress.scale.middle");
+    if(!StringUtils.isEmpty(compressScaleMiddle)){
+    	g_compressScaleMiddle = Float.parseFloat(compressScaleMiddle);
+    }
+    String compressScaleSmall = iniReader.getStrValue("image.compress.scale.small");
+    if(!StringUtils.isEmpty(compressScaleSmall)){
+    	g_compressScaleSmall = Float.parseFloat(compressScaleSmall);
+    }
+    
+    g_watermark = iniReader.getBoolValue("image.watermark", false);
+    //水印位置
+    //g_watermark_positions
+    String watermarkQuality = iniReader.getStrValue("image.watermark.quality");
+    if(!StringUtils.isEmpty(watermarkQuality)){
+    	g_watermark_quality = Float.parseFloat(watermarkQuality);
+    }
+    g_watermark_img = iniReader.getBoolValue("image.watermark.img", true);
+    g_watermark_img_path = iniReader.getStrValue("image.watermark.img.path");
+    g_watermark_img_width = iniReader.getIntValue("image.watermark.img.width", 100);
+    g_watermark_img_height = iniReader.getIntValue("image.watermark.img.height", 50);
+    g_watermark_font_size = iniReader.getIntValue("image.watermark.font.size", 15);
+    //文字水印字体颜色
+    //g_watermark_font_color
+    
+    
   }
 
   /**

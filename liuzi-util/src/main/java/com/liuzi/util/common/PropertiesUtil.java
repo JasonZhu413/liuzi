@@ -1,5 +1,8 @@
 package com.liuzi.util.common;
 
+import java.util.Map;
+import java.util.Map.Entry;
+
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.configuration.ConfigurationException;
@@ -133,6 +136,26 @@ public class PropertiesUtil extends PropertiesConfiguration{
 		log.info(path + "Properties save key: " + key + ", value：" + value);
 	    try{
 	    	prop.setProperty(key, value);
+	    	prop.save(path);
+	    	prop.load(path);
+	    	log.info("Properties reload...");
+	    } catch (ConfigurationException e) {
+	    	log.error("Properties save error：" + e.getMessage());
+	    }
+	}
+	
+	public void saveBatch(Map<String, Object> map){
+		String path = prop.getBasePath();
+	    try{
+	    	for(Entry<String, Object> entry : map.entrySet()){
+	    		String key = entry.getKey();
+	    		if(StringUtils.isEmpty(key)){
+	    			continue;
+	    		}
+	    		Object value = entry.getValue();
+	    		log.info(path + "Properties save key: " + key + ", value：" + value);
+	    		prop.setProperty(key, value);
+	    	}
 	    	prop.save(path);
 	    	prop.load(path);
 	    	log.info("Properties reload...");

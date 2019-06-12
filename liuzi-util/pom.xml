@@ -100,7 +100,17 @@
 	    <version>7.2.1</version>
 	</dependency>
 
-       
+    <!-- kaptcha -->
+	<dependency>
+		<groupId>com.google.code.kaptcha</groupId>
+		<artifactId>kaptcha</artifactId>
+	</dependency>
+	
+	<!-- 图片操作 -->
+	<dependency>
+	    <groupId>net.coobird</groupId>
+	    <artifactId>thumbnailator</artifactId>
+	</dependency>
        
   </dependencies>
   

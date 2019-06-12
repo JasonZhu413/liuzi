@@ -2,14 +2,18 @@ package com.liuzi.qmail;
 
 import java.util.Date;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 import org.springframework.util.StringUtils;
@@ -19,10 +23,13 @@ import freemarker.template.Template;
 
 
 @Slf4j
-public class QMail extends QmailConfig{
+public class QMail{
 	
+	@Autowired
 	private JavaMailSender javaMailSender;
+	@Autowired
     private SimpleMailMessage simpleMailMessage;
+	@Autowired
     private FreeMarkerConfigurer freeMarkerConfigurer;
 	
     /**
@@ -139,7 +146,7 @@ public class QMail extends QmailConfig{
             if(StringUtils.isEmpty(from)){
             	from = simpleMailMessage.getFrom();
             }
-            messageHelper.setFrom(simpleMailMessage.getFrom());
+            messageHelper.setFrom(from);
             if (StringUtils.isEmpty(subject)) {
             	subject = simpleMailMessage.getSubject();
             }
@@ -147,6 +154,7 @@ public class QMail extends QmailConfig{
             if(date == null){
             	date = new Date();
             }
+            
             messageHelper.setSentDate(date);
             messageHelper.setTo(to);
             messageHelper.setText(content, true);
@@ -154,5 +162,29 @@ public class QMail extends QmailConfig{
         } catch (MessagingException e) {
             e.printStackTrace();
         }
+    }
+    
+    public static void main(String[] args) throws MessagingException {
+    	JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
+    	javaMailSender.setHost("smtp.exmail.qq.com");
+    	javaMailSender.setPort(25);
+    	javaMailSender.setUsername("6zcto@6zcto.com");
+    	javaMailSender.setPassword("Zsy1900508Zsy");
+    	Properties p = new Properties();
+    	p.setProperty("mail.sender.auth", true + "");
+    	javaMailSender.setJavaMailProperties(p);
+    	
+    	SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
+    	simpleMailMessage.setFrom("6zCTO");
+    	simpleMailMessage.setSubject("标题");
+    	
+    	MimeMessage message = javaMailSender.createMimeMessage();
+        MimeMessageHelper messageHelper = new MimeMessageHelper(message, true, "UTF-8");
+        messageHelper.setFrom(simpleMailMessage.getFrom());
+        messageHelper.setSubject(simpleMailMessage.getSubject());
+        messageHelper.setSentDate(new Date());
+        messageHelper.setTo("554157554@qq.com");
+        messageHelper.setText("内容", true);
+        javaMailSender.send(message);
     }
 }

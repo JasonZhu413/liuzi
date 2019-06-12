@@ -6,12 +6,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONObject;
 
-import com.gexin.rp.sdk.base.IIGtPush;
 import com.gexin.rp.sdk.base.IPushResult;
 import com.gexin.rp.sdk.base.ITemplate;
 import com.gexin.rp.sdk.base.impl.AppMessage;
@@ -21,6 +19,7 @@ import com.gexin.rp.sdk.base.impl.Target;
 import com.gexin.rp.sdk.base.payload.APNPayload;
 import com.gexin.rp.sdk.base.uitls.AppConditions;
 import com.gexin.rp.sdk.exceptions.RequestException;
+import com.gexin.rp.sdk.http.IGtPush;
 import com.gexin.rp.sdk.template.LinkTemplate;
 import com.gexin.rp.sdk.template.NotificationTemplate;
 import com.gexin.rp.sdk.template.NotyPopLoadTemplate;
@@ -29,7 +28,6 @@ import com.gexin.rp.sdk.template.style.Style0;
 
 
 @Slf4j
-@Service("gTPush")
 public class GTPush {
 	
 	@Autowired
@@ -62,7 +60,7 @@ public class GTPush {
         
 		//配置applist
         List<String> appIdList = new ArrayList<>();
-        appIdList.add(appId);
+        appIdList.add(GTPushConfig.appId);
         message.setAppIdList(appIdList);
         
         //条件
@@ -117,7 +115,7 @@ public class GTPush {
 		getMessage(message, title, content, skip_type, skip_link, map);
 		
         Target target = new Target();
-        target.setAppId(appId);
+        target.setAppId(GTPushConfig.appId);
         target.setClientId(clientId);
         if(alias != null && alias.size() > 0){
         	StringBuffer sbf = new StringBuffer();
@@ -157,8 +155,8 @@ public class GTPush {
 	//1.点击通知打开应用
 	public NotificationTemplate notificationTemplateDemo(Map<String, Object> map) {
 		NotificationTemplate template = new NotificationTemplate();
-        template.setAppId(id);
-        template.setAppkey(key);
+        template.setAppId(GTPushConfig.appId);
+        template.setAppkey(GTPushConfig.appKey);
         
         Style0 style = new Style0();
         style.setTitle(map.get("title").toString());
@@ -182,8 +180,8 @@ public class GTPush {
 	//2. 点击通知打开网页
 	public LinkTemplate linkTemplateDemo(Map<String, Object> map) {
         LinkTemplate template = new LinkTemplate();
-        template.setAppId(appId);
-        template.setAppkey(appKey);
+        template.setAppId(GTPushConfig.appId);
+        template.setAppkey(GTPushConfig.appKey);
         template.setUrl(map.get("skip_link") + "");// 设置打开的网址地址
         
         Style0 style = new Style0();
@@ -198,8 +196,8 @@ public class GTPush {
 	public NotyPopLoadTemplate notyPopLoadTemplateDemo(Map<String, Object> map) {
 	    NotyPopLoadTemplate template = new NotyPopLoadTemplate();
 	    // 设置APPID与APPKEY
-	    template.setAppId(appId);
-	    template.setAppkey(appKey);
+	    template.setAppId(GTPushConfig.appId);
+	    template.setAppkey(GTPushConfig.appKey);
 	    
 	    // 弹框标题与内容
 	    template.setPopTitle(map.get("title").toString());
@@ -225,8 +223,8 @@ public class GTPush {
 	//4. 透传消息
 	public TransmissionTemplate transmissionTemplateDemo(Map<String, Object> map) {
 	    TransmissionTemplate template = new TransmissionTemplate();
-	    template.setAppId(appId);
-	    template.setAppkey(appKey);
+	    template.setAppId(GTPushConfig.appId);
+	    template.setAppkey(GTPushConfig.appKey);
 	    // 透传消息设置，1为强制启动应用，客户端接收到消息后就会立即启动应用；2为等待应用启动
 	    template.setTransmissionType(2);
 	    template.setTransmissionContent(JSONObject.fromObject(map).toString());
@@ -236,8 +234,8 @@ public class GTPush {
 	//5. iOS模版
 	public TransmissionTemplate getTemplate(Map<String, Object> map) {
 	    TransmissionTemplate template = new TransmissionTemplate();
-	    template.setAppId(appId);
-	    template.setAppkey(appKey);
+	    template.setAppId(GTPushConfig.appId);
+	    template.setAppkey(GTPushConfig.appKey);
 	    template.setTransmissionContent(JSONObject.fromObject(map).toString());
 	    template.setTransmissionType(2);
 	    

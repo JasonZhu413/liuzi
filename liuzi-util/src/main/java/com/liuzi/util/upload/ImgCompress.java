@@ -88,8 +88,7 @@ public class ImgCompress {
         BufferedImage BI = ImageIO.read(file);
         Image image = BI.getScaledInstance(width, height, Image.SCALE_SMOOTH);
  
-        BufferedImage tag = new BufferedImage(width, height,
-                BufferedImage.TYPE_INT_RGB);
+        BufferedImage tag = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
         Graphics g = tag.getGraphics();
         g.setColor(Color.RED);
         g.drawImage(image, 0, 0, null); // 绘制处理后的图

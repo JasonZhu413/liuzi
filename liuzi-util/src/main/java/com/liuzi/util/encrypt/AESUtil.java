@@ -1,145 +1,163 @@
 package com.liuzi.util.encrypt;
 
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
+import java.security.NoSuchAlgorithmException;
 
 import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
-import org.apache.commons.codec.binary.Base64;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
-
+@Slf4j
 public class AESUtil {
-	
-	private static Logger logger = LoggerFactory.getLogger(AESUtil.class);
-	
+	private static final String ALGORITHM = "AES";
 	private static final String ALGORITHMSTR = "AES/CBC/PKCS5Padding";
-	
-	private static final String DEFAULT_KEY = "1234567890abcdef";//AES-128-CBC加密 16位
+	//AES-128-CBC加密 16位
+	private static final String DEFAULT_KEY = "1234567890abcdef";
+	//偏移量字符串必须是16位 当模式是CBC的时候必须设置偏移量
 	private static final String DEFAULT_IV = "1234567890abcdef";
 	
-	/**
-     * 使用默认的key和iv加密
-     * @param data
-     * @return
-     * @throws Exception
-     */
-    public static String encrypt(String data) {
-        return encrypt(data, DEFAULT_KEY, DEFAULT_IV);
+	private static final Charset CHARSET = Charset.forName("utf-8");
+
+    public static String encrypt(String value){
+    	return encrypt(value, DEFAULT_KEY, DEFAULT_IV);
     }
     
-    /**
-     * 使用默认的key和iv加密
-     * @param data
-     * @param key 加密key
-     * @return
-     * @throws Exception
-     */
-    public static String encrypt(String data, String key) {
-        return encrypt(data, key, DEFAULT_IV);
+    public static String encrypt(String value, String key, String iv){
+    	byte[] encrypt = encryptByte(value, key, iv);
+    	return byteToHexString(encrypt);
     }
     
-    /**
-     * 加密方法
-     * @param data  要加密的数据
-     * @param key 加密key
-     * @param iv 加密iv
-     * @return 加密的结果
-     * @throws Exception
-     */
-    public static String encrypt(String data, String key, String iv) {
-        try {
-
-            Cipher cipher = Cipher.getInstance(ALGORITHMSTR);//"算法/模式/补码方式"
-            int blockSize = cipher.getBlockSize();
-
-            byte[] dataBytes = data.getBytes();
-            int plaintextLength = dataBytes.length;
-            if (plaintextLength % blockSize != 0) {
-                plaintextLength = plaintextLength + (blockSize - (plaintextLength % blockSize));
-            }
-
-            byte[] plaintext = new byte[plaintextLength];
-            System.arraycopy(dataBytes, 0, plaintext, 0, dataBytes.length);
-
-            SecretKeySpec keyspec = new SecretKeySpec(key.getBytes(), "AES");
-            IvParameterSpec ivspec = new IvParameterSpec(iv.getBytes());
-
-            cipher.init(Cipher.ENCRYPT_MODE, keyspec, ivspec);
-            byte[] encrypted = cipher.doFinal(plaintext);
-
-            return new Base64().encodeToString(encrypted);
-
-        } catch (Exception e) {
-        	logger.error("加密失败，错误：" + e.getMessage());
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    /**
-     * 使用默认的key和iv解密
-     * @param data
-     * @return
-     * @throws Exception
-     */
-    public static String decrypt(String data) {
-        return decrypt(data, DEFAULT_KEY, DEFAULT_IV);
+    public static byte[] encryptByte(String value){
+    	return encryptByte(value, DEFAULT_KEY, DEFAULT_IV);
     }
     
-    /**
-     * 解密方法
-     * @param data 要解密的数据
-     * @param key  解密key
-     * @return 解密的结果
-     * @throws Exception
-     */
-    public static String decrypt(String data, String key) {
-    	return decrypt(data, key, DEFAULT_IV);
-    }
-	
-    /**
-     * 解密方法
-     * @param data 要解密的数据
-     * @param key  解密key
-     * @param iv 解密iv
-     * @return 解密的结果
-     * @throws Exception
-     */
-    public static String decrypt(String data, String key, String iv) {
-        try {
-            byte[] encrypted1 = new Base64().decode(data);
-
+    public static byte[] encryptByte(String value, String key, String iv){
+    	byte[] cipherBytes = null;
+    	try{
+    		SecretKey secretKey = new SecretKeySpec(key.getBytes(), ALGORITHM);
+            IvParameterSpec ivParameterSpec = getIv(iv);
             Cipher cipher = Cipher.getInstance(ALGORITHMSTR);
-            SecretKeySpec keyspec = new SecretKeySpec(key.getBytes(), "AES");
-            IvParameterSpec ivspec = new IvParameterSpec(iv.getBytes());
-
-            cipher.init(Cipher.DECRYPT_MODE, keyspec, ivspec);
-
-            byte[] original = cipher.doFinal(encrypted1);
-            String originalString = new String(original);
-            return originalString;
-        } catch (Exception e) {
-        	logger.error("解密失败，错误：" + e.getMessage());
-            e.printStackTrace();
-            return null;
-        }
+            cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivParameterSpec);
+            cipherBytes = cipher.doFinal(value.getBytes(CHARSET));
+    	}catch(Exception e){
+    		
+    	}
+        return cipherBytes;
+    }
+    
+    public static String decrypt(String value){
+    	return decrypt(value, DEFAULT_KEY, DEFAULT_IV);
+    }
+    
+    public static String decrypt(String value, String key, String iv){
+    	byte[] decrypt = decryptByte(value, key, iv);
+    	try {
+			return new String(decrypt, "utf-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+    	return null;
+    }
+    
+    
+    public static byte[] decryptByte(String value){
+    	return decryptByte(value, DEFAULT_KEY, DEFAULT_IV);
     }
 
+    public static byte[] decryptByte(String src, String key, String iv) {
+    	byte[] plainBytes = null;
+    	try{
+    		SecretKey secretKey = new SecretKeySpec(key.getBytes(), ALGORITHM);
+            IvParameterSpec ivParameterSpec = getIv(iv);
+            Cipher cipher = Cipher.getInstance(ALGORITHMSTR);
+            cipher.init(Cipher.DECRYPT_MODE, secretKey, ivParameterSpec);
+            byte[] hexBytes = hexStringToBytes(src);
+            plainBytes = cipher.doFinal(hexBytes);
+    	}catch(Exception e){
+    		
+    	}
+        return plainBytes;
+    }
     
-	
-	public static void main(String[] args) throws Exception {
+    public static byte[] generatorKey() {
+        KeyGenerator keyGenerator = null;
+		try {
+			keyGenerator = KeyGenerator.getInstance(ALGORITHM);
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
+        keyGenerator.init(256);//默认128，获得无政策权限后可为192或256
+        SecretKey secretKey = keyGenerator.generateKey();
+        return secretKey.getEncoded();
+    }
 
-		String test = "123456";
+    public static IvParameterSpec getIv(String iv){
+        IvParameterSpec ivParameterSpec = null;
+		try {
+			ivParameterSpec = new IvParameterSpec(iv.getBytes("utf-8"));
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+        //log.info("偏移量：" + byteToHexString(ivParameterSpec.getIV()));
+        return ivParameterSpec;
+    }
 
-        String data = null;
-        String key = "1234567890hahaha";
-        String iv = "1234567890hahaha";
+    /**
+     * 将byte转换为16进制字符串
+     * @param src
+     * @return
+     */
+    public static String byteToHexString(byte[] src) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < src.length; i++) {
+            int v = src[i] & 0xff;
+            String hv = Integer.toHexString(v);
+            if (hv.length() < 2) {
+                sb.append("0");
+            }
+            sb.append(hv);
+        }
+        return sb.toString();
+    }
 
-        data = encrypt(test, key, iv);
+    /**
+     * 将16进制字符串装换为byte数组
+     * @param hexString
+     * @return
+     */
+    public static byte[] hexStringToBytes(String hexString) {
+        hexString = hexString.toUpperCase();
+        int length = hexString.length() / 2;
+        char[] hexChars = hexString.toCharArray();
+        byte[] b = new byte[length];
+        for (int i = 0; i < length; i++) {
+            int pos = i * 2;
+            b[i] = (byte) (charToByte(hexChars[pos]) << 4 | charToByte(hexChars[pos + 1]));
+        }
+        return b;
+    }
 
-        System.out.println(data);
-        System.out.println(decrypt(data, key, iv));
-	}
+    private static byte charToByte(char c) {
+        return (byte) "0123456789ABCDEF".indexOf(c);
+    }
+
+    public static void main(String[] args) {
+    	String p = encrypt("15210050811");
+        System.out.println(p);
+        System.out.println(decrypt(p));
+        
+        String e = encrypt("dhgjdnameiqjwndmcjaksmgnejwkqlsjcnejgnamcjenskancjgnejqusnamckj@jguqmaiw");
+        System.out.println(e);
+        System.out.println(e.length());
+        System.out.println(decrypt(e));
+        
+        String u = encrypt("zhushiyao");
+        System.out.println(u);
+        System.out.println(decrypt(u));
+    }
 }

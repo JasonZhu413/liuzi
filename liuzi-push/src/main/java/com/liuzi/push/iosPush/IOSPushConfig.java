@@ -6,17 +6,11 @@ import javapns.notification.AppleNotificationServer;
 import javapns.notification.AppleNotificationServerBasicImpl;
 
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
+import lombok.Data;
 
 
-@Slf4j
-@Getter
-@Setter
-@Configuration
+@Data
 public class IOSPushConfig {
 	
 	//ios证书路径

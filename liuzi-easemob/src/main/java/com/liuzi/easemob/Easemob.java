@@ -38,28 +38,31 @@ import com.liuzi.easemob.comm.ResponseHandler;
 public class Easemob{
 	
 	private static Logger logger = LoggerFactory.getLogger(Easemob.class);
-	
 	@Autowired
-	private EasemobConfig easemobConfig;
+	private ResponseHandler responseHandler;
+	@Autowired
+	private GroupsApi groupsApi;
+	@Autowired
+	private ChatHistoryApi chatHistoryApi;
+	@Autowired
+	private ChatRoomsApi chatRoomsApi;
+	@Autowired
+	private UploadAndDownloadFilesApi uploadAndDownloadFilesApi;
+	@Autowired
+	private UsersApi usersApi;
+	@Autowired
+	private MessagesApi messagesApi;
 
-	private ResponseHandler response_handler = easemobConfig.getResponse_handler();
-	private GroupsApi groups_api = easemobConfig.getGroups_api();
-	private ChatHistoryApi history_api = easemobConfig.getHistory_api();
-	private ChatRoomsApi rooms_api = easemobConfig.getRooms_api();
-	private UploadAndDownloadFilesApi u_d_api = easemobConfig.getU_d_api();
-	private UsersApi users_api = easemobConfig.getUsers_api();
-	private MessagesApi msg_api = easemobConfig.getMsg_api();
-	
-	public String getAuthToken(){
-		return easemobConfig.getAccessToken();
+	public String getAccessToken(){
+		return getAccessToken();
 	}
 	
     public Response getChatGroups(final Long limit,final String cursor) {
-        Object obj =  response_handler.handle(new EasemobAPI() {
+        Object obj =  responseHandler.handle(new EasemobAPI() {
             
             public Object invokeEasemobAPI() throws ApiException {
             	logger.info("getChatGroups - params{limit: {}, cursor: {} }", limit, cursor);
-            	String str = groups_api.orgNameAppNameChatgroupsGet(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),limit+"",cursor);
+            	String str = groupsApi.orgNameAppNameChatgroupsGet(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,getAccessToken(),limit+"",cursor);
             	logger.info("getChatGroups - return {}", str);
                 return str;
             }
@@ -73,10 +76,10 @@ public class Easemob{
 
     
     public Response getChatGroupDetails(final String[] groupIds) {
-        Object obj =  response_handler.handle(new EasemobAPI() {
+        Object obj =  responseHandler.handle(new EasemobAPI() {
             
             public Object invokeEasemobAPI() throws ApiException {
-                return groups_api.orgNameAppNameChatgroupsGroupIdsGet(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),StringUtil.join(groupIds,","));
+                return groupsApi.orgNameAppNameChatgroupsGroupIdsGet(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,getAccessToken(),StringUtil.join(groupIds,","));
             }
         });
 		
@@ -88,10 +91,10 @@ public class Easemob{
     
     
     public Response createChatGroup(final Object payload) {
-        Object obj =  response_handler.handle(new EasemobAPI() {
+        Object obj =  responseHandler.handle(new EasemobAPI() {
             
             public Object invokeEasemobAPI() throws ApiException {
-                return groups_api.orgNameAppNameChatgroupsPost(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(), (Group) payload);
+                return groupsApi.orgNameAppNameChatgroupsPost(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,getAccessToken(), (Group) payload);
             }
         });
 		
@@ -103,10 +106,10 @@ public class Easemob{
 
     
     public Response modifyChatGroup(final String groupId,final Object payload) {
-        Object obj =  response_handler.handle(new EasemobAPI() {
+        Object obj =  responseHandler.handle(new EasemobAPI() {
             
             public Object invokeEasemobAPI() throws ApiException {
-                return groups_api.orgNameAppNameChatgroupsGroupIdPut(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),groupId, (ModifyGroup) payload);
+                return groupsApi.orgNameAppNameChatgroupsGroupIdPut(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,getAccessToken(),groupId, (ModifyGroup) payload);
             }
         });
 		
@@ -118,10 +121,10 @@ public class Easemob{
 
     
     public Response deleteChatGroup(final String groupId) {
-        Object obj =  response_handler.handle(new EasemobAPI() {
+        Object obj =  responseHandler.handle(new EasemobAPI() {
             
             public Object invokeEasemobAPI() throws ApiException {
-                return groups_api.orgNameAppNameChatgroupsGroupIdDelete(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),groupId);
+                return groupsApi.orgNameAppNameChatgroupsGroupIdDelete(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,getAccessToken(),groupId);
             }
         });
 		
@@ -133,10 +136,10 @@ public class Easemob{
 
     
     public Response getChatGroupUsers(final String groupId) {
-        Object obj =  response_handler.handle(new EasemobAPI() {
+        Object obj =  responseHandler.handle(new EasemobAPI() {
             
             public Object invokeEasemobAPI() throws ApiException {
-                return groups_api.orgNameAppNameChatgroupsGroupIdUsersGet(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),groupId);
+                return groupsApi.orgNameAppNameChatgroupsGroupIdUsersGet(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,getAccessToken(),groupId);
             }
         });
 		
@@ -152,10 +155,10 @@ public class Easemob{
         UserName userList = new UserName();
         userList.add(userId);
         userNames.usernames(userList);
-        Object obj =  response_handler.handle(new EasemobAPI() {
+        Object obj =  responseHandler.handle(new EasemobAPI() {
             
             public Object invokeEasemobAPI() throws ApiException {
-                return groups_api.orgNameAppNameChatgroupsGroupIdUsersPost(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),groupId,userNames);
+                return groupsApi.orgNameAppNameChatgroupsGroupIdUsersPost(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,getAccessToken(),groupId,userNames);
             }
         });
 		
@@ -167,10 +170,10 @@ public class Easemob{
 
     
     public Response addBatchUsersToChatGroup(final String groupId,final Object payload) {
-        Object obj =  response_handler.handle(new EasemobAPI() {
+        Object obj =  responseHandler.handle(new EasemobAPI() {
             
             public Object invokeEasemobAPI() throws ApiException {
-                return groups_api.orgNameAppNameChatgroupsGroupIdUsersPost(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),groupId, (UserNames) payload);
+                return groupsApi.orgNameAppNameChatgroupsGroupIdUsersPost(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,getAccessToken(),groupId, (UserNames) payload);
             }
         });
 		
@@ -182,10 +185,10 @@ public class Easemob{
 
     
     public Response removeSingleUserFromChatGroup(final String groupId,final String userId) {
-        Object obj =  response_handler.handle(new EasemobAPI() {
+        Object obj =  responseHandler.handle(new EasemobAPI() {
             
             public Object invokeEasemobAPI() throws ApiException {
-                return groups_api.orgNameAppNameChatgroupsGroupIdUsersUsernameDelete(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),groupId,userId);
+                return groupsApi.orgNameAppNameChatgroupsGroupIdUsersUsernameDelete(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,getAccessToken(),groupId,userId);
             }
         });
 		
@@ -197,10 +200,10 @@ public class Easemob{
 
     
     public Response removeBatchUsersFromChatGroup(final String groupId,final String[] userIds) {
-        Object obj =  response_handler.handle(new EasemobAPI() {
+        Object obj =  responseHandler.handle(new EasemobAPI() {
             
             public Object invokeEasemobAPI() throws ApiException {
-                return groups_api.orgNameAppNameChatgroupsGroupIdUsersMembersDelete(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),groupId,StringUtil.join(userIds,","));
+                return groupsApi.orgNameAppNameChatgroupsGroupIdUsersMembersDelete(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,getAccessToken(),groupId,StringUtil.join(userIds,","));
             }
         });
 		
@@ -212,10 +215,10 @@ public class Easemob{
 
     
     public Response transferChatGroupOwner(final String groupId,final Object payload) {
-        Object obj =  response_handler.handle(new EasemobAPI() {
+        Object obj =  responseHandler.handle(new EasemobAPI() {
             
             public Object invokeEasemobAPI() throws ApiException {
-                return groups_api.orgNameAppNameChatgroupsGroupidPut(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),groupId, (NewOwner) payload);
+                return groupsApi.orgNameAppNameChatgroupsGroupidPut(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,getAccessToken(),groupId, (NewOwner) payload);
             }
         });
 		
@@ -227,10 +230,10 @@ public class Easemob{
 
     
     public Response getChatGroupBlockUsers(final String groupId) {
-        Object obj =  response_handler.handle(new EasemobAPI() {
+        Object obj =  responseHandler.handle(new EasemobAPI() {
             
             public Object invokeEasemobAPI() throws ApiException {
-                return groups_api.orgNameAppNameChatgroupsGroupIdBlocksUsersGet(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),groupId);
+                return groupsApi.orgNameAppNameChatgroupsGroupIdBlocksUsersGet(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,getAccessToken(),groupId);
             }
         });
 		
@@ -242,10 +245,10 @@ public class Easemob{
 
     
     public Response addSingleBlockUserToChatGroup(final String groupId,final String userId) {
-        Object obj =  response_handler.handle(new EasemobAPI() {
+        Object obj =  responseHandler.handle(new EasemobAPI() {
             
             public Object invokeEasemobAPI() throws ApiException {
-                return groups_api.orgNameAppNameChatgroupsGroupIdBlocksUsersUsernamePost(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),groupId,userId);
+                return groupsApi.orgNameAppNameChatgroupsGroupIdBlocksUsersUsernamePost(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,getAccessToken(),groupId,userId);
             }
         });
 		
@@ -257,10 +260,10 @@ public class Easemob{
 
     
     public Response addBatchBlockUsersToChatGroup(final String groupId,final Object payload) {
-        Object obj =  response_handler.handle(new EasemobAPI() {
+        Object obj =  responseHandler.handle(new EasemobAPI() {
             
             public Object invokeEasemobAPI() throws ApiException {
-                return groups_api.orgNameAppNameChatgroupsGroupIdBlocksUsersPost(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),groupId, (UserNames) payload);
+                return groupsApi.orgNameAppNameChatgroupsGroupIdBlocksUsersPost(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,getAccessToken(),groupId, (UserNames) payload);
             }
         });
 		
@@ -272,10 +275,10 @@ public class Easemob{
 
     
     public Response removeSingleBlockUserFromChatGroup(final String groupId,final String userId) {
-        Object obj =  response_handler.handle(new EasemobAPI() {
+        Object obj =  responseHandler.handle(new EasemobAPI() {
             
             public Object invokeEasemobAPI() throws ApiException {
-                return groups_api.orgNameAppNameChatgroupsGroupIdBlocksUsersUsernameDelete(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),groupId,userId);
+                return groupsApi.orgNameAppNameChatgroupsGroupIdBlocksUsersUsernameDelete(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,getAccessToken(),groupId,userId);
             }
         });
 		
@@ -287,10 +290,10 @@ public class Easemob{
 
     
     public Response removeBatchBlockUsersFromChatGroup(final String groupId,final String[] userIds) {
-        Object obj =  response_handler.handle(new EasemobAPI() {
+        Object obj =  responseHandler.handle(new EasemobAPI() {
             
             public Object invokeEasemobAPI() throws ApiException {
-                return groups_api.orgNameAppNameChatgroupsGroupIdBlocksUsersUsernamesDelete(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),groupId,StringUtil.join(userIds,","));
+                return groupsApi.orgNameAppNameChatgroupsGroupIdBlocksUsersUsernamesDelete(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,getAccessToken(),groupId,StringUtil.join(userIds,","));
             }
         });
 		
@@ -302,10 +305,10 @@ public class Easemob{
     
     
     public Response exportChatMessages(final Long limit,final String cursor,final String query) {
-        Object obj =  response_handler.handle(new EasemobAPI() {
+        Object obj =  responseHandler.handle(new EasemobAPI() {
             
             public Object invokeEasemobAPI() throws ApiException {
-                return history_api.orgNameAppNameChatmessagesGet(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),query,limit+"",cursor);
+                return chatHistoryApi.orgNameAppNameChatmessagesGet(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,getAccessToken(),query,limit+"",cursor);
             }
         });
 		
@@ -317,10 +320,10 @@ public class Easemob{
 
     
     public Response exportChatMessages(final String timeStr) {
-        Object obj =  response_handler.handle(new EasemobAPI() {
+        Object obj =  responseHandler.handle(new EasemobAPI() {
             
             public Object invokeEasemobAPI() throws ApiException {
-                return history_api.orgNameAppNameChatmessagesTimeGet(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),timeStr);
+                return chatHistoryApi.orgNameAppNameChatmessagesTimeGet(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,getAccessToken(),timeStr);
             }
         });
 		
@@ -332,10 +335,10 @@ public class Easemob{
     
     
     public Response createChatRoom(final Object payload) {
-        Object obj =  response_handler.handle(new EasemobAPI() {
+        Object obj =  responseHandler.handle(new EasemobAPI() {
             
             public Object invokeEasemobAPI() throws ApiException {
-                return rooms_api.orgNameAppNameChatroomsPost(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(), (Chatroom) payload);
+                return chatRoomsApi.orgNameAppNameChatroomsPost(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,getAccessToken(), (Chatroom) payload);
             }
         });
 		
@@ -347,10 +350,10 @@ public class Easemob{
 
     
     public Response modifyChatRoom(final String roomId,final Object payload) {
-        Object obj =  response_handler.handle(new EasemobAPI() {
+        Object obj =  responseHandler.handle(new EasemobAPI() {
             
             public Object invokeEasemobAPI() throws ApiException {
-                return rooms_api.orgNameAppNameChatroomsChatroomIdPut(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),roomId, (ModifyChatroom) payload);
+                return chatRoomsApi.orgNameAppNameChatroomsChatroomIdPut(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,getAccessToken(),roomId, (ModifyChatroom) payload);
             }
         });
 		
@@ -362,10 +365,10 @@ public class Easemob{
 
     
     public Response deleteChatRoom(final String roomId) {
-        Object obj =  response_handler.handle(new EasemobAPI() {
+        Object obj =  responseHandler.handle(new EasemobAPI() {
             
             public Object invokeEasemobAPI() throws ApiException {
-                return rooms_api.orgNameAppNameChatroomsChatroomIdDelete(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),roomId);
+                return chatRoomsApi.orgNameAppNameChatroomsChatroomIdDelete(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,getAccessToken(),roomId);
             }
         });
 		
@@ -377,10 +380,10 @@ public class Easemob{
 
     
     public Response getAllChatRooms() {
-        Object obj =  response_handler.handle(new EasemobAPI() {
+        Object obj =  responseHandler.handle(new EasemobAPI() {
             
             public Object invokeEasemobAPI() throws ApiException {
-                return rooms_api.orgNameAppNameChatroomsGet(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken());
+                return chatRoomsApi.orgNameAppNameChatroomsGet(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,getAccessToken());
             }
         });
 		
@@ -392,10 +395,10 @@ public class Easemob{
 
     
     public Response getChatRoomDetail(final String roomId) {
-        Object obj =  response_handler.handle(new EasemobAPI() {
+        Object obj =  responseHandler.handle(new EasemobAPI() {
             
             public Object invokeEasemobAPI() throws ApiException {
-                return rooms_api.orgNameAppNameChatroomsChatroomIdGet(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),roomId);
+                return chatRoomsApi.orgNameAppNameChatroomsChatroomIdGet(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,getAccessToken(),roomId);
             }
         });
 		
@@ -407,10 +410,10 @@ public class Easemob{
 
     
     public Response addSingleUserToChatRoom(final String roomId,final String userName) {
-        Object obj =  response_handler.handle(new EasemobAPI() {
+        Object obj =  responseHandler.handle(new EasemobAPI() {
             
             public Object invokeEasemobAPI() throws ApiException {
-                return rooms_api.orgNameAppNameChatroomsChatroomIdUsersUsernamePost(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),roomId,userName);
+                return chatRoomsApi.orgNameAppNameChatroomsChatroomIdUsersUsernamePost(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,getAccessToken(),roomId,userName);
             }
         });
 		
@@ -422,10 +425,10 @@ public class Easemob{
 
     
     public Response addBatchUsersToChatRoom(final String roomId,final Object payload) {
-        Object obj =  response_handler.handle(new EasemobAPI() {
+        Object obj =  responseHandler.handle(new EasemobAPI() {
             
             public Object invokeEasemobAPI() throws ApiException {
-                return rooms_api.orgNameAppNameChatroomsChatroomIdUsersPost(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),roomId, (UserNames) payload);
+                return chatRoomsApi.orgNameAppNameChatroomsChatroomIdUsersPost(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,getAccessToken(),roomId, (UserNames) payload);
             }
         });
 		
@@ -437,10 +440,10 @@ public class Easemob{
 
     
     public Response removeSingleUserFromChatRoom(final String roomId,final String userName) {
-        Object obj =  response_handler.handle(new EasemobAPI() {
+        Object obj =  responseHandler.handle(new EasemobAPI() {
             
             public Object invokeEasemobAPI() throws ApiException {
-                return rooms_api.orgNameAppNameChatroomsChatroomIdUsersUsernameDelete(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),roomId,userName);
+                return chatRoomsApi.orgNameAppNameChatroomsChatroomIdUsersUsernameDelete(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,getAccessToken(),roomId,userName);
             }
         });
 		
@@ -452,10 +455,10 @@ public class Easemob{
 
     
     public Response removeBatchUsersFromChatRoom(final String roomId,final String[] userNames) {
-        Object obj =  response_handler.handle(new EasemobAPI() {
+        Object obj =  responseHandler.handle(new EasemobAPI() {
             
             public Object invokeEasemobAPI() throws ApiException {
-                return rooms_api.orgNameAppNameChatroomsChatroomIdUsersUsernamesDelete(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),roomId, StringUtil.join(userNames,","));
+                return chatRoomsApi.orgNameAppNameChatroomsChatroomIdUsersUsernamesDelete(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,getAccessToken(),roomId, StringUtil.join(userNames,","));
             }
         });
 		
@@ -467,10 +470,10 @@ public class Easemob{
     
     
     public Response uploadFile(final Object file) {
-        Object obj =  response_handler.handle(new EasemobAPI() {
+        Object obj =  responseHandler.handle(new EasemobAPI() {
             
             public Object invokeEasemobAPI() throws ApiException {
-                return u_d_api.orgNameAppNameChatfilesPost(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),(File)file,true);
+                return uploadAndDownloadFilesApi.orgNameAppNameChatfilesPost(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,getAccessToken(),(File)file,true);
              }
         });
 		
@@ -482,10 +485,10 @@ public class Easemob{
 
     
     public Response downloadFile(final String fileUUID,final  String shareSecret,final Boolean isThumbnail) {
-        Object obj =  response_handler.handle(new EasemobAPI() {
+        Object obj =  responseHandler.handle(new EasemobAPI() {
             
             public Object invokeEasemobAPI() throws ApiException {
-               return u_d_api.orgNameAppNameChatfilesUuidGet(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),fileUUID,shareSecret,isThumbnail);
+               return uploadAndDownloadFilesApi.orgNameAppNameChatfilesUuidGet(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,getAccessToken(),fileUUID,shareSecret,isThumbnail);
             }
         });
 		
@@ -497,10 +500,10 @@ public class Easemob{
     
     
 	public Response createNewIMUserSingle(final Object payload) {
-		Object obj =  response_handler.handle(new EasemobAPI() {
+		Object obj =  responseHandler.handle(new EasemobAPI() {
 			
 			public Object invokeEasemobAPI() throws ApiException {
-				return users_api.orgNameAppNameUsersPost(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME, (RegisterUsers) payload,easemobConfig.getAccessToken());
+				return usersApi.orgNameAppNameUsersPost(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME, (RegisterUsers) payload,getAccessToken());
 			}
 		});
 		
@@ -512,10 +515,10 @@ public class Easemob{
 
 	
 	public Response createNewIMUserBatch(final Object payload) {
-		Object obj =  response_handler.handle(new EasemobAPI() {
+		Object obj =  responseHandler.handle(new EasemobAPI() {
 			
 			public Object invokeEasemobAPI() throws ApiException {
-				return users_api.orgNameAppNameUsersPost(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME, (RegisterUsers) payload,easemobConfig.getAccessToken());
+				return usersApi.orgNameAppNameUsersPost(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME, (RegisterUsers) payload,getAccessToken());
 			}
 		});
 		
@@ -527,10 +530,10 @@ public class Easemob{
 
 	
 	public Response getIMUserByUserName(final String userName) {
-		Object obj =  response_handler.handle(new EasemobAPI() {
+		Object obj =  responseHandler.handle(new EasemobAPI() {
 			
 			public Object invokeEasemobAPI() throws ApiException {
-				return users_api.orgNameAppNameUsersUsernameGet(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),userName);
+				return usersApi.orgNameAppNameUsersUsernameGet(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,getAccessToken(),userName);
 		}
 		});
 		
@@ -542,10 +545,10 @@ public class Easemob{
 
 	
 	public Response getIMUsersBatch(final Long limit,final String cursor) {
-		Object obj =  response_handler.handle(new EasemobAPI() {
+		Object obj =  responseHandler.handle(new EasemobAPI() {
 			
 			public Object invokeEasemobAPI() throws ApiException {
-				return users_api.orgNameAppNameUsersGet(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),limit+"",cursor);
+				return usersApi.orgNameAppNameUsersGet(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,getAccessToken(),limit+"",cursor);
 			}
 		});
 		
@@ -557,10 +560,10 @@ public class Easemob{
 
 	
 	public Response deleteIMUserByUserName(final String userName) {
-		Object obj =  response_handler.handle(new EasemobAPI() {
+		Object obj =  responseHandler.handle(new EasemobAPI() {
 			
 			public Object invokeEasemobAPI() throws ApiException {
-				return users_api.orgNameAppNameUsersUsernameDelete(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),userName);
+				return usersApi.orgNameAppNameUsersUsernameDelete(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,getAccessToken(),userName);
 			}
 		});
 		
@@ -572,10 +575,10 @@ public class Easemob{
 
 	
 	public Response deleteIMUserBatch(final Long limit,final String cursor) {
-		Object obj =  response_handler.handle(new EasemobAPI() {
+		Object obj =  responseHandler.handle(new EasemobAPI() {
 			
 			public Object invokeEasemobAPI() throws ApiException {
-				return users_api.orgNameAppNameUsersDelete(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),limit+"",cursor);
+				return usersApi.orgNameAppNameUsersDelete(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,getAccessToken(),limit+"",cursor);
 			}
 		});
 		
@@ -587,10 +590,10 @@ public class Easemob{
 
 	
 	public Response modifyIMUserPasswordWithAdminToken(final String userName, final Object payload) {
-		Object obj =  response_handler.handle(new EasemobAPI() {
+		Object obj =  responseHandler.handle(new EasemobAPI() {
 			
 			public Object invokeEasemobAPI() throws ApiException {
-				return users_api.orgNameAppNameUsersUsernamePasswordPut(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,userName, (NewPassword) payload,easemobConfig.getAccessToken());
+				return usersApi.orgNameAppNameUsersUsernamePasswordPut(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,userName, (NewPassword) payload,getAccessToken());
 			}
 		});
 		
@@ -602,10 +605,10 @@ public class Easemob{
 
 	
 	public Response modifyIMUserNickNameWithAdminToken(final String userName,final Object payload) {
-		Object obj =  response_handler.handle(new EasemobAPI() {
+		Object obj =  responseHandler.handle(new EasemobAPI() {
 			
 			public Object invokeEasemobAPI() throws ApiException {
-				return users_api.orgNameAppNameUsersUsernamePut(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,userName, (Nickname) payload,easemobConfig.getAccessToken());
+				return usersApi.orgNameAppNameUsersUsernamePut(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,userName, (Nickname) payload,getAccessToken());
 			}
 		});
 		
@@ -617,10 +620,10 @@ public class Easemob{
 
 	
 	public Response addFriendSingle(final String userName,final String friendName) {
-		Object obj =  response_handler.handle(new EasemobAPI() {
+		Object obj =  responseHandler.handle(new EasemobAPI() {
 			
 			public Object invokeEasemobAPI() throws ApiException {
-				return users_api.orgNameAppNameUsersOwnerUsernameContactsUsersFriendUsernamePost(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),userName,friendName);
+				return usersApi.orgNameAppNameUsersOwnerUsernameContactsUsersFriendUsernamePost(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,getAccessToken(),userName,friendName);
 			}
 		});
 		
@@ -632,10 +635,10 @@ public class Easemob{
 
 	
 	public Response deleteFriendSingle(final String userName,final String friendName) {
-		Object obj =  response_handler.handle(new EasemobAPI() {
+		Object obj =  responseHandler.handle(new EasemobAPI() {
 			
 			public Object invokeEasemobAPI() throws ApiException {
-				return users_api.orgNameAppNameUsersOwnerUsernameContactsUsersFriendUsernameDelete(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),userName,friendName);
+				return usersApi.orgNameAppNameUsersOwnerUsernameContactsUsersFriendUsernameDelete(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,getAccessToken(),userName,friendName);
 			}
 		});
 		
@@ -647,10 +650,10 @@ public class Easemob{
 
 	
 	public Response getFriends(final String userName) {
-		Object obj =  response_handler.handle(new EasemobAPI() {
+		Object obj =  responseHandler.handle(new EasemobAPI() {
 			
 			public Object invokeEasemobAPI() throws ApiException {
-				return users_api.orgNameAppNameUsersOwnerUsernameContactsUsersGet(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),userName);
+				return usersApi.orgNameAppNameUsersOwnerUsernameContactsUsersGet(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,getAccessToken(),userName);
 			}
 		});
 		
@@ -662,10 +665,10 @@ public class Easemob{
 
 	
 	public Response getBlackList(final String userName) {
-		Object obj =  response_handler.handle(new EasemobAPI() {
+		Object obj =  responseHandler.handle(new EasemobAPI() {
 			
 			public Object invokeEasemobAPI() throws ApiException {
-				return users_api.orgNameAppNameUsersOwnerUsernameBlocksUsersGet(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),userName);
+				return usersApi.orgNameAppNameUsersOwnerUsernameBlocksUsersGet(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,getAccessToken(),userName);
 			}
 		});
 		
@@ -677,10 +680,10 @@ public class Easemob{
 
 	
 	public Response addToBlackList(final String userName,final Object payload) {
-		Object obj =  response_handler.handle(new EasemobAPI() {
+		Object obj =  responseHandler.handle(new EasemobAPI() {
 			
 			public Object invokeEasemobAPI() throws ApiException {
-				return users_api.orgNameAppNameUsersOwnerUsernameBlocksUsersPost(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),userName, (UserNames) payload);
+				return usersApi.orgNameAppNameUsersOwnerUsernameBlocksUsersPost(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,getAccessToken(),userName, (UserNames) payload);
 			}
 		});
 		
@@ -692,10 +695,10 @@ public class Easemob{
 
 	
 	public Response removeFromBlackList(final String userName,final String blackListName) {
-		Object obj =  response_handler.handle(new EasemobAPI() {
+		Object obj =  responseHandler.handle(new EasemobAPI() {
 			
 			public Object invokeEasemobAPI() throws ApiException {
-				return users_api.orgNameAppNameUsersOwnerUsernameBlocksUsersBlockedUsernameDelete(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),userName,blackListName);
+				return usersApi.orgNameAppNameUsersOwnerUsernameBlocksUsersBlockedUsernameDelete(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,getAccessToken(),userName,blackListName);
 			}
 		});
 		
@@ -707,10 +710,10 @@ public class Easemob{
 
 	
 	public Response getIMUserStatus(final String userName) {
-		Object obj =  response_handler.handle(new EasemobAPI() {
+		Object obj =  responseHandler.handle(new EasemobAPI() {
 			
 			public Object invokeEasemobAPI() throws ApiException {
-				return users_api.orgNameAppNameUsersUsernameStatusGet(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),userName);
+				return usersApi.orgNameAppNameUsersUsernameStatusGet(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,getAccessToken(),userName);
 			}
 		});
 		
@@ -722,10 +725,10 @@ public class Easemob{
 
 	
 	public Response getOfflineMsgCount(final String userName) {
-		Object obj =  response_handler.handle(new EasemobAPI() {
+		Object obj =  responseHandler.handle(new EasemobAPI() {
 			
 			public Object invokeEasemobAPI() throws ApiException {
-				return users_api.orgNameAppNameUsersOwnerUsernameOfflineMsgCountGet(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),userName);
+				return usersApi.orgNameAppNameUsersOwnerUsernameOfflineMsgCountGet(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,getAccessToken(),userName);
 			}
 		});
 		
@@ -737,10 +740,10 @@ public class Easemob{
 
 	
 	public Response getSpecifiedOfflineMsgStatus(final String userName,final String msgId) {
-		Object obj =  response_handler.handle(new EasemobAPI() {
+		Object obj =  responseHandler.handle(new EasemobAPI() {
 			
 			public Object invokeEasemobAPI() throws ApiException {
-				return users_api.orgNameAppNameUsersUsernameOfflineMsgStatusMsgIdGet(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),userName,msgId);
+				return usersApi.orgNameAppNameUsersUsernameOfflineMsgStatusMsgIdGet(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,getAccessToken(),userName,msgId);
 			}
 		});
 		
@@ -752,10 +755,10 @@ public class Easemob{
 
 	
 	public Response deactivateIMUser(final String userName) {
-		Object obj =  response_handler.handle(new EasemobAPI() {
+		Object obj =  responseHandler.handle(new EasemobAPI() {
 			
 			public Object invokeEasemobAPI() throws ApiException {
-				return users_api.orgNameAppNameUsersUsernameDeactivatePost(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),userName);
+				return usersApi.orgNameAppNameUsersUsernameDeactivatePost(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,getAccessToken(),userName);
 			}
 		});
 		
@@ -767,10 +770,10 @@ public class Easemob{
 
 	
 	public Response activateIMUser(final String userName) {
-		Object obj =  response_handler.handle(new EasemobAPI() {
+		Object obj =  responseHandler.handle(new EasemobAPI() {
 			
 			public Object invokeEasemobAPI() throws ApiException {
-				return users_api.orgNameAppNameUsersUsernameActivatePost(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),userName);
+				return usersApi.orgNameAppNameUsersUsernameActivatePost(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,getAccessToken(),userName);
 			}
 		});
 		
@@ -782,10 +785,10 @@ public class Easemob{
 
 	
 	public Response disconnectIMUser(final String userName) {
-		Object obj =  response_handler.handle(new EasemobAPI() {
+		Object obj =  responseHandler.handle(new EasemobAPI() {
 			
 			public Object invokeEasemobAPI() throws ApiException {
-				return users_api.orgNameAppNameUsersUsernameDisconnectGet(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),userName);
+				return usersApi.orgNameAppNameUsersUsernameDisconnectGet(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,getAccessToken(),userName);
 			}
 		});
 		
@@ -797,10 +800,10 @@ public class Easemob{
 
 	
 	public Response getIMUserAllChatGroups(final String userName) {
-		Object obj =  response_handler.handle(new EasemobAPI() {
+		Object obj =  responseHandler.handle(new EasemobAPI() {
 			
 			public Object invokeEasemobAPI() throws ApiException {
-				return users_api.orgNameAppNameUsersUsernameJoinedChatgroupsGet(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),userName);
+				return usersApi.orgNameAppNameUsersUsernameJoinedChatgroupsGet(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,getAccessToken(),userName);
 			}
 		});
 		
@@ -812,10 +815,10 @@ public class Easemob{
 
 	
 	public Response getIMUserAllChatRooms(final String userName) {
-		Object obj =  response_handler.handle(new EasemobAPI() {
+		Object obj =  responseHandler.handle(new EasemobAPI() {
 			
 			public Object invokeEasemobAPI() throws ApiException {
-				return users_api.orgNameAppNameUsersUsernameJoinedChatroomsGet(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(),userName);
+				return usersApi.orgNameAppNameUsersUsernameJoinedChatroomsGet(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,getAccessToken(),userName);
 			}
 		});
 		
@@ -827,10 +830,10 @@ public class Easemob{
 	
 	
     public Response sendMessage(final Object payload) {
-        Object obj =  response_handler.handle(new EasemobAPI() {
+        Object obj =  responseHandler.handle(new EasemobAPI() {
             
             public Object invokeEasemobAPI() throws ApiException {
-                return msg_api.orgNameAppNameMessagesPost(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,easemobConfig.getAccessToken(), (Msg) payload);
+                return messagesApi.orgNameAppNameMessagesPost(EasemobConfig.ORG_NAME,EasemobConfig.APP_NAME,getAccessToken(), (Msg) payload);
             }
         });
 		

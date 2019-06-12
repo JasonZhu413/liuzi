@@ -1,4 +1,4 @@
-package com.liuzi.redis.service.impl;
+package com.liuzi.redis.service.lock;
 
 import java.util.Collections;
 
@@ -10,7 +10,6 @@ import org.springframework.data.redis.core.script.DefaultRedisScript;
 
 import redis.clients.jedis.Jedis;
 
-import com.liuzi.redis.service.RedisLock;
 
 public class RedisLockImpl implements RedisLock{
 	
@@ -20,7 +19,7 @@ public class RedisLockImpl implements RedisLock{
     private String key;
     private String value;
 
-    protected RedisLockImpl(RedisTemplate<String, Object> redisTemplate, 
+    public RedisLockImpl(RedisTemplate<String, Object> redisTemplate, 
     		String key, String value){
         this.redisTemplate = redisTemplate;
         this.key = key;

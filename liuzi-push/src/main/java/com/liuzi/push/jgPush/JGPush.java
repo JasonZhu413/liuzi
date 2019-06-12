@@ -10,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONObject;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import cn.jpush.api.JPushClient;
 import cn.jpush.api.push.PushResult;
 import cn.jpush.api.push.model.Message;
@@ -25,7 +24,6 @@ import cn.jpush.api.push.model.PushPayload.Builder;
 
 
 @Slf4j
-@Service("jGPush")
 public class JGPush{
 	
 	@Autowired

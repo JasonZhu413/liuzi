@@ -7,7 +7,6 @@ import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.geesanke.plugin.huawei.push.SendClient;
@@ -22,7 +21,6 @@ import com.geesanke.plugin.huawei.push.model.enums.MessageType;
 
 
 @Slf4j
-@Service("huaweiPush")
 public class HuaweiPush {
 	
 	@Autowired

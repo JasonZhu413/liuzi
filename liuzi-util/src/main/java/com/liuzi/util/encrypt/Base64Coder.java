@@ -43,7 +43,7 @@ public class Base64Coder {
 	  }
 
 	  public static String decode(String s){
-		  return new String(decode(s));
+		  return new String(decode(s.toCharArray()));
 	  }
 
 	  public static byte[] decode2Byte(String s){

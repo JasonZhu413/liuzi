@@ -1,4 +1,4 @@
-package com.liuzi.redis.service;
+package com.liuzi.redis.service.lock;
 
 public interface RedisLock extends AutoCloseable {
     /**

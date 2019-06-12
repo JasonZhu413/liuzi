@@ -6,37 +6,51 @@ import java.util.List;
 import java.util.Properties;
 import java.util.regex.Pattern;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.Resource;
+import org.springframework.util.StringUtils;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
+import com.whalin.MemCached.MemCachedClient;
 import com.whalin.MemCached.SockIOPool;
   
   
 @Slf4j
-@Data
-@EqualsAndHashCode(callSuper=false)
-public class MemcachedPool extends SockIOPool{
+public class MemcachedPool{
 	
 	private static final Pattern PATTERN = Pattern.compile("^.+[:]\\d{1,5}\\s*$");
+	protected static final String DEFAULT_NAME = "MEM_POOL_" + System.currentTimeMillis();
 	
-	private Resource addressConfig;
-	private String addressKeyPrefix;
+	@Getter @Setter
+	private String poolName = DEFAULT_NAME;
 	
-    public void afterPropertiesSet(SockIOPool sockIOPool) throws Exception {
-    	String[] address = this.getAddress();
-    	
+	public MemcachedPool(Resource addressConfig, String addressKeyPrefix,
+			SockIOPool sockIOPool) throws Exception{
+		String[] address = getAddress(addressConfig, addressKeyPrefix);
+		StringBuffer sbf = new StringBuffer();
+		sbf.append("SockIOPool init, address: ");
+		for(String str : address){
+			sbf.append(str + ",");
+		}
+		sbf.deleteCharAt(sbf.length() - 1);
+		log.info(sbf.toString());
 		sockIOPool.setServers(address);
 		sockIOPool.initialize();
-		log.info("SockIOPool initialize");
-    }
-    
-    private String[] getAddress() throws Exception {
+	}
+	
+	@Bean
+	public MemCachedClient memCachedClient(){
+		log.info("MemCachedClient init, poolName: " + poolName);
+		return new MemCachedClient(poolName);
+	}
+	
+    private String[] getAddress(Resource addressConfig, String addressKeyPrefix) throws Exception {
         try {
             Properties prop = new Properties();
-            prop.load(this.addressConfig.getInputStream());
+            prop.load(addressConfig.getInputStream());
 
             List<String> list = new ArrayList<>();
             for (Object key : prop.keySet()) {
@@ -45,13 +59,19 @@ public class MemcachedPool extends SockIOPool{
                     continue;
                 }
 
-                String val = (String) prop.get(key);
-
-                boolean isIpPort = PATTERN.matcher(val).matches();
-                if (!isIpPort) {
-                    throw new IllegalArgumentException("ip或 port不合法");
+                String servers = (String) prop.get(key);
+                String[] vals;
+                if(StringUtils.isEmpty(servers) || (vals = servers.split(",")).length == 0){
+                	throw new IllegalArgumentException("不合法的地址");
                 }
-                list.add(val);
+                
+                for(String val : vals){
+                	boolean isIpPort = PATTERN.matcher(val).matches();
+                    if (!isIpPort) {
+                        throw new IllegalArgumentException("不合法的IP或端口");
+                    }
+                    list.add(val);
+                }
             }
 
             int size = list.size();

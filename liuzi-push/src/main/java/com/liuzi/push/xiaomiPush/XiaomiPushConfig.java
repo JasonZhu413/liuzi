@@ -2,13 +2,10 @@ package com.liuzi.push.xiaomiPush;
 
 import com.xiaomi.xmpush.server.Sender;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.context.annotation.Bean;
 
 
 
-@Slf4j
 public class XiaomiPushConfig {
 	
 	private String secret_android;

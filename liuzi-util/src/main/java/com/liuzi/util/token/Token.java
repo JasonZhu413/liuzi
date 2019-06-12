@@ -12,6 +12,8 @@ import com.nimbusds.jose.crypto.MACVerifier;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Date;
@@ -29,28 +31,32 @@ import org.springframework.util.StringUtils;
  * @date 2019-05-31 17:47
  **/
 @Slf4j
-@Data
-@EqualsAndHashCode(callSuper=false)
 public class Token extends TokenConfig{
 	
 	/**
 	 * PC过期时间
 	 */
+	@Getter @Setter
 	private double pcValid = TOKEN_PC_VALID_TIME;
 	/**
 	 * PC过期时间
 	 */
+	@Getter @Setter
 	private double appValid = TOKEN_APP_VALID_TIME;
-	/**
-	 * 签名秘钥
-	 */
-	private String secret = TOKEN_SECRET;
 	/**
 	 * 是否为开发环境，默认true
 	 */
+	@Getter @Setter
 	private boolean debug = TOKEN_DEBUG;
 	
-	public Token(){}
+	/**
+	 * 签名秘钥
+	 */
+	private String secret = MD5.crypt(TOKEN_SECRET);
+	
+	public Token(String secret){
+		this.secret = MD5.crypt(secret);
+	}
 
     /**
      * 生成token(用户登录成功后调用)
@@ -78,7 +84,7 @@ public class Token extends TokenConfig{
 
             tokenLog("开始签名...");
             JSONObject json = new JSONObject(payload);
-            JWSObject jwsObject = new JWSObject(TokenConfig.HEADER, new Payload(json));
+            JWSObject jwsObject = new JWSObject(HEADER, new Payload(json));
             jwsObject.sign(new MACSigner(secret));
             String token = jwsObject.serialize();
             
@@ -124,8 +130,8 @@ public class Token extends TokenConfig{
                 
                 String newToken = token;
                 
-                if (json.containsKey(TokenConfig.TOKEN_EXP_TIME)) {
-                    String exp = json.get(TokenConfig.TOKEN_EXP_TIME).toString();
+                if (json.containsKey(TOKEN_EXP_TIME)) {
+                    String exp = json.get(TOKEN_EXP_TIME).toString();
                     //当前时间
                     long curTime = System.currentTimeMillis();
                     //过期时间
@@ -145,8 +151,8 @@ public class Token extends TokenConfig{
                     double time = isApp ? appValid : pcValid;
                     double newExpTime = curTime + time * 60 * 1000;
                     
-                    json.put(TokenConfig.TOKEN_EXP_TIME, newExpTime);
-                    jwsObject = new JWSObject(TokenConfig.HEADER, new Payload(json));
+                    json.put(TOKEN_EXP_TIME, newExpTime);
+                    jwsObject = new JWSObject(HEADER, new Payload(json));
                     jwsObject.sign(new MACSigner(secret));
                     newToken = jwsObject.serialize();
                     
@@ -159,8 +165,8 @@ public class Token extends TokenConfig{
     					.msg("Token验证成功");
                 }
                 
-                if (json.containsKey(TokenConfig.TOKEN_CREATE_TIME)) {
-                	String create = json.get(TokenConfig.TOKEN_CREATE_TIME).toString();
+                if (json.containsKey(TOKEN_CREATE_TIME)) {
+                	String create = json.get(TOKEN_CREATE_TIME).toString();
                 	long createTime = Double.valueOf(create).longValue();
                 	builder.createTime(createTime);
                 }
@@ -181,7 +187,7 @@ public class Token extends TokenConfig{
     }
     
     private String getTime(long time){
-		return DateUtil.date2Str(new Date(time), TokenConfig.DATE_FORMAT);
+		return DateUtil.date2Str(new Date(time), DATE_FORMAT);
     }
     
     private void tokenLog(String msg){
@@ -202,28 +208,14 @@ public class Token extends TokenConfig{
     
 
     public static void main(String[] args) throws Exception{
-        String test = "6zCTO@6zcto.com";
-        String secret = test + MD5.crypt(test);
-        System.out.println("secret: " + secret);
-        
-        boolean isApp = false;
-        
-        Token token = new Token();
+        //String test = "6zCTO@6zcto.com";
+        //String secret = test + MD5.crypt(test);
+        //System.out.println("secret: " + secret);
+        Token token = new Token("123456");
         Map<String, Object> map = new HashMap<>();
         map.put("userId", "liuzi");
-        String getToken = token.create(map, isApp);
+        String getToken = token.create(map, false);
         
-        //5秒后验证
-        Thread.sleep(1000 * 5);
-        TokenInfo result = token.valid(getToken, isApp);
-        System.out.println("result1: " + result.toString());
-        //5秒后验证
-        Thread.sleep(1000 * 5);
-        result = token.valid(result.getToken(), isApp);
-        System.out.println("result2: " + result.toString());
-        //1分钟后验证
-        Thread.sleep(1000 * 21);
-        result = token.valid(result.getToken(), isApp);
-        System.out.println("result3: " + result.toString());
+        System.out.println("token: " + getToken);
     }
 }

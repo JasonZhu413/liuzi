@@ -19,6 +19,9 @@ import org.springframework.util.StringUtils;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.liuzi.util.encrypt.AESUtil;
+import com.liuzi.util.encrypt.Base64Coder;
+import com.liuzi.util.encrypt.MD5;
 
 
 public class LiuziUtil {
@@ -186,4 +189,20 @@ public class LiuziUtil {
         }
         return map;
     }
+	
+	public static void main(String[] args) {
+		//邮箱或手机号
+		String emailOrPhone = "554157554@qq.com";
+		//类型 email或phone
+		String type = "email";
+		//aes加密验证码
+		String code = "123456";
+		String aesCode = Base64Coder.encode(code);
+		//MD5加密token = MD5(email/phone + type + code)
+		String md5Token = MD5.crypt(emailOrPhone + type + code);
+		
+		String finish = emailOrPhone + "," + type + "," + aesCode + "," + md5Token;
+		System.out.println(Base64Coder.encode(finish));
+		System.out.println(AESUtil.encrypt(finish));
+	}
 }

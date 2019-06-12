@@ -2,13 +2,9 @@ package com.liuzi.push.umPush;
 
 
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 import push.PushClient;
 import push.android.AndroidBroadcast;
@@ -16,21 +12,19 @@ import push.android.AndroidCustomizedcast;
 import push.ios.IOSBroadcast;
 import push.ios.IOSCustomizedcast;
 
-
-
-@Configuration
+@Data
 public class UMPushConfig{
-	
-	private static Logger logger = LoggerFactory.getLogger(UMPushConfig.class);
 	
 	private final static boolean DEFAULT_PRODUCTION = false;
 	
 	//key
-	@Getter @Setter private String key; 
+	private String key; 
 	//秘钥
-	@Getter @Setter private String secret;
+	private String secret;
 	//是否生产
 	public static boolean production = DEFAULT_PRODUCTION;
+	
+	public UMPushConfig(){}
 	
 	public UMPushConfig(boolean production){
 		UMPushConfig.production = production;

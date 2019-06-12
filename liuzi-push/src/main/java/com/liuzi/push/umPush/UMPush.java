@@ -8,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONObject;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import push.PushClient;
 import push.android.AndroidBroadcast;
@@ -18,7 +17,6 @@ import push.ios.IOSCustomizedcast;
 
 
 @Slf4j
-@Service("uMPush")
 public class UMPush{
 	
 	@Autowired

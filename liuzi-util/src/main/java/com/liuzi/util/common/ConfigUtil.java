@@ -25,7 +25,7 @@ public class ConfigUtil{
 	private static String configPath = "";
 	private static PropertiesConfiguration p;
 	
-	protected static void init(String path){
+	public static void init(String path){
 		if(p == null){
 			configPath = path;
 			if(pathNotNull()){

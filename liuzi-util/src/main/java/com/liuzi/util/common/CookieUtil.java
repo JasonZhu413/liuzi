@@ -6,11 +6,14 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 
 
+
 import org.springframework.util.StringUtils;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import lombok.extern.slf4j.Slf4j;
 
 import com.alibaba.fastjson.JSONObject;
 
@@ -26,6 +29,7 @@ import com.alibaba.fastjson.JSONObject;
  * @version       1.0
  * 
  */
+@Slf4j
 public class CookieUtil {
 	
 	public static void set(HttpServletResponse response, String name, Object value) {
@@ -75,7 +79,7 @@ public class CookieUtil {
 	    /*if(!StringUtils.isEmpty(domain)){
 	    	cookie.setDomain(domain);
 	    }*/
-	    
+	    //log.info("cookie set: " + cookie.toString());
 	    response.addCookie(cookie);
 	}
 	
@@ -95,13 +99,18 @@ public class CookieUtil {
 	    		}
 	    	}
 	    }
-
-	    try {
-			return cookie == null ? null : URLDecoder.decode(cookie.getValue(),"utf-8");
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
-	    return null;
+	    
+	    String value = null;
+	    if(cookie != null && (value = cookie.getValue()) != null){
+	    	try {
+	    		value = URLDecoder.decode(value, "utf-8");
+			} catch (UnsupportedEncodingException e) {
+				log.error("cookie get error: " + e.getMessage());
+			}
+	    }
+	    
+	    //log.info("cookie get, key: " + key + ", value: " + value);
+	    return value;
 	}
 	
 	public static void delete(HttpServletRequest request, HttpServletResponse response, String name){
@@ -136,6 +145,8 @@ public class CookieUtil {
 	    cookie.setMaxAge(0);
 	    cookie.setPath(path);
 	    cookie.setHttpOnly(true);
+	    
+	    //log.info("cookie delete: " + cookie.toString());
 	    response.addCookie(cookie);
 	}
 	
