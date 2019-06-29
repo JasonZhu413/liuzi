@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="liuzi-activemq" />
+        <module name="liuzi-easemob" />
+        <module name="liuzi-fastdfs" />
+        <module name="liuzi-memcached" />
+        <module name="liuzi-mybatis" />
+        <module name="liuzi-mybatis-generator" />
+        <module name="liuzi-push" />
+        <module name="liuzi-qmail" />
+        <module name="liuzi-qsms" />
+        <module name="liuzi-redis" />
+        <module name="liuzi-redis-cluster" />
+        <module name="liuzi-redis-spring-boot" />
+        <module name="liuzi-rest" />
+        <module name="liuzi-util" />
+      </profile>
+    </annotationProcessing>
+  </component>
+</project>

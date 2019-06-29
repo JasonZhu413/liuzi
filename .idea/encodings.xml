@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/liuzi-activemq" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/liuzi-easemob" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/liuzi-fastdfs" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/liuzi-memcached" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/liuzi-mybatis" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/liuzi-mybatis-generator" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/liuzi-push" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/liuzi-qmail" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/liuzi-qsms" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/liuzi-redis" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/liuzi-redis-cluster" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/liuzi-redis-spring-boot" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/liuzi-rest" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/liuzi-util" charset="UTF-8" />
+  </component>
+</project>
