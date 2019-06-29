@@ -176,7 +176,7 @@ public class RedisServiceImpl implements RedisService {
      */
     @Override
     public long incr(String key) {
-        return valueOperations.increment(key);
+        return valueOperations.increment(key, 1L);
     }
 
     /**
@@ -201,7 +201,7 @@ public class RedisServiceImpl implements RedisService {
      */
     @Override
     public long decr(String key) {
-        return valueOperations.increment(key);
+        return valueOperations.increment(key, -1L);
     }
 
     /**

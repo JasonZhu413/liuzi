@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 import lombok.extern.slf4j.Slf4j;
 
 import com.liuzi.memcached.boot.service.MemcachedService;
-import com.liuzi.util.DateUtil;
+import com.liuzi.util.common.DateUtil;
 import com.whalin.MemCached.MemCachedClient;
   
 /** 

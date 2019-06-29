@@ -86,6 +86,7 @@ public class ImgReset {
 					watermarkContent, compress);
 			fdfsFile.setLarge(ClientGlobal.fileServer + large);
 		}catch(IOException e){
+			log.info("大图处理失败，使用原图，原因：" + e.getMessage());
 			fdfsFile.setLarge(fdfsFile.getUrl());
 		}
 		
@@ -97,6 +98,7 @@ public class ImgReset {
 					watermarkContent, compress);
 			fdfsFile.setMiddle(ClientGlobal.fileServer + middle);
 		}catch(IOException e){
+			log.info("中图处理失败，使用原图，原因：" + e.getMessage());
 			fdfsFile.setMiddle(fdfsFile.getUrl());
 		}
 		
@@ -108,6 +110,7 @@ public class ImgReset {
 					watermarkContent, compress);
 			fdfsFile.setSmall(ClientGlobal.fileServer + small);
 		}catch(IOException e){
+			log.info("小图处理失败，使用原图，原因：" + e.getMessage());
 			fdfsFile.setSmall(fdfsFile.getUrl());
 		}
 	}

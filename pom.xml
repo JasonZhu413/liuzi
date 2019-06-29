@@ -23,6 +23,7 @@
   	<module>liuzi-easemob</module>
   	<module>liuzi-rest</module>
   	<module>liuzi-push</module>
+  	<module>liuzi-elasticsearch</module>
   </modules>
 
 	<properties>

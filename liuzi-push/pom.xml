@@ -54,18 +54,6 @@
 	    <artifactId>gexin-rp-sdk-base</artifactId>
 	</dependency>
 			
-    <!-- umpush -->
-	<dependency>
-	    <groupId>com.umeng.api</groupId>
-	    <artifactId>umeng-push</artifactId>
-	</dependency>
-	
-	<!-- huawei - push -->
-	<dependency>
-	    <groupId>com.geesanke.plugin</groupId>
-	    <artifactId>huawei-push</artifactId>
-	</dependency>
-	
 	<!-- apns -->
 	<dependency>
 	    <groupId>org.apache.commons</groupId>
@@ -79,7 +67,6 @@
 	    <groupId>com.github.fernandospr</groupId>
 	    <artifactId>javapns-jdk16</artifactId>
 	</dependency>
-	
 	<dependency>
 	    <groupId>com.turo</groupId>
 	    <artifactId>pushy</artifactId>
@@ -90,7 +77,6 @@
 	    <artifactId>netty-all</artifactId>
 	    <version>4.1.32.Final</version>
 	</dependency> -->
-	
 	<!-- xiaomi-push -->
 	<dependency>
 	  <groupId>com.xiaomi</groupId>
@@ -100,6 +86,17 @@
 	  <groupId>com.xiaomi</groupId>
 	  <artifactId>MiPush_SDK_Server</artifactId>
 	</dependency>
+	<!-- umpush -->
+	<dependency>
+	    <groupId>com.umeng.api</groupId>
+	    <artifactId>umeng-push</artifactId>
+	</dependency>
+	<!-- huawei - push -->
+	<dependency>
+	    <groupId>com.geesanke.plugin</groupId>
+	    <artifactId>huawei-push</artifactId>
+	</dependency>
+	
   </dependencies>
   
 </project>

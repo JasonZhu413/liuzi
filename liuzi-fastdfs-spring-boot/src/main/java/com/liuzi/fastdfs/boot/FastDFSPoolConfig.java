@@ -12,12 +12,11 @@ import com.liuzi.fastdfs.boot.base.StorageClient;
 import com.liuzi.fastdfs.boot.base.StorageServer;
 import com.liuzi.fastdfs.boot.base.TrackerClient;
 import com.liuzi.fastdfs.boot.base.TrackerServer;
+import com.liuzi.util.common.LiuziUtil;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import com.liuzi.util.LiuziUtil;
 
 @Slf4j
 @Configuration

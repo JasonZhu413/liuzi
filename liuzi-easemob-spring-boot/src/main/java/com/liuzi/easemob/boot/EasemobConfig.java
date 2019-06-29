@@ -1,7 +1,7 @@
 package com.liuzi.easemob.boot;
 
 import com.google.gson.Gson;
-import com.liuzi.util.LiuziUtil;
+import com.liuzi.util.common.LiuziUtil;
 
 import io.swagger.client.ApiException;
 import io.swagger.client.api.AuthenticationApi;

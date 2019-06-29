@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.support.http.StatViewServlet;
 import com.alibaba.druid.support.http.WebStatFilter;
-import com.liuzi.util.LiuziUtil;
+import com.liuzi.util.common.LiuziUtil;
 
 import lombok.extern.slf4j.Slf4j;
 

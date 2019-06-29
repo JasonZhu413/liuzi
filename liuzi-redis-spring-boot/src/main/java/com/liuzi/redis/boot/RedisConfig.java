@@ -19,6 +19,8 @@ import java.lang.reflect.Method;
 
 
 
+
+
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.cache.CacheManager;
@@ -34,12 +36,14 @@ import org.springframework.data.redis.core.ClusterOperations;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.HyperLogLogOperations;
 import org.springframework.data.redis.core.ListOperations;
+import org.springframework.data.redis.core.RedisOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.SetOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
+import org.springframework.session.data.redis.RedisOperationsSessionRepository;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
@@ -56,10 +60,11 @@ public class RedisConfig extends CachingConfigurerSupport{
 	 * 管理缓存
 	 */
 	@Bean
-	public CacheManager cacheManager(RedisConnectionFactory connectionFactory) {
+	public CacheManager cacheManager(RedisTemplate<String, String> redisTemplate) {
 		LiuziUtil.tag("--------  Liuzi Redis初始化 --------");
-		RedisCacheManager redisCacheManager = RedisCacheManager.create(connectionFactory);
-		return redisCacheManager;
+		RedisCacheManager cacheManager = new RedisCacheManager(redisTemplate);
+	    cacheManager.setDefaultExpiration(60);
+	    return cacheManager;
 	}
 	
 	/**

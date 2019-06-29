@@ -1,0 +1,65 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.liuzi</groupId>
+    <artifactId>liuzi</artifactId>
+    <version>1.0</version>
+  </parent>
+  <artifactId>liuzi-elasticsearch</artifactId>
+  
+  
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <es.version>6.6.0</es.version>
+  </properties>
+	
+  <dependencies>
+	<dependency>
+		<groupId>com.liuzi</groupId>
+		<artifactId>liuzi-util</artifactId>
+	</dependency>
+	<dependency>
+		<groupId>com.liuzi</groupId>
+		<artifactId>liuzi-mybatis</artifactId>
+	</dependency>
+	<dependency>
+        <groupId>org.projectlombok</groupId>
+        <artifactId>lombok</artifactId>
+    </dependency>
+    
+    <dependency>
+	    <groupId>org.elasticsearch</groupId>
+	    <artifactId>elasticsearch</artifactId>
+	    <version>${es.version}</version>
+	</dependency>
+    <!-- <dependency>
+	    <groupId>org.elasticsearch.client</groupId>
+	    <artifactId>transport</artifactId>
+	    <version>${es.version}</version>
+	</dependency> -->
+	<dependency>
+    	<groupId>org.elasticsearch.client</groupId>
+	    <artifactId>elasticsearch-rest-high-level-client</artifactId>
+	    <version>${es.version}</version>
+	</dependency>
+    <dependency>
+	    <groupId>org.springframework.data</groupId>
+	    <artifactId>spring-data-elasticsearch</artifactId>
+	    <version>3.1.9.RELEASE</version>
+	</dependency>
+	<!-- <dependency>
+	    <groupId>org.apache.lucene</groupId>
+	    <artifactId>lucene-core</artifactId>
+	    <version>6.3.0</version>
+	</dependency> -->
+	
+	<dependency>
+		<groupId>com.fasterxml.jackson.core</groupId>
+		<artifactId>jackson-databind</artifactId>
+	</dependency>
+  </dependencies>
+  
+  
+  
+  
+</project>

@@ -81,7 +81,7 @@ public abstract class BaseServiceImpl<T> implements BaseService<T>{
 		List<T> list = this.select(map, sort);
 		int totalCount = this.selectCount(map);
 		
-		page.setResult(list);//返回数据
+		page.setData(list);//返回数据
 		page.setTotalCount(totalCount);//查询总数
 		
 		int count = totalCount / page.getPageSize();
@@ -89,6 +89,7 @@ public abstract class BaseServiceImpl<T> implements BaseService<T>{
 	    	++ count;
 	    }
 		page.setPageTotal(count);//总页数
+		page.setNumber(list == null ? 0 : list.size());//当前页条数
 		
 		return page;
 	}
@@ -127,5 +128,4 @@ public abstract class BaseServiceImpl<T> implements BaseService<T>{
 	public int updateByPrimaryKeySelective(T record) {
 		return getBaseDao().updateByPrimaryKeySelective(record);
 	}
-	
 }

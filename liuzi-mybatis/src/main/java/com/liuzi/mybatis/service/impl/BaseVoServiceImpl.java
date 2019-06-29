@@ -82,7 +82,7 @@ public abstract class BaseVoServiceImpl<T, Vo> extends BaseServiceImpl<T>
 		List<Vo> list = this.selectVo(map, sort);
 		int totalCount = this.selectCountVo(map);
 		
-		page.setResult(list);//返回数据
+		page.setData(list);//返回数据
 		page.setTotalCount(totalCount);//查询总数
 		
 		int count = totalCount / page.getPageSize();
@@ -90,7 +90,7 @@ public abstract class BaseVoServiceImpl<T, Vo> extends BaseServiceImpl<T>
 	    	++ count;
 	    }
 		page.setPageTotal(count);//总页数
-		
+		page.setNumber(list == null ? 0 : list.size());//当前页条数
 		return page;
 	}
 }

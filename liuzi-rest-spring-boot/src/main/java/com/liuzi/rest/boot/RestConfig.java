@@ -17,7 +17,8 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.http.converter.xml.MappingJackson2XmlHttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
-import com.liuzi.util.LiuziUtil;
+import com.liuzi.util.common.LiuziUtil;
+
 
 @Slf4j
 @Configuration

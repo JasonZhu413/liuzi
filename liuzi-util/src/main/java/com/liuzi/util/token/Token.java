@@ -144,7 +144,7 @@ public class Token extends TokenConfig{
                     //并且当前时间超过了最后一次验证时间+有效时间
                     if (curTime > expTime) {
                     	tokenLog(2, "----- Token失效 -----");
-                    	return builder.msg("Token失效").build();
+                    	return builder.data(json).msg("Token失效").build();
                     }
                     
                     //超时时间

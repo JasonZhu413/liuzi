@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 
 import lombok.extern.slf4j.Slf4j;
 
-import com.liuzi.util.LiuziUtil;
+import com.liuzi.util.common.LiuziUtil;
 import com.whalin.MemCached.MemCachedClient;
 import com.whalin.MemCached.SockIOPool;
   

@@ -39,124 +39,128 @@ public class Page<T> {
 	/**
 	 * 页码
 	 */
-	private Integer pageNo = 0;
+	private int pageNo = 0;
 	
 	/**
 	 * 每页显示条数
 	 */
-	private Integer pageSize = 0;
+	private int pageSize = 0;
 	
 	/**
 	 * 总数
 	 */
-	private Integer totalCount = 0;
+	private long totalCount = 0L;
 	
 	/**
 	 * 第几条开始查询
 	 */
-	private Integer limit = 0;
+	private int limit = 0;
 	
 	/**
 	 * 每次查询几条
 	 */
-	private Integer offset = 10;
+	private int offset = 10;
 	
 	/**
 	 * 共多少页
 	 */
-	private Integer pageTotal = 0;
+	private int pageTotal = 0;
+	
+	/**
+	 * 当前页数量
+	 */
+	private int number;
 	
 	/**
 	 * 实体
 	 */
-	private List<T> result = new ArrayList<T>();
+	private List<T> data = new ArrayList<T>();
 	
 	public Page() {
 		this.pageNo = Page.PAGE_NO;
 		this.pageSize = Page.PAGE_SIZE;
 	}
 	
-	public Page(Integer pageNo, Integer pageSize) {
-		this.pageNo = pageNo == null || pageNo == 0 ? Page.PAGE_NO : pageNo;
-		this.pageSize = pageSize == null || pageSize == 0 ? Page.PAGE_SIZE : pageSize;
+	public Page(int pageNo, int pageSize) {
+		this.pageNo = pageNo <= 0 ? Page.PAGE_NO : pageNo;
+		this.pageSize = pageSize <= 0 ? Page.PAGE_SIZE : pageSize;
 		this.limit = (this.pageNo - 1) * this.pageSize;
 		this.offset = this.pageSize;
 	}
 
-	public Page(List<T> result) {
-		this.result = result;
+	public Page(List<T> data) {
+		this.data = data;
 	}
 	
-	public Integer getPageNo() {
+	public int getPageNo() {
 		return pageNo;
 	}
 
-	public void setPageNo(Integer pageNo) {
+	public void setPageNo(int pageNo) {
 		this.pageNo = pageNo;
 	}
 
-	public Integer getPageSize() {
+	public int getPageSize() {
 		return pageSize;
 	}
 
-	public void setPageSize(Integer pageSize) {
+	public void setPageSize(int pageSize) {
 		this.pageSize = pageSize;
 	}
 
-	public Integer getTotalCount() {
+	public long getTotalCount() {
 		return totalCount;
 	}
 
-	public void setTotalCount(Integer totalCount) {
+	public void setTotalCount(long totalCount) {
 		this.totalCount = totalCount;
 	}
 
-	public Integer getLimit() {
+	public int getLimit() {
 		return limit;
 	}
 
-	public void setLimit(Integer limit) {
+	public void setLimit(int limit) {
 		this.limit = limit;
 	}
 
-	public Integer getPageTotal() {
+	public int getPageTotal() {
 		return pageTotal;
 	}
 
-	public void setPageTotal(Integer pageTotal) {
+	public void setPageTotal(int pageTotal) {
 		this.pageTotal = pageTotal;
 	}
 
-	public List<T> getResult() {
-		return result;
+	public List<T> getData() {
+		return data;
 	}
 
-	public void setResult(List<T> result) {
-		this.result = result;
+	public void setData(List<T> data) {
+		this.data = data;
 	}
 
-	/*private int getDefaultPageNo(Integer pn) {
-		return (pn == null || pn == 0) ? PAGE_NO : pn;
-	}
-
-	private int getDefaultPageSize(Integer ps) {
-		return (ps == null || ps == 0) ? PAGE_SIZE : ps;
-	}*/
-
-	public Integer getOffset() {
+	public int getOffset() {
 		return offset;
 	}
 
-	public void setOffset(Integer offset) {
+	public void setOffset(int offset) {
 		this.offset = offset;
+	}
+	
+	public int getNumber() {
+		return number;
+	}
+
+	public void setNumber(int number) {
+		this.number = number;
 	}
 
 	@Override
 	public String toString() {
-		return "Page [pageNo=" + pageNo + ", pageSize=" + pageSize
-				+ ", totalCount=" + totalCount + ", limit=" + limit
-				+ ", offset=" + offset + ", pageTotal=" + pageTotal
-				+ ", result=" + result + "]";
+		return "Page [pageNo=" + pageNo + ", pageSize=" + pageSize + 
+				", totalCount=" + totalCount + ", limit=" + limit + 
+				", offset=" + offset + ", pageTotal=" + pageTotal + 
+				", number=" + number + ", data=" + data + "]";
 	}
-	
 }
