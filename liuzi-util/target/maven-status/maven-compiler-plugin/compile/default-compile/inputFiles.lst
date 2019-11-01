@@ -5,7 +5,6 @@ D:\Mine\github\liuzi\liuzi-util\src\main\java\com\liuzi\util\optimization\Custom
 D:\Mine\github\liuzi\liuzi-util\src\main\java\com\liuzi\util\common\PropertiesUtil.java
 D:\Mine\github\liuzi\liuzi-util\src\main\java\com\liuzi\util\verify\VerifyCode.java
 D:\Mine\github\liuzi\liuzi-util\src\main\java\com\liuzi\util\redis\RedisPool.java
-D:\Mine\github\liuzi\liuzi-util\src\main\java\com\liuzi\util\interceptor\SqlInjectInterceptor.java
 D:\Mine\github\liuzi\liuzi-util\src\main\java\com\liuzi\util\redis\ShardedJedisSentinelPool.java
 D:\Mine\github\liuzi\liuzi-util\src\main\java\com\liuzi\util\http\HttpUtil.java
 D:\Mine\github\liuzi\liuzi-util\src\main\java\com\liuzi\util\common\ElUtil.java

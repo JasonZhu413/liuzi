@@ -38,6 +38,7 @@ import com.liuzi.mybatis.currency.data.TableMataData;
  * @author zsy
  */
 @Intercepts({
+	@Signature(type = Executor.class, method = "update", args = {MappedStatement.class, Object.class}),
     @Signature(type = Executor.class, method = "query", args = {MappedStatement.class, Object.class, 
     	RowBounds.class, ResultHandler.class}),
     @Signature(type = Executor.class, method = "query", args = {MappedStatement.class, Object.class, 

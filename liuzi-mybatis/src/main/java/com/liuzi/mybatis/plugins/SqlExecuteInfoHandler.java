@@ -10,7 +10,10 @@ import java.util.Properties;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import lombok.Getter;
 import lombok.Setter;
 
 import org.apache.commons.lang.StringUtils;
@@ -39,8 +42,11 @@ import com.liuzi.util.date.DateUtil;
 
 @Intercepts({
 	@Signature(type = Executor.class, method = "update", args = {MappedStatement.class, Object.class}),
+	@Signature(type = Executor.class, method = "query",	args = {MappedStatement.class, Object.class, 
+		RowBounds.class, ResultHandler.class}),
     @Signature(type = Executor.class, method = "query", args = {MappedStatement.class, Object.class, 
-    	RowBounds.class, ResultHandler.class, CacheKey.class, BoundSql.class})})
+    	RowBounds.class, ResultHandler.class, CacheKey.class, BoundSql.class})
+})
 public class SqlExecuteInfoHandler implements Interceptor {
 	//项目目录
 	private static final String LOG_DIR = System.getProperty("user.dir");
@@ -51,7 +57,9 @@ public class SqlExecuteInfoHandler implements Interceptor {
 	//文件后缀
 	private static final String SUFFIX = ".txt";
 	//文件名前缀
-	private static final String LOG_NAME = "sql-excute-log-";
+	private static final String LOG_NAME = "mybatis-sql-log";
+	//文件名连接符
+	private static final char CONN = '-';
 	//操作线程核心线程数
 	private static final int THREAD_NUM_MIN = 50;
 	//操作线程最大线程数
@@ -63,36 +71,39 @@ public class SqlExecuteInfoHandler implements Interceptor {
 			THREAD_NUM_MAX, THREAD_WAIT_TIME, TimeUnit.SECONDS,
             new LinkedBlockingQueue<Runnable>());
 	
+	private static final Pattern SQL_PATTERN = Pattern.compile("\\s*|\t|\r|\n");
+	
 	/**
 	 * 类型
 	 * CONSOLE 控制台打印
 	 * LOG 日志
 	 */
-	@Setter
-	private String type = "NONE";
+	@Getter @Setter private String type = "NONE";
 	/**
 	 * 日志目录
 	 */
-	@Setter
-	private String logPath = LOG_DIR;
+	@Getter @Setter private String logPath = LOG_DIR;
 	/**
 	 * 日志文件名
 	 */
-	@Setter
-	private String logName = LOG_NAME;
+	@Getter @Setter private String logName = LOG_NAME;
 	/**
 	 * 日志文件名
 	 * YEAR, MONTH, DATE, HOUR, MINUTE, SECOND
 	 */
-	@Setter private String logWriteType = "DATE";
-	
-	private int corePoolSize;
-	private int maximumPoolSize;
+	@Getter @Setter private String logWriteType = "DATE";
+	/**
+	 * 线程核心数
+	 */
+	@Getter private int corePoolSize;
+	/**
+	 * 线程最大数
+	 */
+	@Getter private int maximumPoolSize;
 	
 	private String lp;
 	private String ln;
 	private String p;
-	
 	
 	public void setCorePoolSize(int corePoolSize) {
 		if(corePoolSize <= 0){
@@ -100,6 +111,7 @@ public class SqlExecuteInfoHandler implements Interceptor {
 		}
 		this.corePoolSize = corePoolSize;
 		executor.setCorePoolSize(corePoolSize);
+		Log.info("Mybatis sql execute thread corePoolSize {}", corePoolSize);
 	}
 
 	public void setMaximumPoolSize(int maximumPoolSize) {
@@ -108,6 +120,7 @@ public class SqlExecuteInfoHandler implements Interceptor {
 		}
 		this.maximumPoolSize = maximumPoolSize;
 		executor.setMaximumPoolSize(maximumPoolSize);
+		Log.info("Mybatis sql execute thread maximumPoolSize {}", maximumPoolSize);
 	}
 	
 	@Override
@@ -193,9 +206,12 @@ public class SqlExecuteInfoHandler implements Interceptor {
         SpAuditDbLog save = spAuditDbLogMapper.save(spAuditDbLog);
         */
         
+		Matcher matcher = SQL_PATTERN.matcher(retSQL);
+		retSQL = matcher.replaceAll("");
+        
         //处理sql
         excuteLog(excuteType, dbType, mapperId, commandName, methodName, 
-        		time + "", retSQL, parameterObjects);
+        		start + "", end + "", time + "", "{", retSQL, "}", parameterObjects);
         
         //返回执行结果
         return result;
@@ -321,7 +337,7 @@ public class SqlExecuteInfoHandler implements Interceptor {
 	
 	private String getFileName(){
 		String pattern = DateUtil.dateToString(new Date(), this.p);
-		return String.format("%s%s%s%s%s", this.lp, FILESEPARATOR, this.ln, pattern, SUFFIX);
+		return String.format("%s%s%s%s%s%s", this.lp, FILESEPARATOR, this.ln, CONN, pattern, SUFFIX);
 	}
 
 	

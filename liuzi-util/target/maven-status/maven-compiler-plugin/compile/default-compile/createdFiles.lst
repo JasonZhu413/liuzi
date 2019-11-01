@@ -69,7 +69,6 @@ com\liuzi\util\encrypt\CryptUtil.class
 com\liuzi\util\excel\ExcelUtil$1.class
 com\liuzi\util\common\Log.class
 com\liuzi\util\date\DateBase$1.class
-com\liuzi\util\interceptor\SqlInjectInterceptor.class
 com\liuzi\util\wechat\WeChatEnt$EventType.class
 com\liuzi\util\date\DateFormat.class
 com\liuzi\util\wechat\WeChatMsg$Simple$Location.class
