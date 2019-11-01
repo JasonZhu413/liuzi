@@ -4,6 +4,7 @@ package com.liuzi.redis.service.impl;
 import java.util.concurrent.TimeUnit;
 
 import com.liuzi.redis.service.StringService;
+import com.liuzi.util.common.Log;
 
 
 public class StringServiceImpl extends SetServiceImpl implements StringService{
@@ -14,7 +15,6 @@ public class StringServiceImpl extends SetServiceImpl implements StringService{
      * @return 值
      */
     public Object get(String key) {
-    	info("string get, key: " + key);
         return key == null ? null : redisTemplate.opsForValue().get(key);
     }
 
@@ -26,13 +26,12 @@ public class StringServiceImpl extends SetServiceImpl implements StringService{
      */
     public boolean set(String key, Object value) {
         try {
-        	info("string set, key: " + key + ", value: " + value);
             redisTemplate.opsForValue().set(key, value);
             return true;
         } catch (Exception e) {
-        	error("string set error, key: " + key + ", msg: " + e.getMessage());
-            return false;
+        	Log.error(e, "string set error, key: {}", key);
         }
+        return false;
     }
 
     /**
@@ -56,14 +55,13 @@ public class StringServiceImpl extends SetServiceImpl implements StringService{
     public boolean set(String key, Object value, long time, TimeUnit timeUnit) {
         try {
             if (time > 0) {
-            	info("string set time, key: " + key + ", value: " + value + ", time: " + time);
                 redisTemplate.opsForValue().set(key, value, time, timeUnit);
             } else {
                 set(key, value);
             }
             return true;
         } catch (Exception e) {
-        	error("string set time error, key: " + key + ", msg: " + e.getMessage());
+        	Log.error(e, "string set time error, key: {}", key);
             return false;
         }
     }
@@ -74,7 +72,6 @@ public class StringServiceImpl extends SetServiceImpl implements StringService{
      * @return
      */
     public long incr(String key) {
-    	info("string increment, key: " + key);
         return incr(key, 1);
     }
 
@@ -86,10 +83,9 @@ public class StringServiceImpl extends SetServiceImpl implements StringService{
      */
     public long incr(String key, long delta) {
         if (delta <= 0) {
-        	error("string increment error, key: " + key + ", msg: 递增因子必须大于0");
+        	Log.error("string increment error, key: {}, msg: 递增因子必须大于0", key);
             throw new IllegalArgumentException("递增因子必须大于0");
         }
-        info("string increment, key: " + key + ", delta: " + delta);
         return redisTemplate.opsForValue().increment(key, delta);
     }
     
@@ -99,7 +95,6 @@ public class StringServiceImpl extends SetServiceImpl implements StringService{
      * @return
      */
     public long decr(String key) {
-    	info("string decrement, key: " + key);
         return decr(key, 1);
     }
 
@@ -111,10 +106,9 @@ public class StringServiceImpl extends SetServiceImpl implements StringService{
      */
     public long decr(String key, long delta) {
         if (delta <= 0) {
-        	error("string decrement error, key: " + key + ", msg: 递减因子必须大于0");
+        	Log.error("string decrement error, key: {}, msg: 递减因子必须大于0", key);
             throw new IllegalArgumentException("递减因子必须大于0");
         }
-        info("string decrement, key: " + key + ", delta: " + delta);
         return redisTemplate.opsForValue().increment(key, delta);
     }
 

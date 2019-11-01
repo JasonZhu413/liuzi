@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.action.update.UpdateResponse;
@@ -34,6 +32,7 @@ import org.springframework.data.elasticsearch.core.query.UpdateQueryBuilder;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.liuzi.mybatis.pojo.BaseEntity;
+import com.liuzi.util.common.Log;
 
 
 
@@ -42,7 +41,6 @@ import com.liuzi.mybatis.pojo.BaseEntity;
  * type = _doc
  * @author zsy
  */
-@Slf4j
 public class Elasticsearch extends ElasticsearchBase{
 	
 	public Elasticsearch(String server, String clusterName, String database) {
@@ -194,7 +192,7 @@ public class Elasticsearch extends ElasticsearchBase{
 	        	.build();
 			return this.index(indexQuery);
 		}catch(Exception e){
-			log.error("ES add error: " + e.getMessage());
+			Log.error(e, "ES add error");
 		}
 		return null;
 	}
@@ -219,7 +217,7 @@ public class Elasticsearch extends ElasticsearchBase{
 	        deleteQuery.setType(_type);
 	        this.delete(deleteQuery);
 		}catch(Exception e){
-			log.error("ES delete error: " + e.getMessage());
+			Log.error(e, "ES delete error");
 		}
 	}
 	
@@ -233,7 +231,7 @@ public class Elasticsearch extends ElasticsearchBase{
 			deleteQuery.setQuery(matchQueryBuilder);
 		    this.delete(deleteQuery);
 		}catch(Exception e){
-			log.error("ES delete error: " + e.getMessage());
+			Log.error(e, "ES delete error");
 		}
 	}
 	
@@ -269,7 +267,7 @@ public class Elasticsearch extends ElasticsearchBase{
 	
 			return this.update(updateQuery);
 		}catch(Exception e){
-			log.error("ES update error: " + e.getMessage());
+			Log.error(e, "ES update error");
 		}
 		return null;
 	}
@@ -281,9 +279,8 @@ public class Elasticsearch extends ElasticsearchBase{
 	 * @return
 	 */
 	public <T> List<T> list(EsQuery esQuery, Class<T> clazz){
-		log.info("[ES search list] start... ");
 		SearchQuery searchQuery = _query(esQuery).build();
-	    log.info("[ES search list] query DSL: ", searchQuery.getQuery().toString());
+	    Log.info("[ES search list] query DSL: {}", searchQuery.getQuery().toString());
 	    return this.queryForList(searchQuery, clazz);
 	}
 	
@@ -294,27 +291,27 @@ public class Elasticsearch extends ElasticsearchBase{
 	 * @return
 	 */
 	public <T> com.liuzi.mybatis.pojo.Page<T> page(EsQuery esQuery, Class<T> clazz){
-		log.info("[ES search page] start...");
+		//log.info("[ES search page] start...");
 		
 		//查询builder
 	    NativeSearchQueryBuilder builder = _query(esQuery);
-	    log.info("[ES search page] query builder...");
+	    //log.info("[ES search page] query builder...");
 	    
 	    //分页，默认第1页，每页20条
 	    int pn = esQuery.getPageNo() <= 0 ? 1 : esQuery.getPageNo();
 	    int ps = esQuery.getPageSize() <= 0 ? 20 : esQuery.getPageSize();
 	    
 	    builder.withPageable(_page(pn - 1, ps));
-	    log.info("[ES search page] start page...");
+	    //log.info("[ES search page] start page...");
 	    
 	    SearchQuery searchQuery = builder.build();
-	    log.info("[ES search page] query DSL: ", searchQuery.getQuery().toString());
+	    //log.info("[ES search page] query DSL: ", searchQuery.getQuery().toString());
 	    
 	    //分页查询
 	    //Page<T> queryPage = this.queryForPage(builder.build(), clazz);
 	    ScrolledPage<T> queryPage = (ScrolledPage<T>) this.startScroll(_scrollTimeInMillis, 
 	    		searchQuery, clazz);
-	    log.info("[ES search page] query result elements：" + queryPage.getTotalElements());
+	    //log.info("[ES search page] query result elements：" + queryPage.getTotalElements());
 	    
         while (queryPage.hasContent()) {
             //取下一页，scrollId在es服务器上可能会发生变化，需要用最新的。
@@ -324,7 +321,7 @@ public class Elasticsearch extends ElasticsearchBase{
         }
         //释放资源
         this.clearScroll(queryPage.getScrollId());
-        log.info("[ES search page] search page clear scroll...");
+        //log.info("[ES search page] search page clear scroll...");
 		
 	    //自定义分页
 	  	com.liuzi.mybatis.pojo.Page<T> page = new com.liuzi.mybatis.pojo.Page<T>(pn, ps);
@@ -339,7 +336,7 @@ public class Elasticsearch extends ElasticsearchBase{
 	    //数据
 	    page.setData(queryPage.getContent());
 	    
-	    log.info("[ES search page] end, result page...");
+	    //log.info("[ES search page] end, result page...");
 	    return page;
 	}
 	

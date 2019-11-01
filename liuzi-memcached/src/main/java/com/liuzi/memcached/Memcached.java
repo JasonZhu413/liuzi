@@ -2,15 +2,12 @@ package com.liuzi.memcached;
 
 import java.io.PrintWriter;  
 import java.io.StringWriter;  
-import java.util.Calendar;
 import java.util.Date;  
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import lombok.extern.slf4j.Slf4j;
-
-import com.liuzi.util.common.DateUtil;
+import com.liuzi.util.common.Log;
 import com.liuzi.util.encrypt.AESUtil;
 import com.whalin.MemCached.MemCachedClient;
   
@@ -18,7 +15,6 @@ import com.whalin.MemCached.MemCachedClient;
  * Memcached工具类 
  * @author zsy 
  */  
-@Slf4j
 public class Memcached{
 	
 	@Autowired
@@ -62,7 +58,7 @@ public class Memcached{
         try {
             flag = memCachedClient.set(key, value, expire);  
         } catch (Exception e) {  
-            log.info("Memcached set方法报错，key值：" + key + "\r\n" + exceptionWrite(e));  
+            Log.error(e, "Memcached set错误，key：{}", key);  
         }  
         return flag;  
     }  
@@ -105,8 +101,7 @@ public class Memcached{
         try {  
             flag = memCachedClient.add(key, value, expire);  
         } catch (Exception e) {  
-            // 记录Memcached日志  
-        	log.info("Memcached add方法报错，key值：" + key + "\r\n" + exceptionWrite(e));  
+        	Log.error(e, "Memcached add错误，key：{}", key);  
         }  
         return flag;  
     }  
@@ -149,7 +144,7 @@ public class Memcached{
         try {  
             flag = memCachedClient.replace(key, value, expire);  
         } catch (Exception e) {  
-        	log.info("Memcached replace方法报错，key值：" + key + "\r\n" + exceptionWrite(e));  
+        	Log.error(e, "Memcached replace错误，key：{}", key);  
         }  
         return flag;  
     }  
@@ -164,7 +159,7 @@ public class Memcached{
         try {  
             obj = memCachedClient.get(key);  
         } catch (Exception e) {  
-        	log.info("Memcached get方法报错，key值：" + key + "\r\n" + exceptionWrite(e));  
+        	Log.error(e, "Memcached get错误，key：{}", key);  
         }  
         return obj;  
     }  
@@ -179,7 +174,7 @@ public class Memcached{
         try {  
             flag = memCachedClient.delete(key);  
         } catch (Exception e) {  
-        	log.info("Memcached delete方法报错，key值：" + key + "\r\n" + exceptionWrite(e));  
+        	Log.error(e, "Memcached delete错误，key：{}", key);  
         }  
         return flag;  
     }  
@@ -203,12 +198,12 @@ public class Memcached{
         long flag = 0;  
         try {  
         	if(inc <= 0){
-        		log.error("Memcached incr递增因子必须大于0");
+        		Log.warn("Memcached incr递增因子必须大于0");
         		throw new IllegalArgumentException("递增因子必须大于0");
         	}
             flag = memCachedClient.incr(key, inc);
         } catch (Exception e) {  
-        	log.info("Memcached incr方法报错，key值：" + key + "\r\n" + exceptionWrite(e));  
+        	Log.error(e, "Memcached incr错误，key：{}", key);  
         }  
         return flag;  
     } 
@@ -232,12 +227,12 @@ public class Memcached{
         long flag = 0;  
         try {  
         	if(inc <= 0){
-        		log.error("Memcached incr递减因子必须大于0");
+        		Log.warn("Memcached incr递减因子必须大于0");
         		throw new IllegalArgumentException("递减因子必须大于0");
         	}
             flag = memCachedClient.decr(key, inc);
-        } catch (Exception e) {  
-        	log.info("Memcached decr方法报错，key值：" + key + "\r\n" + exceptionWrite(e));  
+        } catch (Exception e) {
+        	Log.error(e, "Memcached decr错误，key：{}", key);
         }  
         return flag;  
     } 

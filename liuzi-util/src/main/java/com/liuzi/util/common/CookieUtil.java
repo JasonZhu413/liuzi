@@ -13,8 +13,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import lombok.extern.slf4j.Slf4j;
-
 import com.alibaba.fastjson.JSONObject;
 
 /**
@@ -29,7 +27,6 @@ import com.alibaba.fastjson.JSONObject;
  * @version       1.0
  * 
  */
-@Slf4j
 public class CookieUtil {
 	
 	public static void set(HttpServletResponse response, String name, Object value) {
@@ -74,11 +71,10 @@ public class CookieUtil {
 	    Cookie cookie = new Cookie(name, value);
 	    cookie.setMaxAge(seconds);
 	    cookie.setPath(path);
-	    cookie.setHttpOnly(true);
-	    
-	    /*if(!StringUtils.isEmpty(domain)){
+	    //cookie.setHttpOnly(true);//为了防止XSS攻击，设置此属性js无法获取cookie
+	    if(!StringUtils.isEmpty(domain)){
 	    	cookie.setDomain(domain);
-	    }*/
+	    }
 	    //log.info("cookie set: " + cookie.toString());
 	    response.addCookie(cookie);
 	}
@@ -105,11 +101,9 @@ public class CookieUtil {
 	    	try {
 	    		value = URLDecoder.decode(value, "utf-8");
 			} catch (UnsupportedEncodingException e) {
-				log.error("cookie get error: " + e.getMessage());
+				Log.error(e, "Cookie内容编码转换错误：{}" + value);
 			}
 	    }
-	    
-	    //log.info("cookie get, key: " + key + ", value: " + value);
 	    return value;
 	}
 	
@@ -144,7 +138,7 @@ public class CookieUtil {
 	    cookie.setValue(null);
 	    cookie.setMaxAge(0);
 	    cookie.setPath(path);
-	    cookie.setHttpOnly(true);
+	    //cookie.setHttpOnly(true);
 	    
 	    //log.info("cookie delete: " + cookie.toString());
 	    response.addCookie(cookie);

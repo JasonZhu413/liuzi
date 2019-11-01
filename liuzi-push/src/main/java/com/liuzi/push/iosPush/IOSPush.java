@@ -11,15 +11,15 @@ import javapns.notification.AppleNotificationServer;
 import javapns.notification.PushNotificationManager;
 import javapns.notification.PushNotificationPayload;
 import javapns.notification.PushedNotification;
-import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONObject;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import com.liuzi.util.common.Log;
 
-@Slf4j
+
 @Service("iOSPush")
 public class IOSPush {
 	
@@ -38,24 +38,24 @@ public class IOSPush {
 	public void send(List<String> tokens, String title, int badge,  
 			Integer skip_type, String skip_link, Map<String, String> map){
 		if(tokens == null || tokens.size() == 0){
-			System.out.println("  ----- Params error, tokens size is zero, IOS push end");
+			//System.out.println("  ----- Params error, tokens size is zero, IOS push end");
 			return;
 		}
 		if(StringUtils.isEmpty(title)){
-			System.out.println("  ----- Params error, title is empty, IOS push end");
+			//System.out.println("  ----- Params error, title is empty, IOS push end");
 			return;
 		}
 		
 		try {
-			log.info("-----         IOS push start         -----");
+			//Log.info("-----         IOS push start         -----");
 			long start = System.currentTimeMillis();
 			
-			System.out.println("   Create Apple connection...");
+			//System.out.println("   Create Apple connection...");
 			
 			PushNotificationManager pushManager = new PushNotificationManager();
 			pushManager.initializeConnection(appleNotificationServer);
 			
-			System.out.println("   Connection success, device tokens...");
+			//System.out.println("   Connection success, device tokens...");
 			
 			//组装tokens
 			List<Device> device = new ArrayList<Device>();
@@ -63,7 +63,7 @@ public class IOSPush {
                 device.add(new BasicDevice(token));
             }
             
-            System.out.println("   Device(" + device.size() + ") tokens success, install Payload...");
+            //System.out.println("   Device(" + device.size() + ") tokens success, install Payload...");
             
             Map<String, String> thisMap = map;
             if(thisMap == null){
@@ -79,7 +79,7 @@ public class IOSPush {
 			payload.addSound("default"); //默认提示音
 			payload.addCustomDictionary("data", JSONObject.fromObject(map).toString());
 			
-			System.out.println("   Payload install success, push start...");
+			//System.out.println("   Payload install success, push start...");
             
             //发送
             List<PushedNotification> notifications = pushManager.sendNotifications(payload, device);
@@ -100,12 +100,11 @@ public class IOSPush {
             }
             
             long end = System.currentTimeMillis();
-            System.out.println("  ----- IOS push end, use " + (end - start) + " millisecond, stop connection -----");
+            //System.out.println("  ----- IOS push end, use " + (end - start) + " millisecond, stop connection -----");
             //断开连接
             pushManager.stopConnection();
 		} catch (Exception e) {
-			e.printStackTrace();
-			log.info("  ----- IOS push system error: " + e.getMessage());
+			Log.info(e, "  ----- IOS push system error");
 		}
 	}
 }

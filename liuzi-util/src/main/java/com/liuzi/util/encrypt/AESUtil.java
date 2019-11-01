@@ -10,10 +10,8 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
 public class AESUtil {
+	
 	private static final String ALGORITHM = "AES";
 	private static final String ALGORITHMSTR = "AES/CBC/PKCS5Padding";
 	//AES-128-CBC加密 16位

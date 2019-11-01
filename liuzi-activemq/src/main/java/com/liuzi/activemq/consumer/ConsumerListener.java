@@ -17,9 +17,9 @@ import org.springframework.jms.listener.DefaultMessageListenerContainer;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import com.liuzi.util.common.Log;
 
-@Slf4j
-@Aspect
+
 @Component
 public class ConsumerListener {
 
@@ -43,18 +43,17 @@ public class ConsumerListener {
         try {
         	Object obj = args[2];
         	if(obj instanceof OnMessage){
-        		log.error("Create consumer listener error, listener is not create");
+        		Log.error("Create consumer listener error, listener is not create");
         		return;
         	}
         	Class<? extends MessageListener> clazz = (Class<? extends MessageListener>) obj;
         	messageListener = clazz.newInstance();
         	if(messageListener == null){
-        		log.error("Create consumer listener error, listener instance fail");
+        		Log.error("Create consumer listener error, listener instance fail");
             	return;
             }
 		} catch (Exception e) {
-			e.printStackTrace();
-			log.error("Create consumer listener system error: " + e.getMessage());
+			Log.error(e, "Create consumer listener system error");
 			return;
 		}
         
@@ -79,7 +78,7 @@ public class ConsumerListener {
         	createListener(name, activeMQDestination, messageListener);
         }
         
-        log.info("Create consumer listener success, listener size: " + names.length);
+        Log.info("Create consumer listener success, listener size: {}", names.length);
     }
 	
 	private void createListener(String name, ActiveMQDestination activeMQDestination, 

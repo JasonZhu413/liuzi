@@ -1,6 +1,7 @@
 package com.liuzi.util.token;
 
-import com.liuzi.util.common.DateUtil;
+import com.liuzi.util.common.Log;
+import com.liuzi.util.date.DateUtil;
 import com.liuzi.util.encrypt.MD5;
 import com.liuzi.util.token.TokenInfo.TokenInfoBuilder;
 import com.nimbusds.jose.JOSEException;
@@ -10,11 +11,8 @@ import com.nimbusds.jose.Payload;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -30,7 +28,6 @@ import org.springframework.util.StringUtils;
  * @apiNote Token生成/验证
  * @date 2019-05-31 17:47
  **/
-@Slf4j
 public class Token extends TokenConfig{
 	
 	/**
@@ -64,7 +61,7 @@ public class Token extends TokenConfig{
      * @return 返回, 失败则返回null
      */
     public String create(Map<String, Object> payload, boolean isApp) {
-    	tokenLog("----- 生成Token -----");
+    	log("----- 生成Token -----");
         if(payload == null){
         	payload = new HashMap<>();
         }
@@ -76,25 +73,25 @@ public class Token extends TokenConfig{
             //Token过期时间
             long expTime = (long) (now + time * 60 * 1000);
             
-            tokenLog("当前时间: " + getTime(now) + "...");
-            tokenLog("过期时间: " + getTime(expTime) + "...");
+            log("当前时间: {}...", getTime(now));
+            log("过期时间: {}...", getTime(expTime));
             
             payload.put(TOKEN_CREATE_TIME, now);
             payload.put(TOKEN_EXP_TIME, expTime);
 
-            tokenLog("开始签名...");
+            log("开始生成签名...");
             JSONObject json = new JSONObject(payload);
             JWSObject jwsObject = new JWSObject(HEADER, new Payload(json));
             jwsObject.sign(new MACSigner(secret));
             String token = jwsObject.serialize();
             
-            tokenLog("----- Token生成成功, Token: " + token);
+            log("----- Token生成成功, Token: {}", token);
             return token;
         } catch (JOSEException e) {
-        	tokenLog(3, "----- Token生成失败: " + e.getMessage());
-            e.printStackTrace();
-            return null;
+        	error(e, "Token生成错误");
         }
+        
+        return null;
     }
     
     /**
@@ -108,23 +105,23 @@ public class Token extends TokenConfig{
      * 验证token
      */
     public TokenInfo valid(String token, boolean isApp) {
-    	tokenLog("----- 验证Token -----");
+    	log("----- 验证Token -----");
 
     	TokenInfoBuilder builder = TokenInfo.builder()
     			.valid(false)
     			.msg("Token验证失败");
         try {
         	if(StringUtils.isEmpty(token)){
-        		tokenLog(2, "----- Token验证失败，Token为空 -----");
+        		log("----- Token验证失败，Token为空 -----");
         		return builder.build();
         	}
         	
-        	tokenLog("获取验证信息...");
+        	log("获取验证信息...");
             JWSObject jwsObject = JWSObject.parse(token);
             Payload payload = jwsObject.getPayload();
             JWSVerifier verifier = new MACVerifier(secret);
 
-            tokenLog("验证...");
+            log("开始验证...");
             if (jwsObject.verify(verifier)) {
                 JSONObject json = payload.toJSONObject();
                 
@@ -137,13 +134,13 @@ public class Token extends TokenConfig{
                     //过期时间
                     long expTime = Double.valueOf(exp).longValue();
                     
-                    tokenLog("当前时间: " + getTime(curTime) + "...");
-                    tokenLog("过期时间: " + getTime(expTime) + "...");
+                    log("当前时间: {}...", getTime(curTime));
+                    log("过期时间: {}...", getTime(expTime));
                     
                     //如果当前时间超过token过期时间
                     //并且当前时间超过了最后一次验证时间+有效时间
                     if (curTime > expTime) {
-                    	tokenLog(2, "----- Token失效 -----");
+                    	log("----- Token失效 -----");
                     	return builder.data(json).msg("Token失效").build();
                     }
                     
@@ -156,7 +153,7 @@ public class Token extends TokenConfig{
                     jwsObject.sign(new MACSigner(secret));
                     newToken = jwsObject.serialize();
                     
-                    tokenLog("----- Token验证成功，刷新: " + newToken);
+                    log("----- Token验证成功，刷新: {}", newToken);
                     
                     builder.valid(true)
                     	.expTime((long) newExpTime)
@@ -173,11 +170,11 @@ public class Token extends TokenConfig{
                 
                 return builder.build();
             } else {
-            	tokenLog(2, "----- Token验证失败，校验未通过 -----");
+            	log("----- Token验证失败，校验未通过 -----");
             	return builder.build();
             }
         } catch (Exception e) {
-        	tokenLog(3, "----- Token验证失败：" + e.getMessage());
+        	error(e, "----- Token验证错误 -----");
         	return builder.build();
         }
     }
@@ -187,26 +184,21 @@ public class Token extends TokenConfig{
     }
     
     private String getTime(long time){
-		return DateUtil.date2Str(new Date(time), DATE_FORMAT);
+		return DateUtil.dateToString(new Date(time), DATE_FORMAT);
     }
     
-    private void tokenLog(String msg){
-    	tokenLog(1, msg);
-    }
-    
-    private void tokenLog(int type, String msg){
-    	if(!debug){
-    		if(type == 2){
-    			log.warn(msg);
-    		}else if(type == 3){
-    			log.error(msg);
-    		}else{
-    			log.info(msg);
-    		}
+    private void log(String msg, Object... params){
+    	if(debug){
+    		Log.info(msg, params);
     	}
     }
     
-
+    private void error(Exception e, String msg, Object... params){
+    	if(debug){
+    		Log.error(e, msg, params);
+    	}
+    }
+    
     public static void main(String[] args) throws Exception{
         //String test = "6zCTO@6zcto.com";
         //String secret = test + MD5.crypt(test);

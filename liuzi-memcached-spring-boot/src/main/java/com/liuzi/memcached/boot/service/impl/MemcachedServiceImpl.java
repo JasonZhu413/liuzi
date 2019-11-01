@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 import lombok.extern.slf4j.Slf4j;
 
 import com.liuzi.memcached.boot.service.MemcachedService;
-import com.liuzi.util.common.DateUtil;
+import com.liuzi.util.date.DateUtil;
 import com.whalin.MemCached.MemCachedClient;
   
 /** 
@@ -379,8 +379,8 @@ public class MemcachedServiceImpl implements MemcachedService{
          */  
         public static void writeLog(String content) {  
             try {  
-                logWrite.write("[" + PID + "] " + "- [" + DateUtil.date2Str(new Date()) + "]\r\n"  
-                        + content);  
+                logWrite.write("[" + PID + "] " + "- [" + DateUtil.dateToString(new Date(), 
+                		"yyyy-MM-dd HH:mm:ss") + "]\r\n"  + content);  
                 logWrite.newLine();  
                 logWrite.flush();  
             } catch (IOException e) {  

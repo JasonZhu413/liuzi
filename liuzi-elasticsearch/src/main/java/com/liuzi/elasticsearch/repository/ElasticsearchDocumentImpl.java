@@ -30,12 +30,12 @@ import com.liuzi.elasticsearch.util.IndexTools;
 import com.liuzi.elasticsearch.util.JsonUtils;
 import com.liuzi.elasticsearch.util.MetaData;
 import com.liuzi.elasticsearch.util.Tools;
+import com.liuzi.util.common.Log;
 
 /**
  * 文档操作
  * @author zsy
  */
-@Slf4j
 public class ElasticsearchDocumentImpl extends ElasticsearchAggregationsImpl{
 	
 	/**
@@ -61,9 +61,9 @@ public class ElasticsearchDocumentImpl extends ElasticsearchAggregationsImpl{
         IndexResponse indexResponse = null;
         indexResponse = client.index(indexRequest, RequestOptions.DEFAULT);
         if (indexResponse.getResult() == DocWriteResponse.Result.CREATED) {
-            log.info("INDEX CREATE SUCCESS");
+            Log.info("INDEX CREATE SUCCESS");
         } else if (indexResponse.getResult() == DocWriteResponse.Result.UPDATED) {
-            log.info("INDEX UPDATE SUCCESS");
+        	Log.info("INDEX UPDATE SUCCESS");
         } else {
             return false;
         }
@@ -111,9 +111,9 @@ public class ElasticsearchDocumentImpl extends ElasticsearchAggregationsImpl{
         UpdateResponse updateResponse = null;
         updateResponse = client.update(updateRequest, RequestOptions.DEFAULT);
         if (updateResponse.getResult() == DocWriteResponse.Result.CREATED) {
-            log.info("INDEX CREATE SUCCESS");
+        	Log.info("INDEX CREATE SUCCESS");
         } else if (updateResponse.getResult() == DocWriteResponse.Result.UPDATED) {
-            log.info("INDEX UPDATE SUCCESS");
+        	Log.info("INDEX UPDATE SUCCESS");
         } else {
             return false;
         }
@@ -234,7 +234,7 @@ public class ElasticsearchDocumentImpl extends ElasticsearchAggregationsImpl{
         DeleteResponse deleteResponse = null;
         deleteResponse = client.delete(deleteRequest, RequestOptions.DEFAULT);
         if (deleteResponse.getResult() == DocWriteResponse.Result.DELETED) {
-            log.info("INDEX DELETE SUCCESS");
+        	Log.info("INDEX DELETE SUCCESS");
         } else {
             return false;
         }
@@ -254,7 +254,7 @@ public class ElasticsearchDocumentImpl extends ElasticsearchAggregationsImpl{
         DeleteResponse deleteResponse = null;
         deleteResponse = client.delete(deleteRequest, RequestOptions.DEFAULT);
         if (deleteResponse.getResult() == DocWriteResponse.Result.DELETED) {
-            log.info("INDEX DELETE SUCCESS");
+        	Log.info("INDEX DELETE SUCCESS");
         } else {
             return false;
         }
@@ -275,7 +275,7 @@ public class ElasticsearchDocumentImpl extends ElasticsearchAggregationsImpl{
         DeleteResponse deleteResponse = null;
         deleteResponse = client.delete(deleteRequest, RequestOptions.DEFAULT);
         if (deleteResponse.getResult() == DocWriteResponse.Result.DELETED) {
-            log.info("INDEX DELETE SUCCESS");
+        	Log.info("INDEX DELETE SUCCESS");
         } else {
             return false;
         }

@@ -8,10 +8,11 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import com.liuzi.util.common.DateUtil;
+import com.liuzi.util.common.Log;
+import com.liuzi.util.date.DateFormat;
+import com.liuzi.util.date.DateUtil;
 
 import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
 
 
 /**
@@ -19,7 +20,6 @@ import lombok.extern.slf4j.Slf4j;
  * @author zsy
  */
 @Data
-@Slf4j
 public class EsTable {
 	
 	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
@@ -48,7 +48,7 @@ public class EsTable {
 		int length = date.length;
 		EsTable[] esTable = new EsTable[length];
 		for(int i = 0; i < length; i ++){
-			esTable[i] = new EsTable(table, DateUtil.date2Str(date[i], "yyyyMMdd"));
+			esTable[i] = new EsTable(table, DateUtil.dateToString(date[i], DateFormat.yyyyMMdd));
 		}
 		return esTable;
 	}
@@ -72,7 +72,7 @@ public class EsTable {
 			//倒叙
 			//Collections.reverse(dates);
 		} catch (ParseException e) {
-			log.error("ParseException: " + e.getMessage());
+			Log.error(e, "ParseException");
 		}
 		
 		if(dates != null && !dates.isEmpty()){

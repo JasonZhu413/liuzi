@@ -25,9 +25,9 @@ import com.gexin.rp.sdk.template.NotificationTemplate;
 import com.gexin.rp.sdk.template.NotyPopLoadTemplate;
 import com.gexin.rp.sdk.template.TransmissionTemplate;
 import com.gexin.rp.sdk.template.style.Style0;
+import com.liuzi.util.common.Log;
 
 
-@Slf4j
 public class GTPush {
 	
 	@Autowired
@@ -45,14 +45,14 @@ public class GTPush {
 	 */
 	public void sendToAll(String title, String content, int skip_type, String skip_link, 
 			List<String> tags, Map<String, Object> map){
-		log.info("-----         Getui push start         -----");
+		//log.info("-----         Getui push start         -----");
 		long start = System.currentTimeMillis();
 		
-		System.out.println("   IGtPush Create ......");
+		//System.out.println("   IGtPush Create ......");
 		
 		//push = new IGtPush(host, appKey, secret);
 		
-		System.out.println("   IGtPush Create success, AppMessage install ......");
+		//System.out.println("   IGtPush Create success, AppMessage install ......");
 		
 		AppMessage message = new AppMessage();
 		//选择模板
@@ -70,24 +70,23 @@ public class GTPush {
         //cdt.addCondition(AppConditions.PHONE_TYPE, phoneTypeList);
         //cdt.addCondition(AppConditions.REGION, provinceList);
         
-        System.out.println("   AppMessage install success, push start ......");
+        //System.out.println("   AppMessage install success, push start ......");
         
         IPushResult ret = null;
         try {
 	        //IPushResult ret = push.pushMessageToApp(message, "任务别名_toApp");
 	        ret = iGtPush.pushMessageToApp(message);
 		} catch (Exception e) {
-			e.printStackTrace();
-			log.info("  ----- Getui push system error: " + e.getMessage());
+			Log.error(e, "  ----- Getui push system error");
 		}
         String result = null;
         if (ret != null) {
         	result = ret.getResponse().toString();
         }
-        System.out.println("   !!!Result: " + result);
+        //System.out.println("   !!!Result: " + result);
         
         long end = System.currentTimeMillis();
-        System.out.println("  ----- Getui push end, use " + (end - start) + " millisecond, stop connection -----");
+        //System.out.println("  ----- Getui push end, use " + (end - start) + " millisecond, stop connection -----");
 	}  
 	
 	/**
@@ -102,12 +101,12 @@ public class GTPush {
 	 */
 	public void sendToSingle(String title, String content, int skip_type, String skip_link, 
 			String clientId, List<String> alias, Map<String, Object> map){ 
-		log.info("-----         Getui push start         -----");
+		//log.info("-----         Getui push start         -----");
 		long start = System.currentTimeMillis();
 		
-		System.out.println("   IGtPush Create ......");
+		//System.out.println("   IGtPush Create ......");
 		
-		System.out.println("   IGtPush Create success, SingleMessage install ......");
+		//System.out.println("   IGtPush Create success, SingleMessage install ......");
 		
 		SingleMessage message = new SingleMessage();
         
@@ -126,15 +125,13 @@ public class GTPush {
 	        target.setAlias(sbf.toString());
         }
         
-        System.out.println("   AppMessage install success, push start ......");
+        //System.out.println("   AppMessage install success, push start ......");
         
         IPushResult ret = null;
         try {
             ret = iGtPush.pushMessageToSingle(message, target);
         } catch (RequestException e) {
-            e.printStackTrace();
-            log.info("  ----- Getui push system error: " + e.getMessage());
-            log.info("  ----- Push again ......");
+            Log.error(e, "  ----- Getui push system error, Push again");
             ret = iGtPush.pushMessageToSingle(message, target, e.getRequestId());
         }
 
@@ -142,10 +139,10 @@ public class GTPush {
         if (ret != null) {
         	result = ret.getResponse().toString();
         }
-        System.out.println("   !!!Result: " + result);
+        //System.out.println("   !!!Result: " + result);
         
         long end = System.currentTimeMillis();
-        System.out.println("  ----- Getui push end, use " + (end - start) + " millisecond, stop connection -----");
+        //System.out.println("  ----- Getui push end, use " + (end - start) + " millisecond, stop connection -----");
     }  
 	
 	/******************************************

@@ -17,7 +17,6 @@ import net.coobird.thumbnailator.Thumbnails;
 import net.coobird.thumbnailator.Thumbnails.Builder;
 import net.coobird.thumbnailator.geometry.Positions;
 
-@Slf4j
 public class ImgUtil {
 	
 	private static final String SUFFIX = "png";
@@ -272,6 +271,6 @@ public class ImgUtil {
     }
     
     private static void debug(String str){
-    	log.info(str);
+    	Log.info(str);
     }
 }

@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import com.liuzi.redis.service.HashService;
+import com.liuzi.util.common.Log;
 
 
 public class HashServiceImpl extends BaseServiceImpl implements HashService{
@@ -17,7 +18,6 @@ public class HashServiceImpl extends BaseServiceImpl implements HashService{
      */
     @SuppressWarnings("unchecked")
     public <T> T hGet(String key, String item) {
-    	info("hash get, key: " + key + ", item: " + item);
         return (T) redisTemplate.opsForHash().get(key, item);
     }
 
@@ -27,7 +27,6 @@ public class HashServiceImpl extends BaseServiceImpl implements HashService{
      * @return Map
      */
 	public Map<Object, Object> hGet(String key) {
-		info("hash get, key: " + key);
 		return redisTemplate.opsForHash().entries(key);
 	}
 
@@ -39,11 +38,10 @@ public class HashServiceImpl extends BaseServiceImpl implements HashService{
      */
 	public boolean hSet(String key, Map<String, Object> map) {
         try {
-        	info("hash set, key: " + key + ", map: " + map);
             redisTemplate.opsForHash().putAll(key, map);
             return true;
         } catch (Exception e) {
-        	error("hash set error, key: " + key + ", msg: " + e.getMessage());
+        	Log.error(e, "hash set error, key: {}", key);
             return false;
         }
     }
@@ -57,12 +55,11 @@ public class HashServiceImpl extends BaseServiceImpl implements HashService{
      */
     public boolean hSet(String key, Map<String, Object> map, long time) {
         try {
-        	info("hash set, key: " + key + ", map: " + map + ", time: " + time);
             redisTemplate.opsForHash().putAll(key, map);
             expire(key, time);
             return true;
         } catch (Exception e) {
-        	error("hash set, key: " + key + ", msg: " + e.getMessage());
+        	Log.error(e, "hash set, key: {}", key);
             return false;
         }
     }
@@ -77,12 +74,11 @@ public class HashServiceImpl extends BaseServiceImpl implements HashService{
      */
     public boolean hSet(String key, Map<String, Object> map, long time, TimeUnit timeUnit) {
         try {
-        	info("hash set, key: " + key + ", map: " + map + ", time: " + time);
             redisTemplate.opsForHash().putAll(key, map);
             expire(key, time, timeUnit);
             return true;
         } catch (Exception e) {
-        	error("hash set, key: " + key + ", msg: " + e.getMessage());
+        	Log.error(e, "hash set, key: {}", key);
             return false;
         }
     }
@@ -96,11 +92,10 @@ public class HashServiceImpl extends BaseServiceImpl implements HashService{
      */
     public boolean hSet(String key, String item, Object value) {
         try {
-        	info("hash set, key: " + key + ", item: " + item + ", value: " + value);
             redisTemplate.opsForHash().put(key, item, value);
             return true;
         } catch (Exception e) {
-        	error("hash set, key: " + key + ", msg: " + e.getMessage());
+        	Log.error("hash set, key: {}", key);
             return false;
         }
     }
@@ -115,12 +110,11 @@ public class HashServiceImpl extends BaseServiceImpl implements HashService{
      */
     public boolean hSet(String key, String item, Object value, long time) {
         try {
-        	info("hash set, key: " + key + ", item: " + item + ", value: " + value + ", time: " + time);
             redisTemplate.opsForHash().put(key, item, value);
             expire(key, time);
             return true;
         } catch (Exception e) {
-        	error("hash set, key: " + key + ", msg: " + e.getMessage());
+        	Log.error(e, "hash set, key: {}", key);
             return false;
         }
     }
@@ -136,12 +130,11 @@ public class HashServiceImpl extends BaseServiceImpl implements HashService{
      */
     public boolean hSet(String key, String item, Object value, long time, TimeUnit timeUnit) {
         try {
-        	info("hash set, key: " + key + ", item: " + item + ", value: " + value + ", time: " + time);
             redisTemplate.opsForHash().put(key, item, value);
             expire(key, time, timeUnit);
             return true;
         } catch (Exception e) {
-        	error("hash set, key: " + key + ", msg: " + e.getMessage());
+        	Log.error(e, "hash set, key: {}", key);
             return false;
         }
     }
@@ -152,7 +145,6 @@ public class HashServiceImpl extends BaseServiceImpl implements HashService{
      * @param item 项(可以多个)
      */
     public void hDel(String key, Object... item) {
-    	info("hash delete, key: " + key + ", item: " + item);
         redisTemplate.opsForHash().delete(key, item);
     }
 
@@ -163,7 +155,6 @@ public class HashServiceImpl extends BaseServiceImpl implements HashService{
      * @return true存在 false不存在
      */
     public boolean hHasKey(String key, String item) {
-    	info("hash hasKey, key: " + key + ", item: " + item);
         return redisTemplate.opsForHash().hasKey(key, item);
     }
     
@@ -176,10 +167,9 @@ public class HashServiceImpl extends BaseServiceImpl implements HashService{
      */
     public double hIncr(String key, String item, long delta) {
     	if(delta <= 0){
-    		error("hash increment error, key: " + key + ", msg: 递增因子必须大于0");
+    		Log.error("hash increment error, key: {}, msg: 递增因子必须大于0", key);
     		throw new IllegalArgumentException("递增因子必须大于0");
     	}
-    	info("hash increment, key: " + key + ", item: " + item + ", delta: " + delta);
         return redisTemplate.opsForHash().increment(key, item, delta);
     }
 
@@ -192,10 +182,9 @@ public class HashServiceImpl extends BaseServiceImpl implements HashService{
      */
     public double hIncr(String key, String item, double delta) {
     	if(delta <= 0){
-    		error("hash increment error, key: " + key + ", msg: 递增因子必须大于0");
+    		Log.error("hash increment error, key: {}, msg: 递增因子必须大于0", key);
     		throw new IllegalArgumentException("递增因子必须大于0");
     	}
-    	info("hash increment, key: " + key + ", item: " + item + ", delta: " + delta);
         return redisTemplate.opsForHash().increment(key, item, delta);
     }
 
@@ -208,10 +197,9 @@ public class HashServiceImpl extends BaseServiceImpl implements HashService{
      */
     public double hDecr(String key, String item, double delta) {
     	if(delta <= 0){
-    		error("hash decr error, key: " + key + ", msg: 递减因子必须大于0");
+    		Log.error("hash decr error, key: {}, msg: 递减因子必须大于0", key);
     		throw new IllegalArgumentException("递减因子必须大于0");
     	}
-    	info("hash increment, key: " + key + ", item: " + item + ", delta: " + delta);
         return redisTemplate.opsForHash().increment(key, item, delta);
     }
     
@@ -224,10 +212,9 @@ public class HashServiceImpl extends BaseServiceImpl implements HashService{
      */
     public double hDecr(String key, String item, long delta) {
     	if(delta <= 0){
-    		error("hash decr error, key: " + key + ", msg: 递减因子必须大于0");
+    		Log.error("hash decr error, key: {}, msg: 递减因子必须大于0", key);
     		throw new IllegalArgumentException("递减因子必须大于0");
     	}
-    	info("hash increment, key: " + key + ", item: " + item + ", delta: " + delta);
         return redisTemplate.opsForHash().increment(key, item, delta);
     }
 }

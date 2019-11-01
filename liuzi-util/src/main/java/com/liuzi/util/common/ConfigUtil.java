@@ -1,6 +1,5 @@
 package com.liuzi.util.common;
 
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.springframework.util.StringUtils;
@@ -19,7 +18,6 @@ import org.springframework.util.StringUtils;
  * @version       1.0
  * 
  */
-@Slf4j
 public class ConfigUtil{
 	
 	private static String configPath = "";
@@ -43,17 +41,16 @@ public class ConfigUtil{
 	
 	private static PropertiesConfiguration prop(){
 		if(p == null && pathNotNull()){
-			LiuziUtil.tag(" --------  Liuzi ConfigUtil init --------");
+			LiuziUtil.tag(" --------  Liuzi ConfigUtil init --------", "v1.1.20");
 			try{
-				log.info(" path: " + configPath);
+				Log.info(" path: {}", configPath);
 				p = new PropertiesConfiguration();
 				p.setEncoding("UTF-8");
 				p.load(configPath);
 		    } catch (Exception e) {
-		    	log.error(" --------  ConfigUtil(" + configPath + ") init fail：" +
-		    			e.getMessage() + " --------");
+		    	Log.error(e, " --------  ConfigUtil({}) init fail --------", configPath);
 		    }
-		    log.info(" --------  ConfigUtil init success --------  ");
+			Log.info(" --------  ConfigUtil init success --------  ");
 		}
 		return p;
 	}
@@ -63,8 +60,7 @@ public class ConfigUtil{
 	    try {
 	    	value = prop().getString(key);
 	    } catch (Exception e) {
-	    	log.error("错误：" + e.getMessage());
-	    	e.fillInStackTrace();
+	    	Log.error(e, "读取配置错误");
 	    }
 	    return value;
 	}
@@ -74,8 +70,7 @@ public class ConfigUtil{
 	    try {
 	    	value = prop().getString(key, defaultValue);
 	    } catch (Exception e) {
-	    	log.error("错误：" + e.getMessage());
-	    	e.fillInStackTrace();
+	    	Log.error(e, "读取配置错误");
 	    }
 	    return value;
 	}
@@ -85,8 +80,7 @@ public class ConfigUtil{
 	    try {
 	    	value = prop().getInt(key);
 	    } catch (Exception e) {
-	    	log.error("错误：" + e.getMessage());
-	    	e.fillInStackTrace();
+	    	Log.error(e, "读取配置错误");
 	    }
 	    return value;
 	}
@@ -96,8 +90,7 @@ public class ConfigUtil{
 	    try {
 	    	value = prop().getInt(key, defaultValue);
 	    } catch (Exception e) {
-	    	log.error("错误：" + e.getMessage());
-	    	e.fillInStackTrace();
+	    	Log.error(e, "读取配置错误");
 	    }
 	    return value;
 	}
@@ -107,8 +100,7 @@ public class ConfigUtil{
 	    try {
 	    	value = prop().getLong(key);
 	    } catch (Exception e) {
-	    	log.error("错误：" + e.getMessage());
-	    	e.fillInStackTrace();
+	    	Log.error(e, "读取配置错误");
 	    }
 	    return value;
 	}
@@ -118,8 +110,7 @@ public class ConfigUtil{
 	    try {
 	    	value = prop().getLong(key, defaultValue);
 	    } catch (Exception e) {
-	    	log.error("错误：" + e.getMessage());
-	    	e.fillInStackTrace();
+	    	Log.error(e, "读取配置错误");
 	    }
 	    return value;
 	}
@@ -129,8 +120,7 @@ public class ConfigUtil{
 	    try {
 	    	value = prop().getDouble(key);
 	    } catch (Exception e) {
-	    	log.error("错误：" + e.getMessage());
-	    	e.fillInStackTrace();
+	    	Log.error(e, "读取配置错误");
 	    }
 
 	    return value;
@@ -141,10 +131,8 @@ public class ConfigUtil{
 	    try {
 	    	value = prop().getDouble(key, defaultValue);
 	    } catch (Exception e) {
-	    	log.error("错误：" + e.getMessage());
-	    	e.fillInStackTrace();
+	    	Log.error(e, "读取配置错误");
 	    }
-
 	    return value;
 	}
 
@@ -153,8 +141,7 @@ public class ConfigUtil{
 	    try {
 	    	value = prop().getBoolean(key);
 	    } catch (Exception e) {
-	    	log.error("错误：" + e.getMessage());
-	    	e.fillInStackTrace();
+	    	Log.error(e, "读取配置错误");
 	    }
 	    return value;
 	}
@@ -164,8 +151,7 @@ public class ConfigUtil{
 	    try {
 	    	value = prop().getBoolean(key, defaultValue);
 	    } catch (Exception e) {
-	    	log.error("错误：" + e.getMessage());
-	    	e.fillInStackTrace();
+	    	Log.error(e, "读取配置错误");
 	    }
 	    return value;
 	}

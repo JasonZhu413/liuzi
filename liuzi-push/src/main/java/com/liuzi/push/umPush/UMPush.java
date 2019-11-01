@@ -9,6 +9,8 @@ import net.sf.json.JSONObject;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.liuzi.util.common.Log;
+
 import push.PushClient;
 import push.android.AndroidBroadcast;
 import push.android.AndroidCustomizedcast;
@@ -16,7 +18,6 @@ import push.ios.IOSBroadcast;
 import push.ios.IOSCustomizedcast;
 
 
-@Slf4j
 public class UMPush{
 	
 	@Autowired
@@ -80,10 +81,10 @@ public class UMPush{
 	public void iosToAll(String title, String description, int badge, int skip_type, 
 			String skip_link, Map<String, Object> map){
 		try {
-			log.info("-----         UMeng push to all(IOS) start         -----");
+			//Log.info("-----         UMeng push to all(IOS) start         -----");
 			long start = System.currentTimeMillis();
 			
-			System.out.println("   IOSBroadcast create start ......");
+			//System.out.println("   IOSBroadcast create start ......");
 			
 			iOSBroadcast.setDescription(description);
 			iOSBroadcast.setAlert(title);
@@ -104,15 +105,15 @@ public class UMPush{
 	        thisMap.put("skip_link", skip_link);
 	        iOSBroadcast.setCustomizedField("data", JSONObject.fromObject(thisMap).toString());
 			
-			System.out.println("   IOSBroadcast create end, push start ......");
+			//System.out.println("   IOSBroadcast create end, push start ......");
 			
 			boolean result = client.send(iOSBroadcast);
-			System.out.println("   !!!Result: " + result);
+			//System.out.println("   !!!Result: " + result);
 			
 			long end = System.currentTimeMillis();
-            System.out.println("  ----- UMeng push to all(IOS) end, use " + (end - start) + " millisecond, stop connection -----");
+            //System.out.println("  ----- UMeng push to all(IOS) end, use " + (end - start) + " millisecond, stop connection -----");
 		} catch (Exception e) {
-			e.printStackTrace();
+			Log.error(e, "umeng push error");
 		}
 	}
 	
@@ -120,10 +121,10 @@ public class UMPush{
 	public void iosToAlias(String title, String description, int badge, List<String> alias,
 			String aliasType, int skip_type, String skip_link, Map<String, Object> map){
 		try {
-			log.info("-----         UMeng push to alias(IOS) start         -----");
+			//log.info("-----         UMeng push to alias(IOS) start         -----");
 			long start = System.currentTimeMillis();
 			
-			System.out.println("   IOSCustomizedcast create start ......");
+			//System.out.println("   IOSCustomizedcast create start ......");
 			
 			iOSCustomizedcast.setDescription(description);
 			StringBuffer sbf = new StringBuffer();
@@ -153,15 +154,16 @@ public class UMPush{
 	        thisMap.put("skip_link", skip_link);
 	        iOSCustomizedcast.setCustomizedField("data", JSONObject.fromObject(thisMap).toString());
 	        
-	        System.out.println("   IOSCustomizedcast create end, push start ......");
+	        //System.out.println("   IOSCustomizedcast create end, push start ......");
 			
 			boolean result = client.send(iOSCustomizedcast);
-			System.out.println("   !!!Result: " + result);
+			//System.out.println("   !!!Result: " + result);
 			
 			long end = System.currentTimeMillis();
-            System.out.println("  ----- UMeng push to alias(IOS) end, use " + (end - start) + " millisecond, stop connection -----");
+            //System.out.println("  ----- UMeng push to alias(IOS) end, use " + (end - start) + " millisecond, stop connection -----");
 		} catch (Exception e) {
 			e.printStackTrace();
+			Log.error(e, "umeng push error");
 		}
 	}
 	
@@ -169,10 +171,10 @@ public class UMPush{
 	public void androidToAll(String title, String description, int badge, int skip_type, 
 			String skip_link, Map<String, Object> map){
 		try {
-			log.info("-----         UMeng push to all(Android) start         -----");
+			//log.info("-----         UMeng push to all(Android) start         -----");
 			long start = System.currentTimeMillis();
 			
-			System.out.println("   AndroidBroadcast create start ......");
+			//System.out.println("   AndroidBroadcast create start ......");
 			
 			androidBroadcast.setTitle(title);
 			androidBroadcast.setDescription(description);
@@ -196,25 +198,25 @@ public class UMPush{
 			//broadcast.setExpireTime("2018-03-18 21:17:58");
 			//broadcast.goAppAfterOpen();
 			//broadcast.setDisplayType(AndroidNotification.DisplayType.MESSAGE);
-			System.out.println("   AndroidBroadcast create end, push start ......");
+			//System.out.println("   AndroidBroadcast create end, push start ......");
 			
 			boolean result = client.send(androidBroadcast);
-			System.out.println("   !!!Result: " + result);
+			//System.out.println("   !!!Result: " + result);
 			
 			long end = System.currentTimeMillis();
-            System.out.println("  ----- UMeng push to all(Android) end, use " + (end - start) + " millisecond, stop connection -----");
+            //System.out.println("  ----- UMeng push to all(Android) end, use " + (end - start) + " millisecond, stop connection -----");
 		} catch (Exception e) {
-			e.printStackTrace();
+			Log.error(e, "umeng push error");
 		}
 	}
 	
 	public void androidToAlias(String title, String description, int badge, List<String> alias,
 			String aliasType, int skip_type, String skip_link, Map<String, Object> map){
 		try{
-			log.info("-----         UMeng push to alias(Android) start         -----");
+			//log.info("-----         UMeng push to alias(Android) start         -----");
 			long start = System.currentTimeMillis();
 			
-			System.out.println("   AndroidCustomizedcast create start ......");
+			//System.out.println("   AndroidCustomizedcast create start ......");
 			
 			androidCustomizedcast.setDescription(description);
 			StringBuffer sbf = new StringBuffer();
@@ -253,15 +255,15 @@ public class UMPush{
 	        thisMap.put("skip_link", skip_link);
 	        androidCustomizedcast.setExtraField("data", JSONObject.fromObject(thisMap).toString());
 			
-	        System.out.println("   AndroidCustomizedcast create end, push start ......");
+	        //System.out.println("   AndroidCustomizedcast create end, push start ......");
 			
 			boolean result = client.send(androidCustomizedcast);
-			System.out.println("   !!!Result: " + result);
+			//System.out.println("   !!!Result: " + result);
 			
 			long end = System.currentTimeMillis();
-            System.out.println("  ----- UMeng push to alias(Android) end, use " + (end - start) + " millisecond, stop connection -----");
+            //System.out.println("  ----- UMeng push to alias(Android) end, use " + (end - start) + " millisecond, stop connection -----");
 		} catch (Exception e) {
-			e.printStackTrace();
+			Log.error(e, "umeng push error");
 		}
 	}
 }

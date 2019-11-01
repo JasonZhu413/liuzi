@@ -13,9 +13,9 @@ import com.liuzi.redis.service.LockService;
 import com.liuzi.redis.service.lock.CallBack;
 import com.liuzi.redis.service.lock.RedisLock;
 import com.liuzi.redis.service.lock.RedisLockImpl;
+import com.liuzi.util.common.Log;
 
 
-@Slf4j
 public class LockServiceImpl extends ListServiceImpl implements LockService{
 	
 	/**
@@ -77,7 +77,7 @@ public class LockServiceImpl extends ListServiceImpl implements LockService{
 				return true;
 			}
 		} catch (Exception e) {
-			log.error("lock error:" + e.getMessage());
+			Log.error(e, "获取锁错误, key {}, value {}", key, value);
 		} finally{
 			if(lock != null){
 				lock.release();
@@ -133,9 +133,9 @@ public class LockServiceImpl extends ListServiceImpl implements LockService{
 	 */
 	public RedisLock lock(String key, String value, long releaseTime, int tryTimes, int tryMaxTimes, 
 			long tryIMillis){
-		info("try get lock, key: " + key + ", value: " + value + ", releaseTime: " + releaseTime + 
+		/*Log.info("try get lock, key: " + key + ", value: " + value + ", releaseTime: " + releaseTime + 
 				", tryTimes: " + tryTimes + ", tryMaxTimes: " + tryMaxTimes + ", tryIMillis: " +
-				tryIMillis);
+				tryIMillis);*/
 		//获取锁
         String status = redisTemplate.execute(new RedisCallback<String>() {
             public String doInRedis(RedisConnection connection) throws DataAccessException {
@@ -148,22 +148,20 @@ public class LockServiceImpl extends ListServiceImpl implements LockService{
         
         //如果获取锁成功，返回对象
         if ("OK".equals(status)) {
-        	info("get lock success, key: " + key + ", value: " + value);
         	return new RedisLockImpl(redisTemplate, key, value);
         }
         
         //如果重试次数大于最大重试次数，返回null失败
         if(tryTimes >= tryMaxTimes){
-        	info("try get lock fail, key: " + key + ", value: " + value);
     		return null;
     	}
         
         //下一次重试等待时间
     	if(tryIMillis > 0){
     		try {
-    			info("try get lock next time, sleep: " + tryIMillis);
                 Thread.sleep(tryIMillis);
             } catch (InterruptedException e) {
+            	Log.error(e, "获取锁重试错误, key {}, value {}", key, value);
             	return null;
             }
     		//当前线程如果中断，返回失败

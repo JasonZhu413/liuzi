@@ -3,7 +3,6 @@ package com.liuzi.qsms;
 import java.util.ArrayList;
 
 import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
 
 import com.github.qcloudsms.SmsMultiSender;
 import com.github.qcloudsms.SmsMultiSenderResult;
@@ -16,8 +15,8 @@ import com.github.qcloudsms.SmsVoicePromptSender;
 import com.github.qcloudsms.SmsVoicePromptSenderResult;
 import com.github.qcloudsms.SmsVoiceVerifyCodeSender;
 import com.github.qcloudsms.SmsVoiceVerifyCodeSenderResult;
+import com.liuzi.util.common.Log;
 
-@Slf4j
 @Data
 public class QSms{
 	
@@ -38,10 +37,9 @@ public class QSms{
 			sender = new SmsSingleSender(appId, appKey);
 			result = sender.send(0, "86", phone, msg, "", "");
 		} catch (Exception e) {
-			e.printStackTrace();
-			log.info("短信单发（普通）失败：" + e.getMessage());
+			Log.error(e, "短信单发（普通）失败, 电话{}, 信息{}", phone, msg);
 		}
-		log.info("短信单发（普通）返回：" + result);
+		Log.info("短信单发（普通）返回：{}", result);
 		return result;
 	}
 	
@@ -60,10 +58,10 @@ public class QSms{
 			sender = new SmsSingleSender(appId, appKey);
 			result = sender.sendWithParam("86", phone, tempId, params, "", "", "");
 		} catch (Exception e) {
-			e.printStackTrace();
-			log.info("短信单发（指定模板）失败：" + e.getMessage());
+			Log.error(e, "短信单发（指定模板）失败, 电话{}, 模板id{}, 参数个数{}", phone, 
+					tempId, (params == null ? 0 : params.size()));
 		}
-		log.info("短信单发（指定模板）返回：" + result);
+		Log.info("短信单发（指定模板）返回: {}", result);
 		return result;
 	}
 	
@@ -81,10 +79,10 @@ public class QSms{
 			sender = new SmsMultiSender(appId, appKey);
 			result = sender.send(0, "86", phones, msg, "", "");
 		} catch (Exception e) {
-			e.printStackTrace();
-			log.info("短信群发（普通）失败：" + e.getMessage());
+			Log.error(e, "短信群发（普通）失败, 信息{}, 电话个数{}", msg, 
+					(phones == null ? 0 : phones.size()));
 		}
-		log.info("短信群发（普通）返回：" + result);
+		Log.info("短信群发（普通）返回：{}", result);
 		return result;
 	}
 	
@@ -103,10 +101,11 @@ public class QSms{
 			sender = new SmsMultiSender(appId, appKey);
 			result = sender.sendWithParam("86", phones, tempId, params, "", "", "");
 		} catch (Exception e) {
-			e.printStackTrace();
-			log.info("短信群发（指定模板）失败：" + e.getMessage());
+			Log.error(e, "短信群发（指定模板）失败, 模板{}, 电话个数{}, 参数个数{}", tempId, 
+					(phones == null ? 0 : phones.size()),
+					(params == null ? 0 : params.size()));
 		}
-		log.info("短信群发（指定模板）返回：" + result);
+		Log.info("短信群发（指定模板）返回：{}", result);
 		return result;
 	}
 	
@@ -123,10 +122,9 @@ public class QSms{
 		try {
 			result = sender.send("86", phone, msg, 2, "");
 		} catch (Exception e) {
-			e.printStackTrace();
-			log.info("短信语音验证码单发失败：" + e.getMessage());
+			Log.error(e, "短信语音验证码单发失败, 电话{}, 信息{}", phone, msg);
 		}
-		log.info("短信语音验证码单发返回：" + result);
+		Log.info("短信语音验证码单发返回：{}", result);
 		return result;
 	}
 	
@@ -143,10 +141,9 @@ public class QSms{
 		try {
 			result = sender.send("86", phone, 2, 2, msg, "");
 		} catch (Exception e) {
-			e.printStackTrace();
-			log.info("语音通知单发失败：" + e.getMessage());
+			Log.error(e, "语音通知单发失败, 电话{}, 信息{}", phone, msg);
 		}
-		log.info("语音通知单发返回：" + result);
+		Log.info("语音通知单发返回：{}", result);
 		return result;
 	}
 	
@@ -161,10 +158,9 @@ public class QSms{
 		try {
 			callback = pullstatus.pullCallback(10);
 		} catch (Exception e) {
-			e.printStackTrace();
-			log.info("拉取短信回执失败：" + e.getMessage());
+			Log.error(e, "拉取短信回执失败");
 		}
-		log.info("拉取短信回执返回：" + callback);
+		Log.info("拉取短信回执返回：{}", callback);
 		return callback;
 	}
 	
@@ -179,11 +175,10 @@ public class QSms{
 		try {
 			result = pullstatus.pullReply(10);
 		} catch (Exception e) {
-			e.printStackTrace();
-			log.info("拉取短信回复失败：" + e.getMessage());
+			Log.error(e, "拉取短信回复失败");
 		}
 		
-		log.info("拉取短信回复返回：" + result);
+		Log.info("拉取短信回复返回：{}", result);
 		return result;
 	}
 	

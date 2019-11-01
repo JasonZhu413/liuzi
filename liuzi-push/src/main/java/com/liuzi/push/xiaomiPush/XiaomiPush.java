@@ -1,6 +1,7 @@
 package com.liuzi.push.xiaomiPush;
 
 
+import com.liuzi.util.common.Log;
 import com.xiaomi.xmpush.server.Constants;
 import com.xiaomi.xmpush.server.Message;
 import com.xiaomi.xmpush.server.Result;
@@ -19,7 +20,6 @@ import org.springframework.stereotype.Service;
 
 
 
-@Slf4j
 @Service("xiaomiPush")
 public class XiaomiPush {
 	
@@ -42,34 +42,33 @@ public class XiaomiPush {
     public void sendToAll(String messagePayload, String title, String description, 
     		int skip_type, String skip_link, Map<String, Object> map, int type){
         try {
-        	log.info("-----         XiaoMi push start         -----");
+        	//Log.info("-----         XiaoMi push start         -----");
 			long start = System.currentTimeMillis();
 			
         	Message message = getMessage(messagePayload, title, description, skip_type, 
         			skip_link, map);
         	
         	if(type != 1){
-        		System.out.println("   IOS push start ......");
+        		//System.out.println("   IOS push start ......");
 	            
 	            // 根据topicList做并集运算, 发送消息到指定一组设备上
 	            Result iosResult = xiaoMiSenderIOS.broadcastAll(message, 3);
 	            
-	            System.out.println("   IOS push end, result: " + iosResult + " ......");
+	            //System.out.println("   IOS push end, result: " + iosResult + " ......");
 			}
 	        if(type != 2){
-	        	System.out.println("   Android push start ......");
+	        	//System.out.println("   Android push start ......");
 	        	
 	            // 根据topicList做并集运算, 发送消息到指定一组设备上
 	            Result androidResult = xiaoMiSenderAndroid.broadcastAll(message, 3);
 	            
-	            System.out.println("   Android push end, result: " + androidResult + " ......");
+	            //System.out.println("   Android push end, result: " + androidResult + " ......");
 			}
             
             long end = System.currentTimeMillis();
-            System.out.println("  ----- Xiaomi push end, use " + (end - start) + " millisecond, stop connection -----");
+            //System.out.println("  ----- Xiaomi push end, use " + (end - start) + " millisecond, stop connection -----");
 		} catch (Exception e) {
-			e.printStackTrace();
-			log.info("  ----- Xiaomi push(sendAll) system error: " + e.getMessage());
+			Log.error(e, "  ----- Xiaomi push(sendAll) system error");
 		}
     }
  
@@ -89,36 +88,35 @@ public class XiaomiPush {
     		int skip_type, String skip_link, Map<String, Object> map, List<String> topicList,
     		int type){
         try {
-        	log.info("-----         XiaoMi push start         -----");
+        	//log.info("-----         XiaoMi push start         -----");
 			long start = System.currentTimeMillis();
 			
         	Message message = getMessage(messagePayload, title, description, skip_type, 
         			skip_link, map);
         	
         	if(type != 1){
-        		System.out.println("   IOS push start ......");
+        		//System.out.println("   IOS push start ......");
 	            
 	            // 根据topicList做并集运算, 发送消息到指定一组设备上
 	            Result iosResult = xiaoMiSenderIOS.multiTopicBroadcast(message, topicList, 
 	            		BROADCAST_TOPIC_OP.UNION, 3);
 	            
-	            System.out.println("   IOS push end, result: " + iosResult + " ......");
+	            //System.out.println("   IOS push end, result: " + iosResult + " ......");
 			}
 	        if(type != 2){
-	        	System.out.println("   Android push start ......");
+	        	//System.out.println("   Android push start ......");
 	        	
 	            // 根据topicList做并集运算, 发送消息到指定一组设备上
 	            Result androidResult = xiaoMiSenderAndroid.multiTopicBroadcast(message, topicList, 
 	            		BROADCAST_TOPIC_OP.UNION, 3);
 	     
-	            System.out.println("   Android push end, result: " + androidResult + " ......");
+	            //System.out.println("   Android push end, result: " + androidResult + " ......");
 			}
             
             long end = System.currentTimeMillis();
-            System.out.println("  ----- Xiaomi push end, use " + (end - start) + " millisecond, stop connection -----");
+            //System.out.println("  ----- Xiaomi push end, use " + (end - start) + " millisecond, stop connection -----");
 		} catch (Exception e) {
-			e.printStackTrace();
-			log.info("  ----- Xiaomi push(send) system error: " + e.getMessage());
+			Log.error(e, "  ----- Xiaomi push(send) system error");
 		}
     }
  
@@ -138,39 +136,38 @@ public class XiaomiPush {
     		int skip_type, String skip_link, Map<String, Object> map, List<String> aliasList,
     		int type){
         try {
-        	log.info("-----         XiaoMi push(sendToAliases) start         -----");
+        	//log.info("-----         XiaoMi push(sendToAliases) start         -----");
 			long start = System.currentTimeMillis();
 			
         	Message message = getMessage(messagePayload, title, description, skip_type, 
         			skip_link, map);
         	
         	if(type != 1){
-        		System.out.println("   IOS push start ......");
+        		//System.out.println("   IOS push start ......");
         		
 		        Result iosResult = xiaoMiSenderIOS.sendToAlias(message, aliasList, 3);
 		        
-		        System.out.println("   IOS push end, result: " + iosResult + " ......");
+		       // System.out.println("   IOS push end, result: " + iosResult + " ......");
 			}
 	        if(type != 2){
-	        	System.out.println("   Android push start ......");
+	        	//System.out.println("   Android push start ......");
 	        	
 				Result androidResult = xiaoMiSenderAndroid.sendToAlias(message, aliasList, 3);
 				
-				System.out.println("   Android push end, result: " + androidResult + " ......");
+				//System.out.println("   Android push end, result: " + androidResult + " ......");
 			}
         	
 	        long end = System.currentTimeMillis();
-            System.out.println("  ----- Xiaomi push end, use " + (end - start) + " millisecond, stop connection -----");
+            //System.out.println("  ----- Xiaomi push end, use " + (end - start) + " millisecond, stop connection -----");
 		} catch (Exception e) {
-			e.printStackTrace();
-			log.info("  ----- Xiaomi push(sendToAliases) system error: " + e.getMessage());
+			Log.error(e, "  ----- Xiaomi push(sendToAliases) system error");
 		}
     }
     
     private static Message getMessage(String messagePayload, String title, 
     		String description, int skip_type, String skip_link, 
     		Map<String, Object> map){
-    	System.out.println("   Message Install start ......");
+    	//System.out.println("   Message Install start ......");
     	
     	Constants.useOfficial();
     	
@@ -190,7 +187,7 @@ public class XiaomiPush {
                 .passThrough(0) 
             .build();
         
-        System.out.println("   Message Install end ......");
+        //System.out.println("   Message Install end ......");
         return message;
     }
 }

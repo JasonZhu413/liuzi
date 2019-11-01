@@ -18,9 +18,9 @@ import com.geesanke.plugin.huawei.push.model.Result;
 import com.geesanke.plugin.huawei.push.model.Ext.ExtBuilder;
 import com.geesanke.plugin.huawei.push.model.enums.ActionType;
 import com.geesanke.plugin.huawei.push.model.enums.MessageType;
+import com.liuzi.util.common.Log;
 
 
-@Slf4j
 public class HuaweiPush {
 	
 	@Autowired
@@ -37,19 +37,19 @@ public class HuaweiPush {
 	public void send(List<String> tokens, String title, String content, ActionType skip_type, 
 			String skip_link, Map<String, String> map) {
 		if(tokens == null || tokens.size() == 0){
-			System.out.println("  ----- Params error, tokens size is zero, Huawei(android) push end");
+			//System.out.println("  ----- Params error, tokens size is zero, Huawei(android) push end");
 			return;
 		}
 		if(StringUtils.isEmpty(title)){
-			System.out.println("  ----- Params error, title is empty, Huawei(android) push end");
+			//System.out.println("  ----- Params error, title is empty, Huawei(android) push end");
 			return;
 		}
 		
-		log.info("-----         Huawei(android) push start         -----");
+		//log.info("-----         Huawei(android) push start         -----");
 		long start = System.currentTimeMillis();
 		
-		System.out.println("   Create MessageBuilder -> Message, skip_type: " + 
-				skip_type + ", skip_link: " + skip_link + " ......");
+		//System.out.println("   Create MessageBuilder -> Message, skip_type: " + 
+		//		skip_type + ", skip_link: " + skip_link + " ......");
 		
 		MessageBuilder messageBuilder = Message.newInstance()
 				.addType(MessageType.PASSTHROUGH)
@@ -62,7 +62,7 @@ public class HuaweiPush {
 		
 		Message msg = messageBuilder.build();
 			
-		System.out.println("   Create Message success, Create ExtBuilder -> Ext...");
+		//System.out.println("   Create Message success, Create ExtBuilder -> Ext...");
 		
 		ExtBuilder extBuilder = Ext.newInstance();
 		
@@ -73,11 +73,11 @@ public class HuaweiPush {
 		
 		Ext ext = extBuilder.build();
 		
-		System.out.println("   Create Ext success, install Payload...");
+		//System.out.println("   Create Ext success, install Payload...");
 		
 		Payload payload = Payload.newInstance().addMsg(msg).addExt(ext).build();
 		
-		System.out.println("   Payload install success, push start...");
+		//System.out.println("   Payload install success, push start...");
 		
 
 		int length = tokens.size();
@@ -91,11 +91,11 @@ public class HuaweiPush {
 				int max = 1000;
 				int times = length / max;
 				
-				System.out.println("   !!!token.length > 1000, need push times: " + 
-						(times + 1) + "...");
+				//System.out.println("   !!!token.length > 1000, need push times: " + 
+				//		(times + 1) + "...");
 				
 				for(int i = 0, e = times + 1; i < e; i ++){
-					System.out.println("   " + (i + 1) + " times push start ......");
+					//System.out.println("   " + (i + 1) + " times push start ......");
 					
 					int index = i * max;
 					int offset = (i + 1) * max;
@@ -108,16 +108,15 @@ public class HuaweiPush {
 			}
 			
 			long end = System.currentTimeMillis();
-            System.out.println("  ----- Huawei(android) push end, use " + (end - start) + " millisecond, stop connection -----");
+            //System.out.println("  ----- Huawei(android) push end, use " + (end - start) + " millisecond, stop connection -----");
 		} catch (Exception e) {
-			e.printStackTrace();
-			log.info("  ----- Huawei(android) push system error: " + e.getMessage());
+			Log.error(e, "  ----- Huawei(android) push system error");
 		}
     }
 	
 	//推送
 	private void push(String[] tokens, Payload payload, int times){
 		Result result = sendClient.push(tokens, payload);
-		System.out.println("   !!!Result(" + times + "): " + result);
+		//System.out.println("   !!!Result(" + times + "): " + result);
 	}
 }

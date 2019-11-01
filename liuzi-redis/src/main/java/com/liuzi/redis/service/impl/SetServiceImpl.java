@@ -4,6 +4,7 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import com.liuzi.redis.service.SetService;
+import com.liuzi.util.common.Log;
 
 
 public class SetServiceImpl extends LockServiceImpl implements SetService{
@@ -15,10 +16,9 @@ public class SetServiceImpl extends LockServiceImpl implements SetService{
      */
     public Set<Object> sMem(String key) {
         try {
-        	info("set members, key: " + key);
             return redisTemplate.opsForSet().members(key);
         } catch (Exception e) {
-        	error("set members error, key: " + key + ", msg: " + e.getMessage());
+        	Log.error(e, "set members error, key: {}", key);
             return null;
         }
     }
@@ -31,10 +31,9 @@ public class SetServiceImpl extends LockServiceImpl implements SetService{
      */
     public boolean sIsMember(String key, Object value) {
         try {
-        	info("set isMember, key: " + key + ", value: " + value);
             return redisTemplate.opsForSet().isMember(key, value);
         } catch (Exception e) {
-        	error("set isMember error, key: " + key + ", msg: " + e.getMessage());
+        	Log.error(e, "set isMember error, key: {}");
             return false;
         }
     }
@@ -47,10 +46,9 @@ public class SetServiceImpl extends LockServiceImpl implements SetService{
      */
     public long sAdd(String key, Object... values) {
         try {
-        	info("set add, key: " + key + ", values: " + values);
             return redisTemplate.opsForSet().add(key, values);
         } catch (Exception e) {
-        	error("set add error, key: " + key + ", msg: " + e.getMessage());
+        	Log.error(e, "set add error, key: {}", key);
             return 0;
         }
     }
@@ -64,12 +62,11 @@ public class SetServiceImpl extends LockServiceImpl implements SetService{
      */
     public long sAdd(String key, long time, Object... values) {
         try {
-        	info("set add, key: " + key + ", time: " + time + ", values: " + values);
             Long count = redisTemplate.opsForSet().add(key, values);
             expire(key, time);
             return count;
         } catch (Exception e) {
-        	error("set add error, key: " + key + ", msg: " + e.getMessage());
+        	Log.error(e, "set add error, key: {}", key);
             return 0;
         }
     }
@@ -84,12 +81,11 @@ public class SetServiceImpl extends LockServiceImpl implements SetService{
      */
     public long sAdd(String key, long time, TimeUnit timeUnit, Object... values) {
         try {
-        	info("set add, key: " + key + ", time: " + time + ", values: " + values);
             Long count = redisTemplate.opsForSet().add(key, values);
             expire(key, time, timeUnit);
             return count;
         } catch (Exception e) {
-        	error("set add error, key: " + key + ", msg: " + e.getMessage());
+        	Log.error(e, "set add error, key: {}", key);
             return 0;
         }
     }
@@ -101,10 +97,9 @@ public class SetServiceImpl extends LockServiceImpl implements SetService{
      */
     public long sSize(String key) {
         try {
-        	info("set size, key: " + key);
             return redisTemplate.opsForSet().size(key);
         } catch (Exception e) {
-        	error("set size error, key: " + key + ", msg: " + e.getMessage());
+        	Log.error(e, "set size error, key: {}", key);
             return 0;
         }
     }
@@ -117,10 +112,9 @@ public class SetServiceImpl extends LockServiceImpl implements SetService{
      */
     public long sRemove(String key, Object... values) {
         try {
-        	info("set remove, key: " + key + ", values: " + values);
         	return redisTemplate.opsForSet().remove(key, values);
         } catch (Exception e) {
-        	error("set remove error, key: " + key + ", msg: " + e.getMessage());
+        	Log.error(e, "set remove error, key: {}", key);
             return 0;
         }
     }

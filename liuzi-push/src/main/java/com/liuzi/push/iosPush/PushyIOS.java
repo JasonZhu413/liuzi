@@ -12,11 +12,9 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
-
-import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.liuzi.util.common.Log;
 import com.turo.pushy.apns.ApnsClient;
 import com.turo.pushy.apns.PushNotificationResponse;
 import com.turo.pushy.apns.util.ApnsPayloadBuilder;
@@ -24,7 +22,6 @@ import com.turo.pushy.apns.util.SimpleApnsPushNotification;
 import com.turo.pushy.apns.util.TokenUtil;
 
 
-@Slf4j
 public class PushyIOS{
 	
 	/**
@@ -36,7 +33,7 @@ public class PushyIOS{
 	
 	@SuppressWarnings("rawtypes")
 	public void push(String title, String content, List<String> tokens, Map<String, String> extras) {
-		log.info("-----         IOS推送开始         -----");
+		//Log.info("-----         IOS推送开始         -----");
 		
         int total = tokens.size();
         final CountDownLatch latch = new CountDownLatch(total);
@@ -52,11 +49,11 @@ public class PushyIOS{
 		}
         String payload = payloadBuilder.buildWithDefaultMaximumLength();
         
-        System.out.println("   组装参数成功，长度: " + payload.getBytes().length +
-        		"，内容：" + payload + " ...");
+        /*System.out.println("   组装参数成功，长度: " + payload.getBytes().length +
+        		"，内容：" + payload + " ...");*/
         
         try{
-        	System.out.println("   开始发送...");
+        	//System.out.println("   开始发送...");
         	for (String deviceToken : tokens) {
                 final String token = TokenUtil.sanitizeTokenString(deviceToken);
                 SimpleApnsPushNotification pushNotification = new SimpleApnsPushNotification(token, 
@@ -65,8 +62,7 @@ public class PushyIOS{
                 try {
                     semaphore.acquire();
                 } catch (InterruptedException e) {
-                    log.error("ios push get semaphore failed, deviceToken:{}", deviceToken);
-                    e.printStackTrace();
+                	Log.error(e, "ios push get semaphore failed, deviceToken:{}", deviceToken);
                 }
                 final Future<PushNotificationResponse<SimpleApnsPushNotification>> future = apnsClient.sendNotification(pushNotification);
 
@@ -79,13 +75,16 @@ public class PushyIOS{
                                 successCnt.incrementAndGet();
                             } else {
                                 Date invalidTime = response.getTokenInvalidationTimestamp();
-                                log.error("Notification rejected by the APNs gateway: " + response.getRejectionReason());
+                                Log.warn("Notification rejected by the APNs gateway: {}",
+                                		response.getRejectionReason());
                                 if (invalidTime != null) {
-                                    log.error("\t…and the token is invalid as of " + response.getTokenInvalidationTimestamp());
+                                	Log.warn("\t…and the token is invalid as of {}" + 
+                                			response.getTokenInvalidationTimestamp());
                                 }
                             }
                         } else {
-                            log.error("send notification device token={} is failed {} ", token, future.cause().getMessage());
+                        	Log.warn("send notification device token={} is failed {} ", token, 
+                        			future.cause().getMessage());
                         }
                         latch.countDown();
                         semaphore.release();
@@ -96,9 +95,9 @@ public class PushyIOS{
         	latch.await(20, TimeUnit.SECONDS);
         	
         	long success = successCnt.get();
-        	log.info("IOS 推送成功，[共推送" + total + "个][成功" + (success) + "个]");
+        	//Log.info("IOS 推送成功，[共推送" + total + "个][成功" + (success) + "个]");
         } catch(Exception e){
-        	log.error("发送失败：" + e.getMessage()); 
+        	Log.error(e, "发送失败"); 
         }
     }
 }

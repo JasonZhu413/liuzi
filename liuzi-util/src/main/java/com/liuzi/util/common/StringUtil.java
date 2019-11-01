@@ -1,6 +1,7 @@
 package com.liuzi.util.common;
 
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.net.URLDecoder;
@@ -11,8 +12,16 @@ import java.util.ArrayList;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.util.StringUtils;
+
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 
 /**
  * @Title:        StringUtil
@@ -27,10 +36,6 @@ import org.springframework.util.StringUtils;
  * 
  */
 public class StringUtil{
-
-  	public static void main(String[] args){
-  		System.out.println(getDistance(52.438887999999999D, 143.35484600000001D, 52.438878000000003D, 143.35483600000001D));
-  	}
 
   	/**
   	 * 获取字符长度（中文+2）
@@ -906,5 +911,26 @@ public class StringUtil{
   		s *= 6378137.0D;
   		s = Math.round(s * 10000.0D) / 10000L;
   		return s;
+  	}
+  	
+  	/**
+  	 * 将对象的大写转换为下划线加小写，例如：userName-->user_name
+  	 * @throws JsonProcessingException 
+  	*/
+  	public static String toUnderlineJSONString(Object object) throws JsonProcessingException{
+  		ObjectMapper mapper = new ObjectMapper();
+  		mapper.setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE);
+  		mapper.setSerializationInclusion(Include.NON_NULL);      
+  		return mapper.writeValueAsString(object);
+  	}
+  	
+  	/**
+  	 * 将下划线转换为驼峰的形式，例如：user_name-->userName
+  	 * @throws IOException 
+  	 */
+  	public static <T> T toSnakeObject(String json, Class<T> clazz) throws IOException{
+  		ObjectMapper mapper = new ObjectMapper();
+  		mapper.setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE);
+  		return mapper.readValue(json, clazz);
   	}
 }

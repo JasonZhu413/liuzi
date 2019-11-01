@@ -11,19 +11,17 @@ import java.util.zip.GZIPOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.csource.common.NameValuePair;
 
 import com.liuzi.fastdfs.base.ClientGlobal;
 import com.liuzi.fastdfs.base.StorageClient;
+import com.liuzi.util.common.Log;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-@Slf4j
 public class FdfsServer{
 	
 	@Autowired
@@ -45,7 +43,7 @@ public class FdfsServer{
 	 * @return List<FdfsFile>
 	 */
 	private List<FdfsFile> uploadBatch(HttpServletRequest request){
-		log.info("FastDFS上传文件开始...");
+		//Log.info("FastDFS上传文件开始...");
 	    MultipartHttpServletRequest multi = (MultipartHttpServletRequest) request;
         
 	    List<MultipartFile> list = new ArrayList<MultipartFile>();
@@ -56,7 +54,7 @@ public class FdfsServer{
         	list.add(entry.getValue());
         } 
         
-        log.info("上传文件数：" + list.size());
+        //Log.info("上传文件数：" + list.size());
         
         List<FdfsFile> returnList = new ArrayList<FdfsFile>();
         FdfsFile fdfsFile;
@@ -68,11 +66,11 @@ public class FdfsServer{
             long fileSize = mf.getSize();
             String suffix = fileName.substring(fileName.lastIndexOf(".") + 1);
             
-            log.info("文件" + count + "：开始上传...\n文件名：" + fileName + "\n文件大小：" + fileSize + "b");
+            //Log.info("文件" + count + "：开始上传...\n文件名：" + fileName + "\n文件大小：" + fileSize + "b");
             
             int maxSize = ClientGlobal.g_file_upload_max_size;
         	if(maxSize > 0 && fileSize > (maxSize * 1024 * 1024)){
-        		log.warn("上传文件大小超过" + maxSize + "M，上传文件取消，上传结束...");
+        		Log.warn("上传文件大小超过{}M，上传文件取消，上传结束...", maxSize);
             	return null;
             }
             
@@ -96,10 +94,10 @@ public class FdfsServer{
             
             returnList.add(fdfsFile);
             
-            log.info("文件" + count + "：上传成功...\ngroup：" + group + "\npath：" + path + "");
+            Log.info("文件({}个)上传成功。group: {}, path: {}", count, group, path);
         }
 		
-        log.info("FastDFS上传文件结束...");
+        //Log.info("FastDFS上传文件结束...");
         
 		return returnList;
 	}
@@ -181,15 +179,14 @@ public class FdfsServer{
 		    os.write(b);
 		    os.flush();
         }catch (Exception e){
-        	log.error("download fail：" + e.getMessage());
-        	e.printStackTrace();
+        	Log.error(e, "下载失败, path: {}, {}", group, path);
         }finally{
     		try {
     			if(os != null){
 					os.close();
         		}
 			} catch (IOException e) {
-				e.printStackTrace();
+				Log.error(e, "下载失败, path: {}, {}", group, path);
 			}
         }
     }
@@ -235,7 +232,7 @@ public class FdfsServer{
 			out.write(b);
 			out.flush();
         }catch (Exception e){
-        	log.error("download fail：" + e.getMessage());
+        	Log.error(e, "下载Zip失败, path: {}, {}", group, path);
         	e.printStackTrace();
         }finally{
     		try {
@@ -246,7 +243,7 @@ public class FdfsServer{
 					os.close();
         		}
 			} catch (IOException e) {
-				e.printStackTrace();
+				Log.error(e, "下载Zip失败, path: {}, {}", group, path);
 			}
         }
     }
@@ -285,7 +282,7 @@ public class FdfsServer{
 		try {
 			content = new String(b, "utf-8");
 		} catch (UnsupportedEncodingException e) {
-			log.error("file download fail：" + e.getMessage());
+			Log.error(e, "read读取文件失败, path: {}, {}", group, path);
 		}
 		
 		return content;
@@ -322,8 +319,7 @@ public class FdfsServer{
     		fastDFSPoolConfig.checkIn(storageClient1);
     	} catch (Exception e) {
     		fastDFSPoolConfig.drop(storageClient1);
-    		e.printStackTrace(); 
-    		log.error("file delete fail：" + e.getMessage());
+    		Log.error(e, "文件删除失败, path: {}, {}", group, path);
     	}
     	return i;
     }
@@ -333,8 +329,7 @@ public class FdfsServer{
 		try {
 			str = this.upload_object(mf.getBytes(), ext, null);
 		} catch (IOException e) {
-			log.error("upload error：" + e.getMessage());
-			e.printStackTrace();
+			Log.error(e, "文件上传失败");
 		}
         return str;
     }
@@ -348,8 +343,7 @@ public class FdfsServer{
         	fastDFSPoolConfig.checkIn(storageClient1);
         } catch (Exception e) {
         	fastDFSPoolConfig.drop(storageClient1);//异常销毁此连接
-        	log.error("upload fail：" + e.getMessage());
-            e.printStackTrace();
+        	Log.error(e, "文件上传失败");
         }
         
         return data;
@@ -367,8 +361,7 @@ public class FdfsServer{
         	fastDFSPoolConfig.checkIn(storageClient1);
         } catch (Exception e) {
         	fastDFSPoolConfig.drop(storageClient1);//异常销毁此连接
-        	e.printStackTrace();
-        	log.error("file download fail：" + e.getMessage());
+        	Log.error(e, "文件下载失败, path: {}, {}", group, path);
         }
     	
 		return b;

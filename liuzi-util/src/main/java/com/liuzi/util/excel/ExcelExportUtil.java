@@ -9,7 +9,8 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.util.StringUtils;
 
-import com.liuzi.util.common.DateUtil;
+import com.liuzi.util.common.Log;
+import com.liuzi.util.date.DateUtil;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -26,16 +27,15 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import lombok.extern.slf4j.Slf4j;
 
 /**
- * Created by zhusy
+ * Created by zsy
  */
-@Slf4j
-class ExcelExportUtil {
+public class ExcelExportUtil {
 	
-	private static SimpleDateFormat sdfUK = new SimpleDateFormat ("EEE MMM dd HH:mm:ss Z yyyy", Locale.UK);
-	private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	private static final String TYPE = ".xlsx";
+	private static final SimpleDateFormat SDF_UK = new SimpleDateFormat ("EEE MMM dd HH:mm:ss Z yyyy", Locale.UK);
+	private static final SimpleDateFormat SDF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     /**
      * 导出
@@ -43,7 +43,7 @@ class ExcelExportUtil {
      * @param fileName 文件/sheet名
      * @param response
      */
-    static <T> void exportT(List<T> list, String fileName, HttpServletResponse response){
+	public static <T> void exportT(List<T> list, String fileName, HttpServletResponse response){
     	exportT(list, fileName, response);
     }
     
@@ -54,51 +54,44 @@ class ExcelExportUtil {
      * @param map {字段名1=字段1解释,字段2=字段2解释}
      * @param response
      */
-    static <T> void exportT(List<T> list, String fileName, LinkedHashMap<String, String> map, 
+	public static <T> void exportT(List<T> list, String fileName, LinkedHashMap<String, String> map, 
     		HttpServletResponse response){
-    	if(list == null || list.size() == 0){
-    		log.info("导出数据为空！");
+    	if(list == null || list.isEmpty()){
+    		Log.info("导出数据为空！");
     		return;
     	}
     	
-    	if(StringUtils.isEmpty(fileName)){
-    		fileName = DateUtil.date2Str(new Date(), "yyyyMMddHHmmssSSS");
-    	}
+    	fileName = StringUtils.isEmpty(fileName) ? DateUtil.dateToString(new Date(), "yyyyMMddHHmmssSSS") : fileName;
     	
     	Workbook wb = getWbByT(list, fileName, map);
     	if(wb == null){
-    		log.warn("Workbook is null, fail......");
+    		Log.warn("验证Workbook为空，返回");
     		return;
     	}
     	try{
-    		log.info("导出数据生成......");
+    		Log.info("导出数据开始生成......");
     		
     		response.setContentType("application/vnd.ms-excel");
             response.setCharacterEncoding("utf-8");  
             fileName = new String(fileName.replaceAll(" ", "").getBytes("utf-8"), "iso8859-1");
-            response.setHeader("Content-disposition", "attachment;filename=" + fileName + ".xlsx");
+            response.setHeader("Content-disposition", "attachment;filename=" + fileName + TYPE);
             OutputStream ouputStream = response.getOutputStream();
             wb.write(ouputStream);
             ouputStream.flush();
             ouputStream.close();
             
-            log.info("导出数据完成......");
+            Log.info("导出数据完成：{}", fileName);
     	}catch(Exception e){
-    		e.printStackTrace();
+    		Log.error(e, "导出数据错误：{}", fileName);
     	}
     }
 
-    static <T> Workbook getWbByT(List<T> list, String sheetName, LinkedHashMap<String, String> map){
-    	if(list == null || list.size() == 0){
-    		log.warn("传入导出数据为空, 导出失败！");
-    		return null;
-    	}
-    	
-    	log.info("初始化Workbook......");
+    private static <T> Workbook getWbByT(List<T> list, String sheetName, LinkedHashMap<String, String> map){
+    	Log.info("初始化Workbook......");
     	
         try (Workbook wb = new HSSFWorkbook();){
         	
-        	log.info("创建Sheet......");
+        	Log.info("创建Sheet......");
         	
             Sheet sheet = wb.createSheet(sheetName);
             Row row;
@@ -107,10 +100,10 @@ class ExcelExportUtil {
             Cell cell;
 
             Class<?> classType = list.get(0).getClass();
-            log.info("获取数据类型class type: " + classType + "......");
+            Log.info("获取数据类型class type: " + classType + "......");
             
             if(map == null || map.isEmpty() || map.size() == 0){
-            	log.info("导出全部字段......");
+            	Log.info("导出全部字段......");
             	
                 Field[] fields = classType.getDeclaredFields();
 
@@ -145,7 +138,7 @@ class ExcelExportUtil {
                     }
                 }
             }else{
-            	log.info("导出自定义字段......");
+            	Log.info("导出自定义字段......");
             	
             	for (int i = 0; i < list.size() + 1; i++){
                     row = sheet.createRow(i);
@@ -184,10 +177,10 @@ class ExcelExportUtil {
                     }
                 }
             }
-            log.info("初始化Workbook完成......");
+            Log.info("Workbook初始化完成，返回Workbook");
             return wb;
         }catch (Exception e){
-            e.printStackTrace();
+            Log.error(e, "Workbook初始化错误");
         }
         
         return null;
@@ -199,8 +192,7 @@ class ExcelExportUtil {
      * @param fileName 文件/sheet名
      * @param response
      */
-    static <T> void exportMap(List<Map<String, Object>> list, String fileName, 
-    		HttpServletResponse response){
+    public static void exportMap(List<Map<String, Object>> list, String fileName, HttpServletResponse response){
     	exportMap(list, fileName, response);
     }
     
@@ -211,53 +203,47 @@ class ExcelExportUtil {
      * @param map {字段名1=字段1解释,字段2=字段2解释}
      * @param response
      */
-    static <T> void exportMap(List<Map<String, Object>> list, String fileName, LinkedHashMap<String, String> map, 
+    public static <T> void exportMap(List<Map<String, Object>> list, String fileName, LinkedHashMap<String, String> map, 
     		HttpServletResponse response){
     	if(list == null || list.size() == 0){
-    		log.info("导出数据为空！");
+    		Log.info("导出数据为空！");
     		return;
     	}
     	
     	if(StringUtils.isEmpty(fileName)){
-    		fileName = DateUtil.date2Str(new Date(), "yyyyMMddHHmmssSSS");
+    		fileName = DateUtil.dateToString(new Date(), "yyyyMMddHHmmssSSS");
     	}
     	
     	Workbook wb = getWbByMap(list, fileName, map);
     	if(wb == null){
-    		log.warn("Workbook is null, fail......");
+    		Log.warn("验证Workbook为空，返回");
     		return;
     	}
     	try{
-    		log.info("导出数据生成......");
+    		Log.info("导出数据开始生成......");
     		
     		response.setContentType("application/vnd.ms-excel");
             response.setCharacterEncoding("utf-8");  
             fileName = new String(fileName.replaceAll(" ", "").getBytes("utf-8"), "iso8859-1");
-            response.setHeader("Content-disposition", "attachment;filename=" + fileName + ".xlsx");
+            response.setHeader("Content-disposition", "attachment;filename=" + fileName + TYPE);
             OutputStream ouputStream = response.getOutputStream();
             wb.write(ouputStream);
             ouputStream.flush();
             ouputStream.close();
             
-            log.info("导出数据完成......");
+            Log.info("导出数据完成......");
     	}catch(Exception e){
-    		e.printStackTrace();
+    		Log.error(e, "导出数据错误 {}", fileName);
     	}
     }
     
-    static Workbook getWbByMap(List<Map<String, Object>> list, String sheetName, 
+    private static Workbook getWbByMap(List<Map<String, Object>> list, String sheetName, 
     		LinkedHashMap<String, String> fileds){
-    	
-    	if(list == null || list.size() == 0){
-    		log.info("导出数据为空！");
-    		return null;
-    	}
-    	
-    	log.info("初始化Workbook......");
+    	Log.info("初始化Workbook......");
     	
         try (Workbook wb = new HSSFWorkbook();){
         	
-        	log.info("创建Sheet......");
+        	Log.info("创建Sheet......");
         	
             Sheet sheet = wb.createSheet(sheetName);
             CellStyle style = wb.createCellStyle();
@@ -265,7 +251,7 @@ class ExcelExportUtil {
             Cell cell;
             
             if(fileds == null || fileds.isEmpty() || fileds.size() == 0){
-            	log.info("导出全部字段" + list.size() + "......");
+            	Log.info("导出全部字段" + list.size() + "......");
             	
             	Map<String,Object> map = list.get(0);
             	row = sheet.createRow(0);
@@ -290,7 +276,7 @@ class ExcelExportUtil {
                     }
                 }
             }else{
-            	log.info("导出自定义字段......");
+            	Log.info("导出自定义字段......");
             	
             	row = sheet.createRow(0);
                 row.createCell(0).setCellValue("No");
@@ -319,17 +305,17 @@ class ExcelExportUtil {
                 }
             }
             
-            log.info("初始化Workbook完成......");
+            Log.info("初始化Workbook完成......");
             
             return wb;
         }catch (Exception e){
-            e.printStackTrace();
+        	Log.error(e, "初始化Workbook错误");
         }
         
         return null;
     }
     
     private static String getToDateUK(String str) throws ParseException{
-		return sdf.format(sdfUK.parse(str));
+		return SDF.format(SDF_UK.parse(str));
 	}
 }

@@ -2,7 +2,6 @@ package com.liuzi.util.common;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,26 +12,15 @@ import java.util.function.BiConsumer;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.util.StringUtils;
+import org.apache.http.Consts;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.liuzi.util.encrypt.AESUtil;
-import com.liuzi.util.encrypt.Base64Coder;
-import com.liuzi.util.encrypt.MD5;
 
 
 public class LiuziUtil {
 	
-	private static Logger logger = LoggerFactory.getLogger(LiuziUtil.class);
-	
-	public static void tag(){
-		tag(null);
-	}
-	
-	public static void tag(String msg){
+	public static void tag(String msg, String version){
 		StringBuilder sbf = new StringBuilder();
     	sbf.append("\n");
     	sbf.append("            _    _            _   _ _ _\n");
@@ -41,86 +29,98 @@ public class LiuziUtil {
     	sbf.append("       \\\\/ | |__| | |_| |/ /_| | |  _  |\n");
     	sbf.append("        '  |____| |\\__|_|_ _ | | | |_| |\n");
     	sbf.append("      ==========| |==============|_ _ _|=\n");
-    	sbf.append("       || Liuzi |_| -----> v1.0\n");
-    	if(msg != null) sbf.append("\n " + msg + "\n");
-		logger.info(sbf.toString());
+    	sbf.append("       || Liuzi |_| -----> ");
+    	sbf.append(version).append("\n\n");
+    	sbf.append(msg).append("\n");
+		Log.info(sbf.toString());
 	}
 	
+	
 	/**
-	 * 获取地址路径（http://127.0.0.1）
+	 * 获取协议
 	 * @param request
-	 * @return
+	 * @return http
 	 */
-	public static String getDomain(HttpServletRequest request){
-		return request.getScheme() + "://" + request.getServerName();
+	public static String getProtocol(HttpServletRequest request){
+		return request.getScheme();
 	}
 	
 	/**
-	 * 获取地址路径（http://127.0.0.1:8080）
+	 * 获取Host
 	 * @param request
-	 * @return
+	 * @return 127.0.0.1
 	 */
-	public static String getPathUrl(HttpServletRequest request){
-		return request.getScheme() + "://" + request.getServerName() + ":" + 
-					request.getServerPort(); 
+	public static String getHost(HttpServletRequest request){
+		return request.getServerName();
 	}
 	
 	/**
-	 * 获取项目地址路径（http://127.0.0.1:8080/pro）
+	 * 获取端口
 	 * @param request
-	 * @return
+	 * @return 80
+	 */
+	public static int getPort(HttpServletRequest request){
+		return request.getServerPort();
+	}
+	
+	/**
+	 * 获取地址
+	 * @param request
+	 * @return http://127.0.0.1:80
+	 */
+	public static String getAddress(HttpServletRequest request){
+		return getProtocol(request) + "://" + getHost(request) + ":" + getPort(request);
+	}
+	
+	/**
+	 * 获取项目地址路径
+	 * @param request
+	 * @return http://127.0.0.1:8080/pro
 	 */
 	public static String getProjectUrl(HttpServletRequest request){
-		return request.getScheme() + "://" + request.getServerName() + ":" + 
-					request.getServerPort() + "/" + request.getContextPath(); 
+		return getAddress(request) + "/" + request.getContextPath(); 
 	}
 	
-	public static boolean resp(Object obj, HttpServletResponse response){
-	    return resp(obj, response, "json");
+	public static boolean response(Object obj, HttpServletResponse response){
+	    return response(obj, response, ContentType.APPLICATION_JSON);
 	}
 	
-	public static boolean resp(Object obj, HttpServletResponse response, String type){
+	public static boolean response(Object obj, HttpServletResponse response, ContentType contentType){
 	    try {
-	    	response.setContentType("text/" + type + ";charset=UTF-8");
-	    	
+	    	StringBuilder builder = new StringBuilder();
+	    	builder.append(contentType == null ? ContentType.APPLICATION_FORM_URLENCODED : contentType);
+	    	builder.append("; charset=");
+	    	builder.append(Consts.UTF_8);
+	    	response.setContentType(builder.toString());
 			response.getWriter().write(JSONObject.toJSONString(obj).toString());
 			response.getWriter().flush();
 		} catch (IOException e) {
-			logger.error("response fail：" + e.getMessage());
-			e.printStackTrace(); 
+			Log.error(e, "response error");
 		}
 	    return false;
 	}
 	
-	public static List<Long> string2ListLong(String ids){
-		List<Long> list = null;
-		if(!StringUtils.isEmpty(ids)){
-	        String[] idList = ids.split(",");
-	        if(idList.length > 0){
-	        	list = new ArrayList<Long>();
-    	        for(String id : idList){
-    	        	list.add(Long.parseLong(id));
-    	        }
-	        }
-	    }
-		return list;
-	}
-	
-	public static Long[] string2ArrayLong(String ids){
-		Long[] list = null;
-		if(StringUtils.isEmpty(ids)){
-	        return null;
-	    }
+	public static enum ContentType{
+		APPLICATION_ATOM_XML("application/atom+xml"),
+		APPLICATION_FORM_URLENCODED("application/x-www-form-urlencoded"),
+		APPLICATION_JSON("application/json"),
+	    APPLICATION_OCTET_STREAM("application/octet-stream"),
+	    APPLICATION_SVG_XML("application/svg+xml"),
+	    APPLICATION_XHTML_XML("application/xhtml+xml"),
+	    APPLICATION_XML("application/xml"),
+	    MULTIPART_FORM_DATA("multipart/form-data"),
+	    TEXT_HTML("text/html"),
+	    TEXT_PLAIN("text/plain"),
+	    TEXT_XML("text/xml"),
+	    WILDCARD("*/*");
 		
-        String[] idList = ids.split(",");
-        int length = idList.length;
-        if(length > 0){
-        	list = new Long[idList.length];
-	        for(int i = 0; i < length; i ++){
-	        	list[i] = Long.parseLong(idList[i]);
-	        }
-        }
-		return list;
+		private String type;
+		private ContentType(String type){
+			this.type = type;
+		}
+	    public String getType() {
+			return type;
+		}
 	}
 	
 	/**
@@ -191,18 +191,6 @@ public class LiuziUtil {
     }
 	
 	public static void main(String[] args) {
-		//邮箱或手机号
-		String emailOrPhone = "554157554@qq.com";
-		//类型 email或phone
-		String type = "email";
-		//aes加密验证码
-		String code = "123456";
-		String aesCode = Base64Coder.encode(code);
-		//MD5加密token = MD5(email/phone + type + code)
-		String md5Token = MD5.crypt(emailOrPhone + type + code);
-		
-		String finish = emailOrPhone + "," + type + "," + aesCode + "," + md5Token;
-		System.out.println(Base64Coder.encode(finish));
-		System.out.println(AESUtil.encrypt(finish));
+		System.out.println(ContentType.APPLICATION_JSON.toString());
 	}
 }

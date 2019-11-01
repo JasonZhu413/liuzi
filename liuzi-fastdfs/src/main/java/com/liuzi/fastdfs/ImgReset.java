@@ -7,15 +7,13 @@ import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.util.StringUtils;
 
 import com.liuzi.fastdfs.base.ClientGlobal;
 import com.liuzi.util.common.ImgUtil;
+import com.liuzi.util.common.Log;
 
 
-@Slf4j
 public class ImgReset {
 	
 	public static void excute(FdfsFile fdfsFile, HttpServletRequest request){
@@ -79,38 +77,38 @@ public class ImgReset {
 		String small = namePath + "_S." + suffix;
 		
 		try{
-			log.info("大图处理...");
+			//Log.info("大图处理...");
 			imgutil(wholePath, suffix, large, ClientGlobal.g_compressScaleLarge, 
 					watermark, (int)(watermarkWidth * ClientGlobal.g_compressScaleLarge), 
 					(int)(watermarkHeight * ClientGlobal.g_compressScaleLarge), watermarkFontSize, 
 					watermarkContent, compress);
 			fdfsFile.setLarge(ClientGlobal.fileServer + large);
 		}catch(IOException e){
-			log.info("大图处理失败，使用原图，原因：" + e.getMessage());
+			Log.error(e, "大图处理失败，使用原图");
 			fdfsFile.setLarge(fdfsFile.getUrl());
 		}
 		
 		try{
-			log.info("中图处理...");
+			//Log.info("中图处理...");
 			imgutil(wholePath, suffix, middle, ClientGlobal.g_compressScaleMiddle, 
 					watermark, (int)(watermarkWidth * ClientGlobal.g_compressScaleMiddle), 
 					(int)(watermarkHeight * ClientGlobal.g_compressScaleMiddle), watermarkFontSize, 
 					watermarkContent, compress);
 			fdfsFile.setMiddle(ClientGlobal.fileServer + middle);
 		}catch(IOException e){
-			log.info("中图处理失败，使用原图，原因：" + e.getMessage());
+			Log.error(e, "中图处理失败，使用原图");
 			fdfsFile.setMiddle(fdfsFile.getUrl());
 		}
 		
 		try{
-			log.info("小图处理...");
+			//Log.info("小图处理...");
 			imgutil(wholePath, suffix, small, ClientGlobal.g_compressScaleSmall, 
 					watermark, (int)(watermarkWidth * ClientGlobal.g_compressScaleSmall), 
 					(int)(watermarkHeight * ClientGlobal.g_compressScaleSmall), watermarkFontSize, 
 					watermarkContent, compress);
 			fdfsFile.setSmall(ClientGlobal.fileServer + small);
 		}catch(IOException e){
-			log.info("小图处理失败，使用原图，原因：" + e.getMessage());
+			Log.error(e, "小图处理失败，使用原图");
 			fdfsFile.setSmall(fdfsFile.getUrl());
 		}
 	}

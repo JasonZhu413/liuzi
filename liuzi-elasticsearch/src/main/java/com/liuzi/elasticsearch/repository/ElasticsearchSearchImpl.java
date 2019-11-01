@@ -35,12 +35,12 @@ import com.liuzi.elasticsearch.data.EsSort;
 import com.liuzi.elasticsearch.util.Constant;
 import com.liuzi.elasticsearch.util.JsonUtils;
 import com.liuzi.mybatis.pojo.Page;
+import com.liuzi.util.common.Log;
 
 /**
  * 搜索操作
  * @author zsy
  */
-@Slf4j
 public class ElasticsearchSearchImpl extends ElasticsearchDocumentImpl{
 
 	/**
@@ -58,7 +58,7 @@ public class ElasticsearchSearchImpl extends ElasticsearchDocumentImpl{
         
         searchRequest.source(searchSourceBuilder);
         
-        log.info("[ES search page by from] query DSL: ", searchSourceBuilder.toString());
+        Log.info("[ES search page by from] query DSL: ", searchSourceBuilder.toString());
         
 		SearchResponse searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
 		SearchHits hits = searchResponse.getHits();
@@ -81,7 +81,7 @@ public class ElasticsearchSearchImpl extends ElasticsearchDocumentImpl{
 	    //数据
 	    page.setData(list);
 	    
-	    log.info("[ES search page] end, result page...");
+	    //Log.info("[ES search page] end, result page...");
 	    return page;
     }
 
@@ -105,7 +105,7 @@ public class ElasticsearchSearchImpl extends ElasticsearchDocumentImpl{
     	Scroll scroll = new Scroll(TimeValue.timeValueMinutes(aliveTime));
         searchRequest.scroll(scroll);
 	    
-	    log.info("[ES search page by scroll] query DSL: ", searchSourceBuilder.toString());
+        Log.info("[ES search page by scroll] query DSL: ", searchSourceBuilder.toString());
 	    
 		//查询结果
 		SearchResponse searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
@@ -138,7 +138,7 @@ public class ElasticsearchSearchImpl extends ElasticsearchDocumentImpl{
         clearScrollRequest.addScrollId(scrollId);
         ClearScrollResponse clearScrollResponse = client.clearScroll(clearScrollRequest, RequestOptions.DEFAULT);
         boolean succeeded = clearScrollResponse.isSucceeded();
-        log.info("[ES search page] clear scroll is success: ", succeeded);
+        //Log.info("[ES search page] clear scroll is success: ", succeeded);
 		
         //自定义分页
 	  	Page<T> page = new Page<T>(pageNo, pageSize);
@@ -152,7 +152,7 @@ public class ElasticsearchSearchImpl extends ElasticsearchDocumentImpl{
 	    //数据
 	    page.setData(list);
 	    
-	    log.info("[ES search page] end, result page...");
+	    //Log.info("[ES search page] end, result page...");
 	    return page;
     }
 	

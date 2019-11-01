@@ -15,7 +15,8 @@ import java.io.OutputStream;
 
 import javax.imageio.ImageIO;
 
-import lombok.extern.slf4j.Slf4j;
+import com.liuzi.util.common.Log;
+
 
 
 /**
@@ -23,7 +24,6 @@ import lombok.extern.slf4j.Slf4j;
  * @author zsy
  *
  */
-@Slf4j
 public class ImgCompress {
 	
 	private final static int def_width = 200;
@@ -68,7 +68,7 @@ public class ImgCompress {
             
             thumbnail(file, (int) (srcWidth * scale), (int) (srcHeight * scale), out);
         }catch (Exception e) {
-            log.error("压缩图片出错：" + e.getMessage());
+            Log.error(e, "压缩图片出错 {}", fileName);
         }
     	
     	return compressName;
@@ -118,7 +118,7 @@ public class ImgCompress {
     	try(OutputStream out = new FileOutputStream(newFile);){
             cutWH(file, 0, 0, width, height, out);
         }catch (Exception e) {
-            log.error("压缩文件出错：" + e.getMessage());
+        	Log.error(e, "压缩图片出错 {}", fileName);
         }
     }
  

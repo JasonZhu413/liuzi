@@ -15,11 +15,10 @@ import org.springframework.util.StringUtils;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 
 import com.google.code.kaptcha.impl.DefaultKaptcha;
+import com.liuzi.util.common.Log;
 
-@Slf4j
 public class VerifyCode{
 	
 	@Getter @Setter
@@ -58,9 +57,9 @@ public class VerifyCode{
         	// write the data out
             ImageIO.write(bi, "jpg", out);
             out.flush();
-            log.info("验证码创建成功：" + capText);
+            Log.info("验证码创建成功：{}", capText);
         } catch (IOException e){
-        	log.error("验证码创建错误：" + e.getMessage());
+        	Log.error(e, "验证码创建错误");
         }
         
         return capText;

@@ -3,19 +3,14 @@ package com.liuzi.elasticsearch.old;
 import java.io.Serializable;
 import java.util.Date;
 
-
-
-
-
-
-
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.liuzi.util.common.DateUtil;
+import com.liuzi.util.date.DateFormat;
+import com.liuzi.util.date.DateUtil;
 
 
 @Document(indexName="", type="_doc", shards = 1, replicas = 1)
@@ -48,7 +43,7 @@ public class EsEntity implements Serializable{
     protected Date updateTime;
     
     public static String indexName(String name){
-    	return Elasticsearch._index(name, DateUtil.date2Str(new Date(), "yyyyMMdd"));
+    	return Elasticsearch._index(name, DateUtil.dateToString(new Date(), DateFormat.yyyyMMdd));
     }
     
     /**

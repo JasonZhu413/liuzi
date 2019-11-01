@@ -17,6 +17,9 @@ import org.springframework.util.StringUtils;
 
 
 
+
+import com.liuzi.util.common.Log;
+
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
@@ -25,7 +28,6 @@ import lombok.extern.slf4j.Slf4j;
  * @author zsy
  */
 @Data
-@Slf4j
 public class EsScript{
 	
 	private Map<String, Object> params;
@@ -195,12 +197,12 @@ public class EsScript{
 			dateRang.setBoost(boost);
 			dateRang.setScript(script);
 			
-			log.info("\n|---------- ES script -------------------------------------" + 
-					"\n| [script]\n|  " + script.replaceAll(";", ";\n|  ") +
-					"\n| [params]\n|  " + params.toString().replaceAll(",", ",\n|  ")
-						.replace("{", "{\n|   ").replace("}", "\n|  }") +
-					"\n| [boost]\n|  " + boost +
-					"\n|---------- /ES script ----------------------------------");
+			Log.info("\n|---------- ES script -------------------------------------" + 
+					"\n| [script]\n|  {}\n| [params]\n|  {}\n| [boost]\n|  " + boost +
+					"\n|---------- /ES script ----------------------------------",
+					script.replaceAll(";", ";\n|  "),
+					params.toString().replaceAll(",", ",\n|  ")
+					.replace("{", "{\n|   ").replace("}", "\n|  }"));
 			return dateRang;
 		}
 	} 

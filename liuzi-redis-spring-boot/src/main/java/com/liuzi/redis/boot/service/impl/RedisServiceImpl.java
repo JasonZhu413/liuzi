@@ -29,7 +29,7 @@ import com.liuzi.redis.boot.service.RedisService;
 import com.liuzi.redis.boot.service.RedisCallBack;
 import com.liuzi.redis.boot.service.RedisLock;
 import com.liuzi.redis.boot.service.impl.RedisLockImpl;
-import com.liuzi.util.common.DateUtil;
+import com.liuzi.util.date.DateUtil;
 
 
 @Slf4j
@@ -747,8 +747,8 @@ public class RedisServiceImpl implements RedisService {
 	public long getKey(String key, long delta) {
 		delta = delta == 0 ? 1 : delta;
 		
-		String time = DateUtil.date2Str(new Date(), "yyMMddHHmmss");
-		String date = DateUtil.date2Str(new Date(), "yyMMdd");
+		String time = DateUtil.dateToString(new Date(), "yyMMddHHmmss");
+		String date = DateUtil.dateToString(new Date(), "yyMMdd");
 		
 		key = "PRIMARY_KEY:" + date + ":" + key;
 		

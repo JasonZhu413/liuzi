@@ -7,10 +7,7 @@ import java.util.Properties;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
@@ -19,10 +16,11 @@ import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 
+import com.liuzi.util.common.Log;
+
 import freemarker.template.Template;
 
 
-@Slf4j
 public class QMail{
 	
 	@Autowired
@@ -78,7 +76,7 @@ public class QMail{
     public void sendByTemp(String from, String to, String subject, Date date, String path, 
     		Map<String, String> map) {
     	if(StringUtils.isEmpty(path)){
-    		log.warn("发送邮件(模板)错误, 模板地址为空!");
+    		Log.warn("发送邮件(模板)错误, 模板地址为空!");
     		return;
     	}
         String text = "";
@@ -86,7 +84,8 @@ public class QMail{
             Template template = freeMarkerConfigurer.getConfiguration().getTemplate(path);
             text = FreeMarkerTemplateUtils.processTemplateIntoString(template, map);
         } catch (Exception e) {
-            e.printStackTrace();
+        	Log.error(e, "发送邮件(模板)错误, from {}, to {}, subject {}, date {}, path {}, map {}",
+        			from, to, subject, date, path, map);
         }
         send(from, to, subject, date, text);
     }
@@ -160,7 +159,8 @@ public class QMail{
             messageHelper.setText(content, true);
             javaMailSender.send(message);
         } catch (MessagingException e) {
-            e.printStackTrace();
+            Log.error(e, "发送邮件(模板)错误, from {}, to {}, subject {}, date {}, content {}",
+        			from, to, subject, date, content);
         }
     }
     

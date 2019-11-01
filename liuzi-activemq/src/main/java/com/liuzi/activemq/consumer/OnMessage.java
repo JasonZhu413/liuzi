@@ -10,10 +10,10 @@ import javax.jms.TextMessage;
 
 import org.springframework.stereotype.Component;
 
-import lombok.extern.slf4j.Slf4j;
+import com.liuzi.util.common.Log;
 
 
-@Slf4j
+
 @Component
 public class OnMessage implements MessageListener{
 	 
@@ -25,30 +25,29 @@ public class OnMessage implements MessageListener{
 			//log.info("消费者消费carinfosyncQueue队列：文本消息" + textMessage.getText());
 			if(m instanceof TextMessage){ //接收文本消息   
 				TextMessage message = (TextMessage) m;
-	            log.info("消费者消费：文本消息" + message.getText());   
+	            Log.info("消费者消费(文本消息 ): {}", message.getText());   
 	        }else if(m instanceof MapMessage){ //接收键值对消息   
 	            MapMessage message = (MapMessage)m;   
-	            log.info("消费者消费：键值对消息 " + message);
+	            Log.info("消费者消费(键值对消息 ): {}", message);
 	        }else if(m instanceof StreamMessage){ //接收流消息   
 	            StreamMessage message = (StreamMessage) m;   
-	            log.info("消费者消费：流消息" + message.readString());   
-	            log.info("消费者消费：流消息" + message.readLong());   
+	            Log.info("消费者消费(流消息 ): {}", message.readString());   
+	            Log.info("消费者消费(流消息 ): {}", message.readLong());   
 	        }else if(m instanceof BytesMessage){ //接收字节消息   
 	            byte[] b = new byte[1024];   
 	            int len = -1;   
 	            BytesMessage message = (BytesMessage) m;   
 	            while((len = message.readBytes(b)) != -1){   
-	                log.info("消费者消费：字节消息" + new String(b, 0, len));
+	            	Log.info("消费者消费(字节消息 ): {}", new String(b, 0, len));
 	            }
 	        }else if(m instanceof ObjectMessage){ //接收对象消息   
 	            ObjectMessage message = (ObjectMessage) m;   
-	            log.info("消费者消费：对象消息" + message);   
+	            Log.info("消费者消费(对象消息 ): {}", message);   
 	        }else{   
-	        	log.info("消费者消费：其他消息" + m);
+	        	Log.info("消费者消费(其他消息 ): {}", m);
 	        }   
 		} catch (Exception e) {
-			e.printStackTrace();
-			log.error("Activemq 监听系统错误: " + e.getMessage());
+			Log.error(e, "Activemq 监听系统错误");
 		}
 	}
 }

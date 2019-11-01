@@ -9,7 +9,6 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.springframework.util.StringUtils;
 
-@Slf4j
 public class PropertiesUtil extends PropertiesConfiguration{
 	
 	private PropertiesConfiguration prop;
@@ -23,9 +22,9 @@ public class PropertiesUtil extends PropertiesConfiguration{
 		prop.setEncoding("UTF-8");
 		try{
 			prop.load(path);
-			log.info("Properties load " + path + "...");
+			Log.info("加载配置 {} ...", path);
 	    } catch (Exception e) {
-	    	log.error("Properties load " + path + " fail：" + e.getMessage());
+	    	Log.error(e, "加载配置错误 {} ...", path);
 	    }
 	}
 	
@@ -34,7 +33,7 @@ public class PropertiesUtil extends PropertiesConfiguration{
 	    try {
 	    	value = prop.getString(key);
 	    } catch (Exception e) {
-	    	log.error("Error：" + e.getMessage());
+	    	Log.error(e, "读取String配置错误，key：{} ...", key);
 	    }
 	    return value;
 	}
@@ -44,7 +43,7 @@ public class PropertiesUtil extends PropertiesConfiguration{
 	    try {
 	    	value = prop.getString(key, defaultValue);
 	    } catch (Exception e) {
-	    	log.error("Error：" + e.getMessage());
+	    	Log.error(e, "读取String配置错误，key：{} ...", key);
 	    }
 	    return value;
 	}
@@ -54,7 +53,7 @@ public class PropertiesUtil extends PropertiesConfiguration{
 	    try {
 	    	value = prop.getInt(key);
 	    } catch (Exception e) {
-	    	log.error("Error：" + e.getMessage());
+	    	Log.error(e, "读取int配置错误，key：{} ...", key);
 	    }
 	    return value;
 	}
@@ -64,7 +63,7 @@ public class PropertiesUtil extends PropertiesConfiguration{
 	    try {
 	    	value = prop.getInt(key, defaultValue);
 	    } catch (Exception e) {
-	    	log.error("Error：" + e.getMessage());
+	    	Log.error(e, "读取int配置错误，key：{} ...", key);
 	    }
 	    return value;
 	}
@@ -74,7 +73,7 @@ public class PropertiesUtil extends PropertiesConfiguration{
 	    try {
 	    	value = prop.getLong(key);
 	    } catch (Exception e) {
-	    	log.error("Error：" + e.getMessage());
+	    	Log.error(e, "读取long配置错误，key：{} ...", key);
 	    }
 	    return value;
 	}
@@ -84,7 +83,7 @@ public class PropertiesUtil extends PropertiesConfiguration{
 	    try {
 	    	value = prop.getLong(key, defaultValue);
 	    } catch (Exception e) {
-	    	log.error("Error：" + e.getMessage());
+	    	Log.error(e, "读取long配置错误，key：{} ...", key);
 	    }
 	    return value;
 	}
@@ -94,7 +93,7 @@ public class PropertiesUtil extends PropertiesConfiguration{
 	    try {
 	    	value = prop.getDouble(key);
 	    } catch (Exception e) {
-	    	log.error("Error：" + e.getMessage());
+	    	Log.error(e, "读取double配置错误，key：{} ...", key);
 	    }
 
 	    return value;
@@ -105,7 +104,7 @@ public class PropertiesUtil extends PropertiesConfiguration{
 	    try {
 	    	value = prop.getDouble(key, defaultValue);
 	    } catch (Exception e) {
-	    	log.error("Error：" + e.getMessage());
+	    	Log.error(e, "读取double配置错误，key：{} ...", key);
 	    }
 
 	    return value;
@@ -116,7 +115,7 @@ public class PropertiesUtil extends PropertiesConfiguration{
 	    try {
 	    	value = prop.getBoolean(key);
 	    } catch (Exception e) {
-	    	log.error("Error：" + e.getMessage());
+	    	Log.error(e, "读取boolean配置错误，key：{} ...", key);
 	    }
 	    return value;
 	}
@@ -126,41 +125,43 @@ public class PropertiesUtil extends PropertiesConfiguration{
 	    try {
 	    	value = prop.getBoolean(key, defaultValue);
 	    } catch (Exception e) {
-	    	log.error("Error：" + e.getMessage());
+	    	Log.error(e, "读取boolean配置错误，key：{} ...", key);
 	    }
 	    return value;
 	}
 
 	public void save(String key, Object value) {
 		String path = prop.getBasePath();
-		log.info(path + "Properties save key: " + key + ", value：" + value);
+		Log.info("保存配置，path: {}, key: {}, value: {}", path, key, value);
 	    try{
 	    	prop.setProperty(key, value);
 	    	prop.save(path);
 	    	prop.load(path);
-	    	log.info("Properties reload...");
 	    } catch (ConfigurationException e) {
-	    	log.error("Properties save error：" + e.getMessage());
+	    	Log.error(e, "保存配置错误，path: {}, key: {}, value: {}", path, key, value);
 	    }
 	}
 	
 	public void saveBatch(Map<String, Object> map){
 		String path = prop.getBasePath();
 	    try{
+	    	if(map == null || map.isEmpty()){
+	    		return;
+	    	}
+	    	
+	    	Log.info("批量保存配置，path: {}, keys.length: {}", path, map.size());
+	    	
 	    	for(Entry<String, Object> entry : map.entrySet()){
 	    		String key = entry.getKey();
 	    		if(StringUtils.isEmpty(key)){
 	    			continue;
 	    		}
-	    		Object value = entry.getValue();
-	    		log.info(path + "Properties save key: " + key + ", value：" + value);
-	    		prop.setProperty(key, value);
+	    		prop.setProperty(key, entry.getValue());
 	    	}
 	    	prop.save(path);
 	    	prop.load(path);
-	    	log.info("Properties reload...");
 	    } catch (ConfigurationException e) {
-	    	log.error("Properties save error：" + e.getMessage());
+	    	Log.error(e, "保存配置错误，path: {}", path);
 	    }
 	}
 }

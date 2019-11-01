@@ -7,11 +7,12 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.context.annotation.Bean;
 
+import com.liuzi.util.common.Log;
+
 import cn.jpush.api.JPushClient;
 
 
 @Data
-@Slf4j
 public class JGPushConfig{
 	
 	private final static long DEFAULT_ALIVETIME = 24 * 60 * 60;
@@ -33,7 +34,7 @@ public class JGPushConfig{
 	
 	@Bean
     public JPushClient jpushClient(){
-		log.info("JPushClient初始化, masterSecret:" + secret + ", appKey:" + key);
+		Log.info("JPushClient初始化, masterSecret: {}, appKey: {}", secret, key);
 		return new JPushClient(secret, key);
     }
 }

@@ -8,6 +8,7 @@ import java.io.File;
 
 import org.springframework.context.annotation.Bean;
 
+import com.liuzi.util.common.Log;
 import com.turo.pushy.apns.ApnsClient;
 import com.turo.pushy.apns.ApnsClientBuilder;
 
@@ -15,7 +16,6 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 
-@Slf4j
 @Data
 public class PushyIOSConfig{
 	//ios证书路径
@@ -44,8 +44,7 @@ public class PushyIOSConfig{
                 .setEventLoopGroup(eventLoopGroup)
                 .build();
         } catch (Exception e) {
-            log.error("ios get pushy apns client failed!");
-            e.printStackTrace();
+            Log.error(e, "ios get pushy apns client failed!");
         }
 		return apnsClient;
 	}

@@ -10,6 +10,9 @@ import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONObject;
 
 import org.springframework.beans.factory.annotation.Autowired;
+
+import com.liuzi.util.common.Log;
+
 import cn.jpush.api.JPushClient;
 import cn.jpush.api.push.PushResult;
 import cn.jpush.api.push.model.Message;
@@ -23,7 +26,6 @@ import cn.jpush.api.push.model.notification.Notification;
 import cn.jpush.api.push.model.PushPayload.Builder;
 
 
-@Slf4j
 public class JGPush{
 	
 	@Autowired
@@ -85,12 +87,12 @@ public class JGPush{
 			List<String> tags, List<String> alias, int skip_type, String skip_link, 
 			Map<String, Object> map, int type){
 		
-			log.info("-----         Jiguang push start         -----");
+			//Log.info("-----         Jiguang push start         -----");
 			long start = System.currentTimeMillis();
 			
 			int typ = type != 1 && type != 2 ? 0 : type;
 			String typeName = typ == 1 ? "Android" : (typ == 2 ? "IOS" : "All");
-			System.out.println("   Builder Install start, typeName: " + typeName + " ......");
+			//System.out.println("   Builder Install start, typeName: " + typeName + " ......");
 			
 			Builder builder = PushPayload.newBuilder();
 			if(typ == 1){
@@ -101,8 +103,8 @@ public class JGPush{
 				builder.setPlatform(Platform.all());
 			}
 			
-			System.out.println("   Alias/Tag set start, alias.size: + " + (alias == null ? 0 : 
-				alias.size()) + ", tag.size: " + (tags == null ? 0 : tags.size()) + "......");
+			/*System.out.println("   Alias/Tag set start, alias.size: + " + (alias == null ? 0 : 
+				alias.size()) + ", tag.size: " + (tags == null ? 0 : tags.size()) + "......");*/
 			
 	        if (alias != null && alias.size() > 0) {
 	            builder = builder.setAudience(Audience.alias(alias));
@@ -120,7 +122,7 @@ public class JGPush{
 	        map.put("skip_type", skip_type);
 	        map.put("skip_link", skip_link);
 	        
-	        System.out.println("   Alias/Tag set success, Message set start ......");
+	        //System.out.println("   Alias/Tag set success, Message set start ......");
 	        
 	        builder.setMessage(Message.newBuilder()
 	        		.setTitle(title)
@@ -128,14 +130,14 @@ public class JGPush{
 	                .addExtra("data", JSONObject.fromObject(map).toString())
 	                .build());
 	        
-	        System.out.println("   Message set success, Options set start ......");
+	        //System.out.println("   Message set success, Options set start ......");
 	        
 	        builder.setOptions(Options.newBuilder()
 	        		.setApnsProduction(JGPushConfig.production)
 		    		.setTimeToLive(JGPushConfig.aliveTime) 
 		    		.build());
 	        
-	        System.out.println("   Options set success, PlatformNotification add start ......");
+	        //System.out.println("   Options set success, PlatformNotification add start ......");
 	
 	        cn.jpush.api.push.model.notification.Notification.Builder buder = 
 	        		Notification.newBuilder().setAlert(alert);
@@ -148,18 +150,17 @@ public class JGPush{
 	        	buder.addPlatformNotification(AndroidNotification.newBuilder().build());
 			}
 	        
-	        System.out.println("   PlatformNotification add success, " + typeName + " push start ......");
+	        //System.out.println("   PlatformNotification add success, " + typeName + " push start ......");
 	        
 	        PushPayload payload = builder.setNotification(buder.build()).build();
 	        try {
 		    	PushResult result = jpushClient.sendPush(payload);
-		    	System.out.println("   !!!Result: " + result);
+		    	//System.out.println("   !!!Result: " + result);
 		    	
 				long end = System.currentTimeMillis();
-	            System.out.println("  ----- Jiguang push end, use " + (end - start) + " millisecond, stop connection -----");
+	            //System.out.println("  ----- Jiguang push end, use " + (end - start) + " millisecond, stop connection -----");
 			} catch (Exception e) {
-				e.printStackTrace();
-				log.info("  ----- Jiguang push system error: " + e.getMessage());
+				Log.info(e, "  ----- Jiguang push system error ----- ");
 			} 
 	}
 	

@@ -7,11 +7,10 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 import java.util.Date;
 
-import lombok.extern.slf4j.Slf4j;
 
-import com.liuzi.util.common.DateUtil;
+import com.liuzi.util.common.Log;
+import com.liuzi.util.date.DateUtil;
 
-@Slf4j
 public class MemcachedLog {
 	private final static String MEMCACHED_LOG = "D:\\memcached.log";  
     private final static String LINUX_MEMCACHED_LOG = "/usr/local/logs/memcached.log";  
@@ -34,7 +33,7 @@ public class MemcachedLog {
             }  
             logWrite = new BufferedWriter(fileWriter);  
         } catch (IOException e) {  
-            log.error("memcached 日志初始化失败", e);  
+        	Log.error(e, "Memcached 日志初始化失败");
             closeLogStream();  
         }  
     }  
@@ -47,12 +46,12 @@ public class MemcachedLog {
      */  
     public static void writeLog(String content) {  
         try {  
-            logWrite.write("[" + PID + "] " + "- [" + DateUtil.date2Str(new Date()) + "]\r\n"  
-                    + content);  
+            logWrite.write("[" + PID + "] " + "- [" + DateUtil.dateToString(new Date(), 
+            		"yyyy-MM-dd HH:mm:ss") + "]\r\n"  + content);  
             logWrite.newLine();  
             logWrite.flush();  
         } catch (IOException e) {  
-        	log.error("memcached 写入日志信息失败", e);  
+        	Log.error(e, "Memcached 写入日志信息失败");
         }  
     }  
 
@@ -64,7 +63,7 @@ public class MemcachedLog {
             fileWriter.close();  
             logWrite.close();  
         } catch (IOException e) {  
-        	log.error("memcached 日志对象关闭失败", e);  
+        	Log.error(e, "Memcached 日志对象关闭失败");
         }  
     }  
 }

@@ -17,6 +17,7 @@ import com.liuzi.elasticsearch.enums.FieldType;
 import com.liuzi.elasticsearch.util.IndexTools;
 import com.liuzi.elasticsearch.util.MappingData;
 import com.liuzi.elasticsearch.util.MetaData;
+import com.liuzi.util.common.Log;
 
 import java.io.IOException;
 
@@ -27,7 +28,6 @@ import lombok.extern.slf4j.Slf4j;
  * @author: zsy
  * @create: 2019-01-29 10:05
  **/
-@Slf4j
 public class ElasticsearchIndexImpl extends ElasticsearchBaseImpl{
 
 	/**
@@ -229,10 +229,9 @@ public class ElasticsearchIndexImpl extends ElasticsearchBaseImpl{
             CreateIndexResponse createIndexResponse = client.indices().create(request, RequestOptions.DEFAULT);
             //返回的CreateIndexResponse允许检索有关执行的操作的信息，如下所示：
             boolean acknowledged = createIndexResponse.isAcknowledged();//指示是否所有节点都已确认请求
-            log.info("index create done: " + acknowledged);
+            Log.info("index create done: {}", acknowledged);
         } catch (IOException e) {
-            e.printStackTrace();
-            log.info("index create error: " + e.getMessage());
+            Log.error(e, "index create error");
         }
     }
     

@@ -1,7 +1,6 @@
 package com.liuzi.rest.service.impl;
 
 
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -14,10 +13,10 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import com.liuzi.rest.service.RestService;
+import com.liuzi.util.common.Log;
 
 
 
-@Slf4j
 @Service("restService")
 public class RestServiceImpl implements RestService{
 	
@@ -270,12 +269,12 @@ public class RestServiceImpl implements RestService{
 	 */
 	private String doGet(String url, Object obj, boolean isJson, boolean isSSL, boolean isAsyn){
 		if(StringUtils.isEmpty(url)){
-			log.error("[GET] Error, url is null, request end ...");
+			Log.warn("[GET] Error, url is null, request end ...");
 			return null;
 		}
 		
-		log.info("[GET] Rest request start...");
-		log.info("[GET] Params: {}", obj);
+		//Log.info("[GET] Rest request start...");
+		//Log.info("[GET] Params: {}", obj);
 		
 		String result = null;
 		try {
@@ -283,11 +282,10 @@ public class RestServiceImpl implements RestService{
 	        headers.set("Accept-Charset", "utf-8");
 	        if(isJson){
 	        	headers.set("Content-type", "application/json;charset=utf-8");
-	        	
-	        	log.info("[GET] Content-type: application/json;charset=utf-8");
+	        	//Log.info("[GET] Content-type: application/json;charset=utf-8");
 	        }
 	        
-	        log.info("[GET] Init HttpEntity...");
+	        //Log.info("[GET] Init HttpEntity...");
 	        
 			HttpEntity<Object> httpEntity;
 			if(!StringUtils.isEmpty(obj)){
@@ -296,27 +294,26 @@ public class RestServiceImpl implements RestService{
 				httpEntity = new HttpEntity<>(headers);
 			}
 			
-			log.info("[GET] Select resTemplate type, send request...");
+			//Log.info("[GET] Select resTemplate type, send request...");
 			
 			RestTemplate restTemplate = isSSL ? restHttpsTemplate : restHttpTemplate;
 			ResponseEntity<String> response = restTemplate.getForEntity(url, String.class, httpEntity);
-			log.info("[GET] Response：{}", response);
+			//Log.info("[GET] Response：{}", response);
 			if(response == null){
-				log.error("[GET] Error, response is null");
+				Log.warn("[GET] Error, response is null, url: {}", url);
 				return null;
 			}
 			
 			result = response.getBody();
 			HttpStatus hs = response.getStatusCode();
 			if(hs != HttpStatus.OK){
-				log.error("[GET] Error, HttpStatus wrong!");
+				Log.warn("[GET] Error, HttpStatus wrong! url: {}", url);
 			}
 		} catch (RestClientException e) {
-			e.printStackTrace();
-			log.error("[GET] Error: " + e.getMessage());
+			Log.error(e, "[GET] Error, url: {}", url);
 		}
         
-		log.info("[GET] Rest request end ...");
+		//Log.info("[GET] Rest request end ...");
         return result;
 	}
 	
@@ -331,12 +328,12 @@ public class RestServiceImpl implements RestService{
 	 */
 	public String doPost(String url, Object obj, boolean isJson, boolean isSSL, boolean isAsyn){
 		if(StringUtils.isEmpty(url)){
-			log.error("[POST] Error, url is null, request end ...");
+			Log.warn("[POST] Error, url is null, request end ...");
 			return null;
 		}
 		
-		log.info("[POST] Rest request start ...");
-		log.info("[POST] Params: {}", obj);
+		//Log.info("[POST] Rest request start ...");
+		//Log.info("[POST] Params: {}", obj);
 		
 		String result = null;
 		try {
@@ -344,11 +341,10 @@ public class RestServiceImpl implements RestService{
 	        headers.set("Accept-Charset", "utf-8");
 	        if(isJson){
 	        	headers.set("Content-type", "application/json;charset=utf-8");
-	        	
-	        	log.info("[POST] Content-type: application/json;charset=utf-8");
+	        	//Log.info("[POST] Content-type: application/json;charset=utf-8");
 	        }
 	        
-	        log.info("[POST] Init HttpEntity...");
+	        //Log.info("[POST] Init HttpEntity...");
         
 	        HttpEntity<Object> httpEntity;
 	        if(!StringUtils.isEmpty(obj)){
@@ -357,7 +353,7 @@ public class RestServiceImpl implements RestService{
 	        	httpEntity = new HttpEntity<>(headers);
 	        }
 	        
-	        log.info("[POST] Select resTemplate type, send request...");
+	        //Log.info("[POST] Select resTemplate type, send request...");
         
 	        /*if(obj instanceof String){
 	        	httpEntity = new StringEntity(obj, CHARSET );
@@ -365,23 +361,22 @@ public class RestServiceImpl implements RestService{
 	        
 	        RestTemplate restTemplate = isSSL ? restHttpsTemplate : restHttpTemplate;
 			ResponseEntity<String> response = restTemplate.postForEntity(url, httpEntity, String.class);
-			log.info("[POST] Response：{}", response);
+			//Log.info("[POST] Response：{}", response);
 			if(response == null){
-				log.error("[POST] Error, response is null");
+				Log.warn("[POST] Error, response is null, url: {}", url);
 				return null;
 			}
 			
 			result = response.getBody();
 			HttpStatus hs = response.getStatusCode();
 	        if(hs != HttpStatus.OK){
-	        	log.error("[POST] Error, HttpStatus wrong!");
+	        	Log.warn("[POST] Error, HttpStatus wrong! url: {}", url);
 	        }
 		} catch (RestClientException e) {
-			e.printStackTrace();
-			log.error("[POST] Error: " + e.getMessage());
+			Log.error(e, "[POST] Error, url: {}", url);
 		}
         
-        log.info("[POST] Rest request end ...");
+        //Log.info("[POST] Rest request end ...");
         return result;
 	}
 }

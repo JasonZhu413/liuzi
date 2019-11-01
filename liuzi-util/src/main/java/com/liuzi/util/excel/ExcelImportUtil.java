@@ -11,8 +11,6 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DateUtil;
@@ -22,13 +20,13 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.util.StringUtils;
 
+import com.liuzi.util.common.Log;
 import com.liuzi.util.common.Result;
 import com.liuzi.util.upload.FileUpload;
 
-@Slf4j
 public class ExcelImportUtil{
 
-    private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private static final SimpleDateFormat SDF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     
     /**
      * 上传且导入(无第一行)
@@ -37,9 +35,25 @@ public class ExcelImportUtil{
      * @param excelCallBack 回调函数
      * @return
      */
-    static Result uploadAndImport(HttpServletRequest request, String path, 
-    		ExcelImportCallBack excelCallBack) {
-    	return uploadAndImport(request, path, false, excelCallBack);
+    public static Result uploadAndImport(HttpServletRequest request, String path) {
+    	return uploadAndImport(request, path, false, null);
+    }
+    
+    /**
+     * 上传且导入(无第一行)
+     * @param request
+     * @param path 文件上传目录
+     * @param excelCallBack 回调函数
+     * @return
+     */
+    public static Result uploadAndImport(HttpServletRequest request, String path, 
+    		Verify verify) {
+    	return uploadAndImport(request, path, false, verify);
+    }
+    
+    public static Result uploadAndImport(HttpServletRequest request, String path, 
+    		boolean type) {
+    	return uploadAndImport(request, path, type, null);
     }
     
     /**
@@ -50,14 +64,14 @@ public class ExcelImportUtil{
      * @param excelCallBack 回调函数
      * @return
      */
-    static Result uploadAndImport(HttpServletRequest request, String path, 
-    		boolean type, ExcelImportCallBack excelCallBack) {
+    public static Result uploadAndImport(HttpServletRequest request, String path, 
+    		boolean type, Verify verify) {
     	Result res = FileUpload.start(request, path);//文件上传
     	if(res.getResult() == -1){
     		return res;
     	}
     	
-    	return importExcel(path, type, excelCallBack);
+    	return importExcel(path, type, verify);
     }
     
     /**
@@ -66,11 +80,39 @@ public class ExcelImportUtil{
      * @param excelCallBack 回调函数
      * @return
      */
-    static Result importExcel(String path, ExcelImportCallBack excelCallBack){
-    	return importExcel(path, false, excelCallBack);
+    public static Result importExcel(String path){
+    	return importExcel(path, false, null);
     }
     
-    static Result importExcel(String path, boolean type, ExcelImportCallBack excelCallBack) {
+    /**
+     * 导入excel(无第一行)
+     * @param path 文件地址
+     * @param excelCallBack 回调函数
+     * @return
+     */
+    public static Result importExcel(String path, Verify verify){
+    	return importExcel(path, false, verify);
+    }
+    
+    /**
+     * 导入excel
+     * @param path 文件地址
+     * @param type 是否需要excel第一行(默认false不需要)
+     * @param excelCallBack 回调函数
+     * @return
+     */
+    public static Result importExcel(String path, boolean type){
+    	return importExcel(path, type, null);
+    }
+    
+    /**
+     * 导入excel
+     * @param path 文件地址
+     * @param type 是否需要excel第一行(默认false不需要)
+     * @param excelCallBack 回调函数
+     * @return
+     */
+    public static Result importExcel(String path, boolean type, Verify verify) {
     	File file = new File(path); //创建文件对象
     	Workbook wb = null;
     	
@@ -89,13 +131,13 @@ public class ExcelImportUtil{
             List<List<Object>> list = readExcel(wb);
             
             if(file.exists()) {
-                log.debug("删除文件 " + path + " ...");
+                Log.info("导入文件，存在，删除该文件: {} " + path);
                 file.delete();
             }
             
-            return getData(list, type, excelCallBack);
+            return getData(list, type, verify);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.error(e, "文件导入错误，{}", path);
             return Result.error("文件导入错误" + e.getMessage());
         }
     }
@@ -104,7 +146,7 @@ public class ExcelImportUtil{
      * 读取 excel
      */
 	@SuppressWarnings("deprecation")
-	static List<List<Object>> readExcel(Workbook wb) throws IOException {
+	private static List<List<Object>> readExcel(Workbook wb) throws IOException {
         List<List<Object>> list = new LinkedList<>();
         Sheet sheet = wb.getSheetAt(0);
         Object value = null;
@@ -152,7 +194,7 @@ public class ExcelImportUtil{
                             value = sdf.format(DateUtil.getJavaDate(cell.getNumericCellValue()));
                         }*/
                     	if(DateUtil.isCellDateFormatted(cell)){
-        	        		value = sdf.format(DateUtil.getJavaDate(cell.getNumericCellValue()));
+        	        		value = SDF.format(DateUtil.getJavaDate(cell.getNumericCellValue()));
         	        	}else{
         	        		double val = cell.getNumericCellValue();
         	        		long intVal = (long) val;
@@ -183,7 +225,7 @@ public class ExcelImportUtil{
     }
 	
 	private static Result getData(List<List<Object>> list, boolean type, 
-			ExcelImportCallBack excelCallBack){
+			Verify verify){
     	int count = 0;
         int size = list.size();
         List<Object> listT = new ArrayList<>();
@@ -199,8 +241,8 @@ public class ExcelImportUtil{
                 }
 
                 Result res = Result.success();
-                if(excelCallBack != null){
-                	res = excelCallBack.handler(list.get(i));
+                if(verify != null){
+                	res = verify.data(list.get(i));
                 }
                 if(res.getResult() == -1){
                 	reCod = 0;
@@ -218,12 +260,11 @@ public class ExcelImportUtil{
             }
 			
 			if(reCod == 0){
-				log.warn(sbf.toString());
+				Log.warn(sbf.toString());
 				return Result.error(sbf.toString());
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
-			log.error("导入失败，系统错误" + e.getMessage());
+			Log.error(e, "文件导入错误");
 			return Result.error("导入失败，系统错误");
 		} 
 

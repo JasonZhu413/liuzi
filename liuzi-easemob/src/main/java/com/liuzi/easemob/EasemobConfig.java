@@ -2,6 +2,7 @@ package com.liuzi.easemob;
 
 import com.google.gson.Gson;
 import com.liuzi.easemob.comm.ResponseHandler;
+import com.liuzi.util.common.Log;
 
 import io.swagger.client.ApiException;
 import io.swagger.client.api.AuthenticationApi;
@@ -22,7 +23,6 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * Created by easemob on 2017/3/14.
  */
-@Slf4j
 public class EasemobConfig {
 	
 	public static AuthenticationApi api = new AuthenticationApi();
@@ -43,7 +43,7 @@ public class EasemobConfig {
     			.clientSecret(clientSecret);
         initTokenByProp();
         
-        log.info("===== easemob初始化完成 ......========");
+        Log.info("===== easemob初始化完成 ......========");
 	}
 	
 	@Bean
@@ -87,7 +87,7 @@ public class EasemobConfig {
         try {
             resp = api.orgNameAppNameTokenPost(ORG_NAME, APP_NAME, body);
         } catch (ApiException e) {
-            log.error(e.getMessage());
+        	Log.error(e, "initTokenByProp error");
         }
         Gson gson = new Gson();
 		Map map = gson.fromJson(resp, Map.class);

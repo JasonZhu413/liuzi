@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
 
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
@@ -48,12 +47,12 @@ import com.liuzi.elasticsearch.enums.FieldType;
 import com.liuzi.elasticsearch.util.Constant;
 import com.liuzi.elasticsearch.util.IndexTools;
 import com.liuzi.elasticsearch.util.MetaData;
+import com.liuzi.util.common.Log;
 
 /**
  * 聚合操作
  * @author zsy
  */
-@Slf4j
 public class ElasticsearchAggregationsImpl extends ElasticsearchIndexImpl{
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -101,7 +100,7 @@ public class ElasticsearchAggregationsImpl extends ElasticsearchIndexImpl{
         SearchRequest searchRequest = new SearchRequest(indexname);
         searchRequest.source(searchSourceBuilder);
         if(metaData.isLog()){
-            log.info(searchSourceBuilder.toString());
+            Log.info("[ES] aggs, {}",searchSourceBuilder.toString());
         }
         SearchResponse searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
 
@@ -364,7 +363,7 @@ public class ElasticsearchAggregationsImpl extends ElasticsearchIndexImpl{
         SearchRequest searchRequest = new SearchRequest(indexname);
         searchRequest.source(searchSourceBuilder);
         if(metaData.isLog()){
-            log.info(searchSourceBuilder.toString());
+            Log.info("[ES] aggs, ", searchSourceBuilder.toString());
         }
         SearchResponse searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
         return searchResponse.getAggregations();

@@ -12,13 +12,12 @@ import org.springframework.util.StringUtils;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 
+import com.liuzi.util.common.Log;
 import com.whalin.MemCached.MemCachedClient;
 import com.whalin.MemCached.SockIOPool;
   
   
-@Slf4j
 public class MemcachedPool{
 	
 	private static final Pattern PATTERN = Pattern.compile("^.+[:]\\d{1,5}\\s*$");
@@ -36,14 +35,14 @@ public class MemcachedPool{
 			sbf.append(str + ",");
 		}
 		sbf.deleteCharAt(sbf.length() - 1);
-		log.info(sbf.toString());
+		Log.info("初始化MemcachedPool, {}", sbf.toString());
 		sockIOPool.setServers(address);
 		sockIOPool.initialize();
 	}
 	
 	@Bean
 	public MemCachedClient memCachedClient(){
-		log.info("MemCachedClient init, poolName: " + poolName);
+		Log.info("初始化MemcachedClient, poolName:{}", poolName);
 		return new MemCachedClient(poolName);
 	}
 	

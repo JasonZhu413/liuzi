@@ -13,20 +13,18 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.liuzi.util.common.Log;
 import com.liuzi.util.common.RandomUtil;
 import com.liuzi.util.common.Result;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import lombok.extern.slf4j.Slf4j;
-
 
 /**
  * 文件上传
  * @author zsy
  */
-@Slf4j
 public class FileUpload {
 	
 	private static final String[] PICTURE = {"", "PNG", "JPEG", "JPG", "GIF", "BMP"};
@@ -78,13 +76,13 @@ public class FileUpload {
         File fileSave = new File(path);
         fileSave.setWritable(true, false);
         if (!fileSave.exists()){
-            log.info("文件夹不存在，创建文件夹...");
+            Log.info("文件夹不存在{}，创建文件夹...", path);
             fileSave.mkdirs();
         }
         
         //session保存文件大小
-        HttpSession session = request.getSession();
-        session.setAttribute(sizeKey + "_" + newName, size);
+        //HttpSession session = request.getSession();
+        //session.setAttribute(sizeKey + "_" + newName, size);
         
         try(InputStream in = file.getInputStream();
         	OutputStream out = new FileOutputStream(filePath);){
@@ -96,8 +94,8 @@ public class FileUpload {
             while ((len = in.read(buffer)) > 0) {
             	out.write(buffer, 0, len);
             	//session保存文件进度
-            	progress += len;
-            	session.setAttribute(progressKey + "_" + newName, getFloat(progress / 1024));
+            	//progress += len;
+            	//session.setAttribute(progressKey + "_" + newName, getFloat(progress / 1024));
             }
             
             //压缩
@@ -110,12 +108,11 @@ public class FileUpload {
             map.put("path", path + comFileName);
             map.put("size", size);*/
         }catch (Exception e) {
-        	e.printStackTrace();
-            log.error("上传文件出错：" + e.getMessage());
+            Log.error(e, "上传文件出错");
             return Result.error("文件上传错误");
         } finally{
-        	session.setAttribute(sizeKey + "_" + newName, null);
-            session.setAttribute(progressKey + "_" + newName, null);
+        	//session.setAttribute(sizeKey + "_" + newName, null);
+            //session.setAttribute(progressKey + "_" + newName, null);
         }
         
         return Result.success();
@@ -183,8 +180,7 @@ public class FileUpload {
             	System.out.println("大小：" + pg + "K/" + size + "K, 进度：" + schedule + "%");
             }
         }catch (Exception e) {
-        	e.printStackTrace();
-            log.error("上传文件出错：" + e.getMessage());
+        	Log.error(e, "上传文件出错");
         }
 	}
 }

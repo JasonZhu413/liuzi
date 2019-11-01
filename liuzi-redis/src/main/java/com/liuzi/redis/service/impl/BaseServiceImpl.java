@@ -18,10 +18,9 @@ import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.util.CollectionUtils;
 
-import lombok.extern.slf4j.Slf4j;
+import com.liuzi.util.common.Log;
 
 
-@Slf4j
 public class BaseServiceImpl{
 	
 	@Autowired
@@ -71,18 +70,6 @@ public class BaseServiceImpl{
     public RedisConnection redisConnection() {
     	return redisTemplate.getConnectionFactory().getConnection();
     }
-	
-    protected void info(String msg){
-    	log.info("[Redis] " + msg);
-    }
-    
-    protected void warn(String msg){
-    	log.warn("[Redis] " + msg);
-    }
-    
-    protected void error(String msg){
-    	log.error("[Redis] " + msg);
-    }
     
     /**
      * 指定缓存失效时间
@@ -105,14 +92,13 @@ public class BaseServiceImpl{
         try {
             if (time > 0) {
             	timeUnit = timeUnit == null ? TimeUnit.SECONDS : timeUnit;
-            	info("expire, key: " + key + ", time: " + time + ", timeUnit: " + timeUnit);
                 redisTemplate.expire(key, time, timeUnit);
             }
             return true;
         } catch (Exception e) {
-        	error("expire, key: " + key + ", msg: " + e.getMessage());
-            return false;
+        	Log.error(e, "指定缓存失效时间错误, key: {}, time: {}, timeUnit: {}" + key, time, timeUnit);
         }
+        return false;
     }
     
     /**
@@ -121,7 +107,6 @@ public class BaseServiceImpl{
      * @return 时间(秒) 返回0代表为永久有效
      */
     public long getExpire(String key){
-    	info("getExpire, key: " + key);
         return redisTemplate.getExpire(key, TimeUnit.SECONDS);
     }
     
@@ -132,12 +117,11 @@ public class BaseServiceImpl{
      */
     public boolean hasKey(String key) {
         try {
-        	info("hasKey, key: " + key);
             return redisTemplate.hasKey(key);
         } catch (Exception e) {
-        	error("hasKey, key: " + key + ", msg: " + e.getMessage());
-            return false;
+        	Log.error(e, "判断key是否存在错误, key: {}", key);
         }
+        return false;
     }
 	
 	/**
@@ -154,15 +138,13 @@ public class BaseServiceImpl{
     		int lenth = key.length;
         	String[] keys = new String[lenth];
             if (lenth == 1) {
-            	info("delete, key: " + keys[0]);
                 redisTemplate.delete(keys[0]);
             } else {
             	List<String> list = CollectionUtils.arrayToList(keys);
-            	info("delete, keys: " + list);
                 redisTemplate.delete(list);
             }
         } catch (Exception e) {
-        	error("delete, key: " + key + ", msg: " + e.getMessage());
+        	Log.error(e, "删除错误, key: {}", key);
         }
     	return;
     }
