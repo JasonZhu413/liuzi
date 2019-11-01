@@ -1,4 +1,4 @@
-package com.liuzi.util.interceptor;
+package com.liuzi.mybatis.interceptor;
 
 import java.util.Enumeration;
 
@@ -10,6 +10,10 @@ import lombok.Setter;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
+/**
+ * 防止Sql注入监听
+ * @author zsy
+ */
 public class SqlInjectInterceptor implements HandlerInterceptor{
 	
 	@Setter

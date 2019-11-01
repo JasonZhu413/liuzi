@@ -1,6 +1,7 @@
 D:\Mine\github\liuzi\liuzi-redis\src\main\java\com\liuzi\redis\service\impl\BaseServiceImpl.java
 D:\Mine\github\liuzi\liuzi-redis\src\main\java\com\liuzi\redis\service\StringService.java
 D:\Mine\github\liuzi\liuzi-redis\src\main\java\com\liuzi\redis\service\lock\RedisLockImpl.java
+D:\Mine\github\liuzi\liuzi-redis\src\main\java\com\cto\vo\ArticleTypeVo.java
 D:\Mine\github\liuzi\liuzi-redis\src\main\java\com\liuzi\redis\service\impl\LockServiceImpl.java
 D:\Mine\github\liuzi\liuzi-redis\src\main\java\com\liuzi\redis\service\impl\ZSetServiceImpl.java
 D:\Mine\github\liuzi\liuzi-redis\src\main\java\com\liuzi\redis\service\RedisConfig.java
@@ -12,8 +13,10 @@ D:\Mine\github\liuzi\liuzi-redis\src\main\java\com\liuzi\redis\service\ZSetServi
 D:\Mine\github\liuzi\liuzi-redis\src\main\java\com\liuzi\redis\service\lock\CallBack.java
 D:\Mine\github\liuzi\liuzi-redis\src\main\java\com\liuzi\redis\service\impl\StringServiceImpl.java
 D:\Mine\github\liuzi\liuzi-redis\src\main\java\com\liuzi\redis\service\ListService.java
+D:\Mine\github\liuzi\liuzi-redis\src\main\java\com\liuzi\redis\service\impl\test\Test.java
 D:\Mine\github\liuzi\liuzi-redis\src\main\java\com\liuzi\redis\service\impl\ListServiceImpl.java
 D:\Mine\github\liuzi\liuzi-redis\src\main\java\com\liuzi\redis\service\impl\HashServiceImpl.java
 D:\Mine\github\liuzi\liuzi-redis\src\main\java\com\liuzi\redis\service\lock\RedisLock.java
 D:\Mine\github\liuzi\liuzi-redis\src\main\java\com\liuzi\redis\service\SetService.java
+D:\Mine\github\liuzi\liuzi-redis\src\main\java\com\cto\model\ArticleType.java
 D:\Mine\github\liuzi\liuzi-redis\src\main\java\com\liuzi\redis\service\HashService.java

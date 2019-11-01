@@ -1,4 +1,4 @@
-package com.liuzi.mybatis.handler;
+package com.liuzi.mybatis.plugins;
 
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
@@ -7,17 +7,25 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 import java.util.Map.Entry;
 
 import org.apache.ibatis.binding.MapperMethod;
+import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.executor.parameter.ParameterHandler;
+import org.apache.ibatis.executor.statement.StatementHandler;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
-import org.apache.ibatis.mapping.ParameterMap;
 import org.apache.ibatis.mapping.ParameterMapping;
+import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.plugin.Invocation;
+import org.apache.ibatis.plugin.Plugin;
+import org.apache.ibatis.plugin.Signature;
 import org.apache.ibatis.scripting.defaults.DefaultParameterHandler;
+import org.apache.ibatis.session.ResultHandler;
+import org.apache.ibatis.session.RowBounds;
+import org.apache.ibatis.plugin.Intercepts;
 
 import com.liuzi.mybatis.currency.cond.Query;
 import com.liuzi.mybatis.currency.cond.SQL;
@@ -27,14 +35,37 @@ import com.liuzi.mybatis.currency.data.HandlerMapper;
 import com.liuzi.mybatis.server.pojo.Page;
 import com.liuzi.util.common.Log;
 
-
 /**
- * 分页sql处理
+ * 分页sql拦截器
  * @author zsy
  */
-public class SqlPageExecutor{
+@Intercepts({
+	@Signature(type = StatementHandler.class, method = "prepare", args = { Connection.class , 
+		Integer.class}),
+    @Signature(type = Executor.class, method = "query", args = {MappedStatement.class, Object.class, 
+    	RowBounds.class, ResultHandler.class}),
+})
+public class PageSqlHandler implements Interceptor {
 	
-	/**
+	@Override
+    public Object intercept(Invocation invocation) throws Throwable {
+		sqlPage(HandlerMapper.statement(invocation));
+        return invocation.proceed();
+    }
+
+    @Override
+    public Object plugin(Object target) {
+    	//只拦截StatementHandler对象
+        if (target instanceof StatementHandler) {
+            return Plugin.wrap(target, this);
+        }
+        return target;
+    }
+
+    @Override
+    public void setProperties(Properties properties) {}
+    
+    /**
 	 * 用户自定义xml分页
 	 * @param mapper
 	 * @return
@@ -76,7 +107,7 @@ public class SqlPageExecutor{
     	page.setTotalCount($selectCount(mapper));
     	
     	//组装新sql
-    	SQL newSql = new SQL(){{
+    	/*SQL newSql = new SQL(){{
     		SELECT();
     		CUSTOM(HandlerConsts.$PAGE, SQLConsts.POINT, SQLConsts.ALL);
     		FROM();
@@ -85,78 +116,13 @@ public class SqlPageExecutor{
     		CLOSE();
     		AS(HandlerConsts.$PAGE);
     		LIMIT(page.getLimit(), page.getOffset());
-    	}};
-		//更新分页参数
-    	mapper.getMetaObject().setValue("delegate.boundSql.sql", newSql.toString());
-	}
-    
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-	public static <T> Object currencyPage(HandlerMapper mapper)
-			throws InvocationTargetException, IllegalAccessException{
-    	
-    	Invocation invocation = mapper.getInvocation();
-    	MappedStatement statement = mapper.getMappedStatement();
-    	
-        String mappedid = statement.getId();
-        if(mappedid == null || (!mappedid.endsWith(".$selectPage") &&
-        		!mappedid.endsWith(".$selectTargetPage"))){
-        	return invocation.proceed();
-        }
-
-        //参数
-    	Object parameterObject = mapper.getParameterObject();
-		if(!(parameterObject instanceof MapperMethod.ParamMap)) {
-			return invocation.proceed();
-		}
-		
-		MapperMethod.ParamMap paramMap = (MapperMethod.ParamMap) parameterObject;
-		//通用分页
-		if(!paramMap.containsKey(HandlerConsts.$PAGE)){
-			return invocation.proceed();
-		}
-		
-		Page<T> page = (Page<T>) paramMap.get(HandlerConsts.$PAGE);
-    	if(page == null){
-    		return invocation.proceed();
-    	}
-    	
-    	//查询总数
-    	long totalCount = $selectCount(mapper);
-    	page.setTotalCount(totalCount);
-    	
-    	//组装新sql
+    	}};*/
     	SQL newSql = new SQL(){{
-    		SELECT();
-    		CUSTOM(HandlerConsts.$PAGE, SQLConsts.POINT, SQLConsts.ALL);
-    		FROM();
-    		OPEN();
     		CUSTOM(mapper.getBoundSql().getSql());
-    		CLOSE();
-    		AS(HandlerConsts.$PAGE);
     		LIMIT(page.getLimit(), page.getOffset());
     	}};
-    	
 		//更新分页参数
     	mapper.getMetaObject().setValue("delegate.boundSql.sql", newSql.toString());
-    	
-		Object val = invocation.proceed();
-		
-		if(val != null){
-			List<T> data = (List<T>) val; 
-			//计算总页数
-			int pageSize = page.getPageSize();
-			int pageTotal = (int) (totalCount / pageSize);
-			if (totalCount % pageSize > 0) {
-		    	++ pageTotal;
-		    }
-			//当前页条数
-			int number = data == null ? 0 : data.size();
-			//组装返回实体
-			page.setData(data);//返回数据
-			page.setPageTotal(pageTotal);//总页数
-			page.setNumber(number);//当前页条数
-		}
-    	return mapper.getInvocation().proceed();
 	}
     
     /**
@@ -169,7 +135,7 @@ public class SqlPageExecutor{
     	Connection connection = mapper.getConnection();
     	
     	//查询总页数sql
-    	SQL countSql = new SQL(){{
+    	/*SQL countSql = new SQL(){{
     		SELECT();
     		CUSTOM(SQLConsts.COUNT$1$);
     		FROM();
@@ -177,6 +143,15 @@ public class SqlPageExecutor{
     		CUSTOM(boundSql.getSql());
     		CLOSE();
     		AS("page_count");
+    	}};*/
+    	SQL countSql = new SQL(){{
+    		SELECT();
+    		CUSTOM(SQLConsts.COUNT$1$);
+    		
+    		String oldSql = boundSql.getSql();
+    		int index = oldSql.toLowerCase().indexOf("from");
+    		
+            CUSTOM(oldSql.substring(index));
     	}};
 		
 		List<ParameterMapping> parameterMappings = boundSql.getParameterMappings();
@@ -215,6 +190,4 @@ public class SqlPageExecutor{
 		}
 		return 0;
 	}
-	
-	
 }
