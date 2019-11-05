@@ -4,7 +4,6 @@ D:\Mine\github\liuzi\liuzi-mybatis\src\main\java\com\liuzi\mybatis\plugins\PageS
 D:\Mine\github\liuzi\liuzi-mybatis\src\main\java\com\liuzi\mybatis\currency\provider\DeleteSqlProvider.java
 D:\Mine\github\liuzi\liuzi-mybatis\src\main\java\com\liuzi\mybatis\currency\mapper\DeleteMapper.java
 D:\Mine\github\liuzi\liuzi-mybatis\src\main\java\com\liuzi\mybatis\currency\cond\Query.java
-D:\Mine\github\liuzi\liuzi-mybatis\src\main\java\com\liuzi\mybatis\currency\type\SqlType.java
 D:\Mine\github\liuzi\liuzi-mybatis\src\main\java\com\liuzi\mybatis\currency\data\ColumnData.java
 D:\Mine\github\liuzi\liuzi-mybatis\src\main\java\com\liuzi\mybatis\currency\data\TableData.java
 D:\Mine\github\liuzi\liuzi-mybatis\src\main\java\com\liuzi\mybatis\proxy\MsDataSourceHolder.java

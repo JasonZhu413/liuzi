@@ -291,16 +291,15 @@ public class SqlExecuteInfo{
 				xml.append("\t<data>\r\n");
 				xml.append("\t\t<traceLogId>").append(Log.getLogId()).append("</traceLogId>\r\n");
 				xml.append("\t\t<dataSource>").append(o[0]).append("</dataSource>\r\n");
-				xml.append("\t\t<command>").append(o[2]).append("</command>\r\n");
-				xml.append("\t\t<method>").append(o[3]).append("</method>\r\n");
-				xml.append("\t\t<startTime>").append(o[4]).append("</startTime>\r\n");
-				xml.append("\t\t<endTime>").append(o[5]).append("</endTime>\r\n");
-				xml.append("\t\t<takeUpTimeMillis>").append(o[6]).append("</takeUpTimeMillis>\r\n");
-				xml.append("\t\t<mapper>").append(o[1]).append("</mapper>\r\n");
-				String sql = o[7];
-				sql = sql.substring(1, sql.length() - 1);
-				xml.append("\t\t<sql>").append(sql).append("</sql>\r\n");
+				xml.append("\t\t<command>").append(o[1]).append("</command>\r\n");
+				xml.append("\t\t<method>").append(o[2]).append("</method>\r\n");
+				xml.append("\t\t<startTime>").append(o[3]).append("</startTime>\r\n");
+				xml.append("\t\t<endTime>").append(o[4]).append("</endTime>\r\n");
+				xml.append("\t\t<takeUpTimeMillis>").append(o[5]).append("</takeUpTimeMillis>\r\n");
+				xml.append("\t\t<mapper>").append(o[6]).append("</mapper>\r\n");
+				xml.append("\t\t<sql>").append(o[7]).append("</sql>\r\n");
 				xml.append("\t\t<params>").append(o[8]).append("</params>\r\n");
+				xml.append("\t\t<affectedRowsNum>").append(o[9]).append("</affectedRowsNum>\r\n");
 				xml.append("\t</data>");
 				if(createNew){
 					xml.append("\r\n</mybatis>");
@@ -339,27 +338,28 @@ public class SqlExecuteInfo{
 					html.append("\t\t\t\t<th>mapper</th>\r\n");
 					html.append("\t\t\t\t<th>sql</th>\r\n");
 					html.append("\t\t\t\t<th>params</th>\r\n");
+					html.append("\t\t\t\t<th>affectedRowsNum</th>\r\n");
 					html.append("\t\t\t</tr>");
 				}
 				html.append("\t\t\t<tr>\t\n");
 				html.append("\t\t\t\t<td>").append(Log.getLogId()).append("</td>\r\n");
 				html.append("\t\t\t\t<td>").append(o[0]).append("</td>\r\n");
+				html.append("\t\t\t\t<td>").append(o[1]).append("</td>\r\n");
 				html.append("\t\t\t\t<td>").append(o[2]).append("</td>\r\n");
 				html.append("\t\t\t\t<td>").append(o[3]).append("</td>\r\n");
 				html.append("\t\t\t\t<td>").append(o[4]).append("</td>\r\n");
 				html.append("\t\t\t\t<td>").append(o[5]).append("</td>\r\n");
 				html.append("\t\t\t\t<td>").append(o[6]).append("</td>\r\n");
-				html.append("\t\t\t\t<td>").append(o[1]).append("</td>\r\n");
-				sql = o[7];
-				sql = sql.substring(1, sql.length() - 1);
-				html.append("\t\t\t\t<td>").append(sql).append("</td>\r\n");
+				html.append("\t\t\t\t<td>").append(o[7]).append("</td>\r\n");
 				html.append("\t\t\t\t<td>").append(o[8]).append("</td>\r\n");
+				html.append("\t\t\t\t<td>").append(o[9]).append("</td>\r\n");
 				html.append("\t\t\t</tr>");
 				if(createNew){
 					html.append("\r\n</table><body></html>");
 				}
 				return html.toString();
 			default:
+				o[7] = "{" + o[7] + "}";
 				return String.join(",", o);
 		}
 	}

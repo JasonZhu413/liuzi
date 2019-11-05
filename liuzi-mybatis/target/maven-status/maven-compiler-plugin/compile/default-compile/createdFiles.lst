@@ -39,7 +39,6 @@ com\liuzi\mybatis\currency\provider\UpdateSqlProvider$7.class
 com\liuzi\mybatis\currency\provider\SelectSqlProvider$3.class
 com\liuzi\mybatis\plugins\CurrencySqlHandler.class
 com\liuzi\mybatis\currency\provider\DeleteSqlProvider.class
-com\liuzi\mybatis\currency\type\SqlType.class
 com\liuzi\mybatis\proxy\MsDataSourceConfiguration.class
 com\liuzi\mybatis\currency\data\Order.class
 com\liuzi\mybatis\currency\provider\UpdateSqlProvider$3.class

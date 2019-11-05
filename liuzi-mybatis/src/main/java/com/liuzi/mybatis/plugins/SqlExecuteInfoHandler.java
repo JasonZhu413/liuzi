@@ -4,6 +4,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import org.apache.ibatis.cache.CacheKey;
@@ -59,11 +60,11 @@ public class SqlExecuteInfoHandler implements Interceptor {
         ms.getStatementType();
         
         //获取Mapper类
-        String mapper = ms.getResource();
+        String resource = ms.getResource();
         //获取配置信息
         Configuration configuration = ms.getConfiguration();
-        //获取Mapper id
-        String mapperId = ms.getId();
+        //获取Mapper
+        String mapper = ms.getId();
         //获取数据源
         DruidDataSource dataSource = (DruidDataSource) configuration.getEnvironment().getDataSource();
         //获取数据库类型[即mysql, 或者oracle等等]
@@ -102,38 +103,33 @@ public class SqlExecuteInfoHandler implements Interceptor {
         long time = end - start;
 
         //影响行数
+        Integer resInt = null;
+        if(result instanceof Integer){
+        	resInt = Integer.parseInt(result.toString());
+        }else if(result instanceof List){
+        	List list = (List) result;
+        	resInt = list == null || list.isEmpty() ? 0 : list.size();
+        }else if(result instanceof Map){
+        	Map map = (Map) result;
+        	resInt = map == null || map.isEmpty() ? 0 : map.size();
+        }else{
+        	resInt = 1;
+        }
+        
         //Integer integer = Integer.valueOf(Integer.parseInt(result.toString()));
-        //TODO 还可以记录参数，或者单表id操作时，记录数据操作前的状态
-        //获取insertSqlLog方法
-        //ms = ms.getConfiguration().getMappedStatement("insertSqlLog");
+        //获取test方法
+        //ms = ms.getConfiguration().getMappedStatement("test");
         //替换当前的参数为新的ms
         //args[0] = ms;
         //insertSqlLog 方法的参数为 log
         //args[1]=log;
-
-        //组装自己的SQL记录类
-        /*SpAuditDbLog spAuditDbLog = new SpAuditDbLog();
-        spAuditDbLog.setId(UUID.randomUUID().toString());
-        //记录SQL
-        spAuditDbLog.setSqlContent(retSQL);
-        //入参
-        spAuditDbLog.setInParam(parameterObjects);
-        //sql开始执行时间
-        spAuditDbLog.setStartTime(DateUtils.dateParse(start, "yyyy-MM-dd HH:mm:ss"));
-        //sql执行结束时间
-        spAuditDbLog.setEndTime(DateUtils.dateParse(end, "yyyy-MM-dd HH:mm:ss"));
-        //耗时
-        spAuditDbLog.setCostTime(time);
-        //执行结果
-        spAuditDbLog.setResutlTupe(StringUtil.isNotEmpty(result) ? "01" : "02");
-        SpAuditDbLog save = spAuditDbLogMapper.save(spAuditDbLog);
-        */
         
         //处理sql
-        sqlExecuteInfo.excute(dbType, mapperId, commandName, methodName, 
+        sqlExecuteInfo.excute(dbType, commandName, methodName, 
         		DateUtil.localDateTimeToString(DateUtil.timestampToLocalDateTime(start), "yyyyMMddHHmmssSSS"),
         		DateUtil.localDateTimeToString(DateUtil.timestampToLocalDateTime(end), "yyyyMMddHHmmssSSS"),
-        		time + "", "{" + sqlExecuteInfo.passEntr(retSQL) + "}", parameterObjects);
+        		time + "", mapper, sqlExecuteInfo.passEntr(retSQL), parameterObjects,
+        		resInt == null ? "" : resInt + "");
         
         //返回执行结果
         return result;
