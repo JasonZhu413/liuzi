@@ -37,5 +37,6 @@ D:\Mine\github\liuzi\liuzi-mybatis\src\main\java\com\liuzi\mybatis\currency\cons
 D:\Mine\github\liuzi\liuzi-mybatis\src\main\java\com\liuzi\mybatis\currency\data\TableMataData.java
 D:\Mine\github\liuzi\liuzi-mybatis\src\main\java\com\liuzi\mybatis\currency\provider\InsertSqlProvider.java
 D:\Mine\github\liuzi\liuzi-mybatis\src\main\java\com\liuzi\mybatis\util\ArrayToForm.java
+D:\Mine\github\liuzi\liuzi-mybatis\src\main\java\com\liuzi\mybatis\plugins\SqlExecuteInfo.java
 D:\Mine\github\liuzi\liuzi-mybatis\src\main\java\com\liuzi\mybatis\currency\anno\Table.java
 D:\Mine\github\liuzi\liuzi-mybatis\src\main\java\com\liuzi\mybatis\interceptor\SqlInjectInterceptor.java

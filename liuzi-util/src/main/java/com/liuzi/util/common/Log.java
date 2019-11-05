@@ -1,7 +1,10 @@
 package com.liuzi.util.common;
 
 import java.util.UUID;
+
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.MDC;
+
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -13,7 +16,11 @@ public class Log{
 	 * 设置traceid
 	 */
 	public static void setLogId(String traceId){
-		MDC.put(TRACE_LOG_ID, traceId);
+		if(StringUtils.isBlank(traceId)){
+			initTraceLogId();
+		}else{
+			MDC.put(TRACE_LOG_ID, traceId);
+		}
 	}
 		
 	/**

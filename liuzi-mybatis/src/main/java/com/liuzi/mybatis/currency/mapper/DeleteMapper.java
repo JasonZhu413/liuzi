@@ -100,5 +100,5 @@ public interface DeleteMapper<T> extends UpdateMapper<T>{
 	//--------------------------------- SQL -----------------------------------------------
 	
 	@DeleteProvider(type = BaseSqlProvider.class, method = "$commonBySql")
-	int $insertBySql(@Param("sql") SQL sql);
+	int $deleteBySql(@Param("sql") SQL sql);
 }

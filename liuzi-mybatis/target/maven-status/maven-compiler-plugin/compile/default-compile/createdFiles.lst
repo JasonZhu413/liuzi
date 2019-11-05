@@ -17,6 +17,7 @@ com\liuzi\mybatis\util\HandlerUtil.class
 com\liuzi\mybatis\currency\provider\DeleteSqlProvider$1.class
 com\liuzi\mybatis\currency\provider\SelectSqlProvider$2.class
 com\liuzi\mybatis\currency\data\TableMataData.class
+com\liuzi\mybatis\plugins\SqlExecuteInfo.class
 com\liuzi\mybatis\currency\cond\SQL.class
 com\liuzi\mybatis\currency\mapper\SelectMapper.class
 com\liuzi\mybatis\currency\provider\InsertSqlProvider.class
@@ -63,6 +64,7 @@ com\liuzi\mybatis\currency\provider\DeleteSqlProvider$9.class
 com\liuzi\mybatis\server\pojo\Page.class
 com\liuzi\mybatis\currency\provider\SelectSqlProvider$4.class
 com\liuzi\mybatis\plugins\PageSqlHandler$2.class
+com\liuzi\mybatis\plugins\SqlExecuteInfo$RFile.class
 com\liuzi\mybatis\currency\provider\SelectSqlProvider.class
 com\liuzi\mybatis\config\SqlSessionTargetFactoryBean.class
 com\liuzi\mybatis\server\mapper\BaseDao.class

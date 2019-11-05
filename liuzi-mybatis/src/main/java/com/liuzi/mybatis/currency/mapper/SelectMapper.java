@@ -89,7 +89,6 @@ public interface SelectMapper<T> {
 	<K> List<K> $selectListTargetByColumnMap(@Param("columns") Map<String, Object> columns, @Param("target") Class<K> clazz);
 
 	//--------------------------------- SQL -----------------------------------------------
-	
 	/**
      * 查询单条（SQL）
      * @param sql
@@ -109,8 +108,8 @@ public interface SelectMapper<T> {
      * @param sql
      * @return
      */
-	@SelectProvider(type = BaseSqlProvider.class, method = "$commonBySql")
-	<K, V> Map<K, V> $selectMapBySql(@Param("sql") SQL sql);
+	/*@SelectProvider(type = BaseSqlProvider.class, method = "$commonBySql")
+	<K, V> Map<K, V> $selectMapBySql(@Param("sql") SQL sql);*/
 	
 	//--------------------------------- Query -----------------------------------------------
 	

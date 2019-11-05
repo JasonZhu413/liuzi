@@ -1,22 +1,11 @@
 package com.liuzi.mybatis.plugins;
 
-import java.io.IOException;
-import java.io.RandomAccessFile;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import lombok.Getter;
-import lombok.Setter;
-
-import org.apache.commons.lang.StringUtils;
 import org.apache.ibatis.cache.CacheKey;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.executor.statement.StatementHandler;
@@ -35,7 +24,6 @@ import org.apache.ibatis.plugin.Intercepts;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.fastjson.JSON;
-import com.liuzi.util.common.Log;
 import com.liuzi.util.date.DateUtil;
 
 
@@ -48,88 +36,23 @@ import com.liuzi.util.date.DateUtil;
     	RowBounds.class, ResultHandler.class, CacheKey.class, BoundSql.class})
 })
 public class SqlExecuteInfoHandler implements Interceptor {
-	//项目目录
-	private static final String LOG_DIR = System.getProperty("user.dir");
-	//目录标志
-	private static final String FILESEPARATOR = System.getProperty("file.separator");
-	//换行
-	private static final String LINE_SEPARATOR = System.getProperty("line.separator");
-	//文件后缀
-	private static final String SUFFIX = ".txt";
-	//文件名前缀
-	private static final String LOG_NAME = "mybatis-sql-log";
-	//文件名连接符
-	private static final char CONN = '-';
-	//操作线程核心线程数
-	private static final int THREAD_NUM_MIN = 50;
-	//操作线程最大线程数
-	private static final int THREAD_NUM_MAX = 100;
-	//操作线程超时等待秒数
-	private static final int THREAD_WAIT_TIME = 60;
 	
-	private static final ThreadPoolExecutor executor = new ThreadPoolExecutor(THREAD_NUM_MIN, 
-			THREAD_NUM_MAX, THREAD_WAIT_TIME, TimeUnit.SECONDS,
-            new LinkedBlockingQueue<Runnable>());
+	private SqlExecuteInfo sqlExecuteInfo;
 	
-	private static final Pattern SQL_PATTERN = Pattern.compile("\\s*|\t|\r|\n");
-	
-	/**
-	 * 类型
-	 * CONSOLE 控制台打印
-	 * LOG 日志
-	 */
-	@Getter @Setter private String type = "NONE";
-	/**
-	 * 日志目录
-	 */
-	@Getter @Setter private String logPath = LOG_DIR;
-	/**
-	 * 日志文件名
-	 */
-	@Getter @Setter private String logName = LOG_NAME;
-	/**
-	 * 日志文件名
-	 * YEAR, MONTH, DATE, HOUR, MINUTE, SECOND
-	 */
-	@Getter @Setter private String logWriteType = "DATE";
-	/**
-	 * 线程核心数
-	 */
-	@Getter private int corePoolSize;
-	/**
-	 * 线程最大数
-	 */
-	@Getter private int maximumPoolSize;
-	
-	private String lp;
-	private String ln;
-	private String p;
-	
-	public void setCorePoolSize(int corePoolSize) {
-		if(corePoolSize <= 0){
-			return;
-		}
-		this.corePoolSize = corePoolSize;
-		executor.setCorePoolSize(corePoolSize);
-		Log.info("Mybatis sql execute thread corePoolSize {}", corePoolSize);
+	public SqlExecuteInfoHandler(){
+		this(null);
 	}
-
-	public void setMaximumPoolSize(int maximumPoolSize) {
-		if(maximumPoolSize <= 0){
-			return;
+	
+	public SqlExecuteInfoHandler(SqlExecuteInfo sqlExecuteInfo){
+		if(sqlExecuteInfo == null){
+			sqlExecuteInfo = new SqlExecuteInfo();
+			sqlExecuteInfo.init();
 		}
-		this.maximumPoolSize = maximumPoolSize;
-		executor.setMaximumPoolSize(maximumPoolSize);
-		Log.info("Mybatis sql execute thread maximumPoolSize {}", maximumPoolSize);
+		this.sqlExecuteInfo = sqlExecuteInfo;
 	}
 	
 	@Override
     public Object intercept(Invocation invocation) throws Throwable {
-		int excuteType = type();
-		if(excuteType == 0){
-			return invocation.proceed();
-		}
-		
         Object[] args = invocation.getArgs();
 
         MappedStatement ms = (MappedStatement) args[0];
@@ -206,12 +129,11 @@ public class SqlExecuteInfoHandler implements Interceptor {
         SpAuditDbLog save = spAuditDbLogMapper.save(spAuditDbLog);
         */
         
-		Matcher matcher = SQL_PATTERN.matcher(retSQL);
-		retSQL = matcher.replaceAll("");
-        
         //处理sql
-        excuteLog(excuteType, dbType, mapperId, commandName, methodName, 
-        		start + "", end + "", time + "", "{", retSQL, "}", parameterObjects);
+        sqlExecuteInfo.excute(dbType, mapperId, commandName, methodName, 
+        		DateUtil.localDateTimeToString(DateUtil.timestampToLocalDateTime(start), "yyyyMMddHHmmssSSS"),
+        		DateUtil.localDateTimeToString(DateUtil.timestampToLocalDateTime(end), "yyyyMMddHHmmssSSS"),
+        		time + "", "{" + sqlExecuteInfo.passEntr(retSQL) + "}", parameterObjects);
         
         //返回执行结果
         return result;
@@ -226,7 +148,7 @@ public class SqlExecuteInfoHandler implements Interceptor {
     @Override
     public Object plugin(Object o) {
     	//只拦截Executor对象,减少目标被代理的次数
-        if (o instanceof Executor) {
+        if (o instanceof Executor && sqlExecuteInfo.allowLog()) {
             return Plugin.wrap(o, this);
         }
         return o;
@@ -240,106 +162,4 @@ public class SqlExecuteInfoHandler implements Interceptor {
     public void setProperties(Properties properties) {
 
     }
-    
-    /**
-     * 日志操作类型
-     * @return
-     */
-    private int type(){
-    	if(type == null){
-    		return 0;
-    	}
-    	switch(this.type){
-    		case "NONE":
-    			return 0;
-    		case "CONSOLE":
-    			return 1;
-    		case "LOG":
-    			initLog();
-    			return 2;
-    		default:
-    			return 0;
-    	}
-    }
-    
-    private void initLog(){
-    	//文件目录
-    	if(this.lp == null){
-    		this.lp = StringUtils.isBlank(this.logPath) ? LOG_DIR : this.logPath;
-    	}
-    	//文件名
-    	if(this.ln == null){
-    		this.ln = StringUtils.isBlank(this.logName) ? LOG_NAME : this.logName;
-    	}
-    	//写日志文件格式
-		if(this.p == null){
-			if(logWriteType == null){
-				this.p = "yyyy-MM-dd";
-				return;
-			}
-			switch(logWriteType){
-				case "YEAR":
-					this.p = "yyyy";
-					break;
-				case "MONTH":
-					this.p = "yyyyMM";
-					break;
-				case "DATE":
-					this.p = "yyyyMMdd";
-					break;
-				case "HOUR":
-					this.p = "yyyyMMddHH";
-					break;
-				case "MINUTE":
-					this.p = "yyyyMMddHHmm";
-					break;
-				case "SECOND":
-					this.p = "yyyyMMddHHmmss";
-					break;
-				default:
-					this.p = "yyyy-MM-dd";
-					break;
-			}
-		}
-    }
-    
-    private void excuteLog(int excuteType, String... o){
-        switch(excuteType){
-        	case 1:
-        		Log.info(String.join(",", o));
-        		break;
-        	case 2:
-        		writeLog(String.join(",", o));
-        		break;
-        }
-    }
-	
-	private void writeLog(String content){
-		executor.execute(() -> {
-			String filePath = getFileName();
-			
-			// 打开一个随机访问文件流，按读写方式 
-			try (RandomAccessFile randomFile = new RandomAccessFile(filePath, "rw")) {     
-	            //文件字节长度
-	            long fileLength = randomFile.length();
-	            // 将写文件指针移到文件尾
-	            randomFile.seek(fileLength);
-	            //文件内容
-	            String c = String.format("%s%s", content, LINE_SEPARATOR);
-	            randomFile.writeBytes(c);
-	            
-	            Log.info("Log write success({})...", filePath);
-	        } catch (IOException e) {
-	        	Log.warn(e, "WRITE LOG ERROR");
-	        }
-		});
-	}
-	
-	private String getFileName(){
-		String pattern = DateUtil.dateToString(new Date(), this.p);
-		return String.format("%s%s%s%s%s%s", this.lp, FILESEPARATOR, this.ln, CONN, pattern, SUFFIX);
-	}
-
-	
-	
 }
