@@ -52,6 +52,7 @@ public class SqlExecuteInfoHandler implements Interceptor {
 		this.sqlExecuteInfo = sqlExecuteInfo;
 	}
 	
+	@SuppressWarnings("rawtypes")
 	@Override
     public Object intercept(Invocation invocation) throws Throwable {
         Object[] args = invocation.getArgs();
