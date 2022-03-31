@@ -33,7 +33,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		
 		<liuzi.version>1.0</liuzi.version>
-		<spring.version>4.3.8.RELEASE</spring.version>
+		<spring.version>5.3.18</spring.version>
 		
 		<!-- <jetty.version>7.3.0.v20110203</jetty.version> -->
 		<jetty.version>9.4.18.v20190429</jetty.version>
